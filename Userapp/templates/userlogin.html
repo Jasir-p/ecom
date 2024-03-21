@@ -17,6 +17,8 @@
   
   <body>
     <div class="container" id="container">
+       
+       
         <div class="form-container sign-up-container">
             <form action="{% url 'User_sign' %}" method='post'>
                 {% csrf_token %}
@@ -31,6 +33,17 @@
                 <input type="email" placeholder="Email"  name="email" />
                 <input type="number" placeholder="Phone"  name="number" />
                 <input type="password" placeholder="Password"  name="password" />
+
+                {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+    <div class="{% if message.tags == 'success' %}success-message{% elif message.tags == 'warning' %}warning-message{% elif message.tags == 'info' %}info-message{% endif %}">
+        {{ message }}
+    </div>
+{% endfor %}
+            </ul>
+        {% endif %}
+
                
                 <button>Sign Up</button>
             </form>
