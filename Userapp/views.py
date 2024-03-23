@@ -1,5 +1,5 @@
 
-from datetime import timezone
+from datetime import timedelta, timezone
 import datetime
 import random
 from django.shortcuts import render,HttpResponse
@@ -87,16 +87,19 @@ def user_signup(request):
             print('hi')
     return render(request,'userlogin.html')
 
-
+def user_signup(request):
+       return render(request,'usersignup.html')
 
 def user_home(request):
 
     return render(request,'index.html')
 
 
-def generate_otp_and_send_email(email):
+def generate_otp_and_send_email(request,email):
     otp = random.randint(1000, 9999)
-    # otp_generated_at = timezone.now().isoformat()
+    otp_generated_at = timezone.now().isoformat()
+
+    request.session['otp'] = {' otp': otp, 'otp_generated_at': otp_generated_at}
 
     send_mail(
         subject='Welcome',
@@ -105,3 +108,40 @@ def generate_otp_and_send_email(email):
         recipient_list=[email],
         fail_silently=True
     )
+
+def otp(request):
+        if request.method == 'POST':
+               
+                otp1 = request.POST.get('otp1')
+                otp2 = request.POST.get('otp2')
+                otp3 = request.POST.get('otp3')
+                otp4 = request.POST.get('otp4')
+
+                full_otp = otp1 + otp2 + otp3 + otp4
+                if 'otp' in request.session:
+                        otp_data= request.session['otp']
+                        otp=otp_data['otp']
+                        otp_generated=otp_data['otp_generated_at']
+                
+    
+    
+                        if datetime.now() <=  otp_generated +timedelta(minutes=5) :
+                                # Compare OTPs
+                                if full_otp == otp:
+                                # OTP is correct and not expired
+                                # Proceed with further actions (e.g., user authentication)
+                                        return HttpResponse("OTP verification successful!")
+                                else:
+                                        return HttpResponse("Incorrect OTP! Please try again.")
+                        else:
+                                return HttpResponse("OTP has expired. Please request a new one.")
+                else:
+                        return HttpResponse("OTP verification session data not found.")
+        else:
+                return render(request,'otp.html')
+        
+
+
+        
+
+      

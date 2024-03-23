@@ -411,6 +411,11 @@ ol {
 	display: inline-block;
 }
 
+.logo {
+    width: 100px; /* Set the desired width */
+    height: auto; /* Maintain aspect ratio */
+}
+
 .header__menu {
 	text-align: center;
 	padding: 26px 0 25px;
