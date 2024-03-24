@@ -1,67 +1,65 @@
 {% load static %}
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup</title>
     <link href="{% static 'user/assets/css/bootstrap.min.css' %}" rel="stylesheet" type=text/css>
     <link href="{% static 'user/assets/css/font-awesome.min.css' %}" rel="stylesheet" type=text/css>
     <link href="{% static 'user/assets/css/style.css' %}" rel="stylesheet" type=text/css>
 
-    <title>Educational Bootstrap 5 Login Page Website Tampalte</title>
-  </head>
-  <body>
+    <!-- Other CSS imports -->
+</head>
+<body>
     <section class="form-02-main">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-12">
-            <div class="_lk_de">
-              <div class="form-03-main">
-                <div class="logo">
-                  <img src="{% static 'user/assets/images/user.png' %}" >
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="_lk_de">
+                        <form action="{% url 'SignUp' %}" method="post">
+                            {% csrf_token %}
+                            <div class="form-03-main">
+                                <div class="logo">
+                                    <img src="{% static 'user/assets/images/user.png' %}" alt="User Logo">
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" name="name" class="form-control _ge_de_ol" placeholder="Enter Username" required>
+                                </div>
+                                <div class="form-group">
+                                    <input type="email" name="email" class="form-control _ge_de_ol" placeholder="Enter Email" required>
+                                </div>
+                                <div class="form-group">
+                                    <input type="number" name="number" class="form-control _ge_de_ol" placeholder="Enter Mobile" required>
+                                </div>
+                                <div class="form-group">
+                                    <input type="password" name="password" class="form-control _ge_de_ol" placeholder="Enter Password" required>
+                                </div>
+                                <button type="submit" class="btn btn-success btn-block">Submit</button>
+                                {% if messages %}
+                        <ul class="messages">
+                            {% for message in messages %}
+                <div class="{% if message.tags == 'success' %}success-message{% elif message.tags == 'warning' %}warning-message{% elif message.tags == 'info' %}info-message{% endif %}">
+                    {{ message }}
                 </div>
-                <div class="form-group">
-                  <input type="text" name="email" class="form-control _ge_de_ol" type="text" placeholder="Enter Username" required="" aria-required="true">
+            {% endfor %}
+                        </ul>
+                    {% endif %}
+                            </div>
+                        </form>
+                        {% if messages %}
+                        <ul class="messages">
+                            {% for message in messages %}
+                <div class="{% if message.tags == 'success' %}success-message{% elif message.tags == 'warning' %}warning-message{% elif message.tags == 'info' %}info-message{% endif %}">
+                    {{ message }}
                 </div>
-                <div class="form-group">
-                  <input type="email" name="email" class="form-control _ge_de_ol" type="text" placeholder="Enter Email" required="" aria-required="true">
+            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    </div>
                 </div>
-                <div class="form-group">
-                  <input type="Number" name="number" class="form-control _ge_de_ol" type="text" placeholder="Enter Mobail" required="" aria-required="true">
-                </div>
-
-                <div class="form-group">
-                  <input type="password" name="password" class="form-control _ge_de_ol" type="text" placeholder="Enter Password" required="" aria-required="true">
-                </div>
-
-          
-
-                <div class="form-group">
-                  <div class="_btn_04">
-                    <a href="#">SignUP</a>
-                  </div>
-                </div>
-
-                <div class="form-group nm_lk"><p>Or Login With</p></div>
-
-                <div class="form-group pt-0">
-                  <div class="_social_04">
-                    <ol>
-                      <li><i class="fa fa-facebook"></i></li>
-                      
-                      <li><i class="fa fa-google-plus"></i></li>
-                      
-                    </ol>
-                  </div>
-                </div>
-              </div>
             </div>
-          </div>
         </div>
-      </div>
     </section>
-  </body>
+</body>
 </html>

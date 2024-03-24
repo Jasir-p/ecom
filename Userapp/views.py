@@ -1,6 +1,8 @@
 
-from datetime import timedelta, timezone
-import datetime
+from datetime import timedelta, timezone, datetime
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
+
 import random
 from django.shortcuts import render,HttpResponse
 from django.contrib import messages
@@ -14,6 +16,7 @@ from django.views.decorators.cache import never_cache,cache_control
 from django.core.mail import send_mail
 from shopifyproject.settings import EMAIL_HOST_USER
 from django.core.validators import EmailValidator
+from django.utils import timezone
 
 # Create your views here.
 
@@ -27,68 +30,49 @@ def user_login(request):
 
     return render(request,'userlogin.html')
 def user_signup(request):
+    try:
     
-    if request.method == 'POST':
-        username = request.POST.get('name')
-        password = request.POST.get('password')
-        number=request.POST.get('number')
-        email=request.POST.get('email')
-        if not all([ username, email, password]):
-                messages.error(request,'Please fill up all the fields.')
-                return redirect('login')
-        elif CustomUser.objects.filter(username=username).exists():
-            
-                messages.error(request, 'The username is already taken')
-                return redirect('login')
-        if not username:
-                messages.error(request, 'Please provide a username')
-                return redirect('login')
-        elif not username.strip():
-                messages.error(request, 'The username is not valid')
-                return redirect('login')
-        if not all([username, email, password]):
-                messages.error(request,'please fill up all the fields.')
-                return redirect('login')
-        elif CustomUser.objects.filter(username=username).exists():
-                messages.error(request, 'The username is already taken')
-                return redirect('login')
-        
-        elif len(password) < 6:
-                messages.error(request, 'The password should be at least 6 characters')
-                return redirect('login')
-       
-        elif not any(char.isupper() for char in password):
-                messages.error(request, 'Password must contain at least one uppercase letter')
-                return redirect('login')
-        elif not any(char.islower() for char in password):  # Corrected condition
-                messages.error(request, 'Password must contain at least one lowercase letter')
-                return redirect('login')
-        elif not any(char.isdigit() for char in password):
-                messages.error(request, 'Password must contain at least one digit')
-                return redirect('login')
-        elif not re.match(r"^[\w\.-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", email): 
-                messages.error(request, 'Please enter a valid email address')
-                return redirect('login')
-        elif not EmailValidator(email):
-                messages.error(request, 'Enter a valid email')
-                return redirect('login')
-        elif CustomUser.objects.filter(email=email).exists():
-                messages.error(request, 'This email is already registered')
-                return redirect('login')
-
-        generate_otp_and_send_email(email)
-        if username:
-            # CustomUser.objects.create_user(username=username, password=password,phone=number,email=email)
-            pass
-
-            # c=CustomUser.objects.all()
-            # print(c)
-        else:
+        if request.method == 'POST':
             print('hi')
-    return render(request,'userlogin.html')
+            username = request.POST.get('name')
+            password = request.POST.get('password')
+            number = request.POST.get('number')
+            email = request.POST.get('email')
+        
+            if not all([username , email, password,]):
+                    messages.error(request,'Please fill up all the fields.')
+                    return redirect('SignUp')
+            elif CustomUser.objects.filter(username=username).exists():
+                    messages.error(request, 'The username is already taken')
+                    return redirect('SignUp')
+            elif not username:
+                    messages.error(request, 'Please provide a username')
+                    return redirect('SignUp')
+            elif not username.strip():
+                    messages.error(request, 'The username is not valid')
+                    return redirect('SignUp')
+          
+            elif CustomUser.objects.filter(username=username).exists():
+                    messages.error(request, 'The username is already taken')
+                    return redirect('SignUp')
+            elif not is_valid_email(email):
+                    messages.error(request, 'The email is not valid')
+                    return redirect('SignUp')
+                
+            request.session['name']=username
+            request.session['password']=password
+            request.session['phone']=number
+            request.session['email']=email
+            
+            generate_otp_and_send_email(request,email)
+            
+            return redirect(otp)
+            
+        return render(request,'usersignup.html')
+    except Exception as e:
+           messages.error(e)
 
-def user_signup(request):
-       return render(request,'usersignup.html')
+
 
 def user_home(request):
 
@@ -97,9 +81,12 @@ def user_home(request):
 
 def generate_otp_and_send_email(request,email):
     otp = random.randint(1000, 9999)
-    otp_generated_at = timezone.now().isoformat()
+    otp_generated_at = datetime.now().isoformat()
+    print(otp_generated_at)
 
-    request.session['otp'] = {' otp': otp, 'otp_generated_at': otp_generated_at}
+    request.session['otp'] = otp
+    request.session['time'] =otp_generated_at 
+    print("hi")
 
     send_mail(
         subject='Welcome',
@@ -108,6 +95,7 @@ def generate_otp_and_send_email(request,email):
         recipient_list=[email],
         fail_silently=True
     )
+   
 
 def otp(request):
         if request.method == 'POST':
@@ -118,30 +106,45 @@ def otp(request):
                 otp4 = request.POST.get('otp4')
 
                 full_otp = otp1 + otp2 + otp3 + otp4
+                print(full_otp)
+                print(request.session['otp'])
                 if 'otp' in request.session:
-                        otp_data= request.session['otp']
-                        otp=otp_data['otp']
-                        otp_generated=otp_data['otp_generated_at']
-                
+                       
+                        otp=request.session['otp']
+                        otp_generated=request.session['time']
+                        delta=timedelta(minutes=2)
+                        time=datetime.fromisoformat(otp_generated)
+                        
+                        print(time,time+delta)
+                        
     
     
-                        if datetime.now() <=  otp_generated +timedelta(minutes=5) :
-                                # Compare OTPs
-                                if full_otp == otp:
-                                # OTP is correct and not expired
-                                # Proceed with further actions (e.g., user authentication)
-                                        return HttpResponse("OTP verification successful!")
+                        if datetime.now() <= time + delta :
+                                
+                                if int(full_otp) == otp:
+                                        CustomUser.objects.create_user(username= request.session['name'],password= request.session['password'],email= request.session['email'],phone=request.session['phone'])
+                                        request.session.pop('name')
+                                        request.session.pop('password')
+                                        request.session.pop('email')
+                                        request.session.pop('phone')
+        
+                                
+                                        return render('login')
                                 else:
-                                        return HttpResponse("Incorrect OTP! Please try again.")
+                                        return render('otp')
                         else:
-                                return HttpResponse("OTP has expired. Please request a new one.")
-                else:
-                        return HttpResponse("OTP verification session data not found.")
+                                return render('otp')
+                
         else:
                 return render(request,'otp.html')
         
 
-
+def is_valid_email(email):
+    try:
+        validate_email(email)
+        return True
+    except ValidationError:
+        return False
         
 
       

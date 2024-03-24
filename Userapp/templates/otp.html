@@ -64,7 +64,8 @@
 </style>
 </head>
 <body>
-  <form action="" method="">
+  <form action="{% url 'otp' %}" method="post">
+    {% csrf_token %}
 <div class="container">
   <img src="company_logo.png" alt="Company Logo" class="logo">
   <div id="otpInputs">
@@ -73,15 +74,15 @@
     <input type="text" id="otpInput3" class="otp-input" name="otp3" maxlength="1" onkeyup="moveToNext(this, 'otpInput3')">
     <input type="text" id="otpInput4" class="otp-input" name="otp4"maxlength="1" onkeyup="moveToNext(this, 'otpInput4')">
   </div>
-  <div id="timer" class="timer">Time Remaining: <span id="time">60</span> seconds</div>
+  <div id="timer" class="timer">Time Remaining: <span id="time">120</span> seconds</div>
   <button id="resendBtn" class="resend-btn" onclick="resendOTP()">Resend OTP</button>
-  <button id="submitBtn" class="submit-btn" onclick="verifyOTP()">Submit</button>
+  <button id="submitBtn" class="submit-btn" >Submit</button>
 </div>
 </form>
 
 <script>
   // Timer function
-  var timeleft = 60;
+  var timeleft = 120;
   var timer = setInterval(function(){
     if(timeleft <= 0){
       clearInterval(timer);
@@ -115,11 +116,7 @@
     otp += document.getElementById('otpInput4').value;
 
     // Code to verify OTP
-    if (otp === '1234') {
-      alert("OTP Verified!");
-    } else {
-      alert("Incorrect OTP! Please try again.");
-    }
+ 
   }
 </script>
 </body>
