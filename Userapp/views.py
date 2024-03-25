@@ -1,5 +1,6 @@
 
 from datetime import timedelta, timezone, datetime
+import re
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 
@@ -17,6 +18,7 @@ from django.core.mail import send_mail
 from shopifyproject.settings import EMAIL_HOST_USER
 from django.core.validators import EmailValidator
 from django.utils import timezone
+
 
 # Create your views here.
 
@@ -58,6 +60,9 @@ def user_signup(request):
             elif not is_valid_email(email):
                     messages.error(request, 'The email is not valid')
                     return redirect('SignUp')
+            elif not validate_mobile_number(number):
+                messages.error(request, 'The Mobail number is not valid')
+                return redirect('SignUp')
                 
             request.session['name']=username
             request.session['password']=password
@@ -129,11 +134,17 @@ def otp(request):
                                         request.session.pop('phone')
         
                                 
-                                        return render('login')
+                                        return redirect('login')
                                 else:
-                                        return render('otp')
-                        else:
-                                return render('otp')
+
+                                        messages.error("Incorrect OTP! Please try again.")
+                                        
+                                        return redirect('otp')
+                        else:   
+                                expired_status = True  
+                                error_message = f"OTP has {'expired' if expired_status else 'not expired'}. Please request a new one."
+                                messages.error(request, error_message)
+                                return redirect('otp')
                 
         else:
                 return render(request,'otp.html')
@@ -146,5 +157,16 @@ def is_valid_email(email):
     except ValidationError:
         return False
         
+
+
+def validate_mobile_number(mobile_number):
+   
+    pattern = re.compile(r'^[6-9]\d{9}$')
+
+    if pattern.match(mobile_number):
+        return True
+    else:
+        return False
+
 
       

@@ -1,0 +1,43 @@
+{% extends 'nav.html'%}
+{% block body %}
+<div class="container-fluid pt-4 px-4">
+ <div class="col-12">
+     <div class="bg-light rounded h-100 p-4">
+         <h6 class="mb-4">Responsive Table</h6>
+          <div class="table-responsive">
+             <table class="table">
+                 <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Username</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Phone</th>
+                        
+                        <th scope="col">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in data%}
+                        {% if not i.is_superuser %}
+                    <tr>
+                        <th scope="row">{{forloop.i}}</th>
+                        <td>{{i.username}}</td>
+                        <td>{{i.email}}</td>
+                        <td>{{i.phone}}</td>
+                        {% if i.is_active == True %}
+                        <td>Block</td>
+                        {% else%}
+                        <td>unBlock</td>
+                        {% endif %}
+                    </tr>
+                     {% endif %}
+                    {% endfor  %}
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+  </div>
+  </div>
+</div>
+{% endblock %}

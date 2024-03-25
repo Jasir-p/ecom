@@ -75,7 +75,9 @@
     <input type="text" id="otpInput4" class="otp-input" name="otp4"maxlength="1" onkeyup="moveToNext(this, 'otpInput4')">
   </div>
   <div id="timer" class="timer">Time Remaining: <span id="time">120</span> seconds</div>
+  {% if messages  %}
   <button id="resendBtn" class="resend-btn" onclick="resendOTP()">Resend OTP</button>
+  {% endif %}
   <button id="submitBtn" class="submit-btn" >Submit</button>
 </div>
 </form>
