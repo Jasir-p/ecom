@@ -7,6 +7,8 @@ urlpatterns = [
     path('UserDetails/',views.view_user,name='userdetail'),
     path('Category/',views.category,name='category'),
     path('Brand/',views.brand,name='brand'),
+    path('ViewCategory/',views.view_category,name='view_category'),
+    path('AdminLogout/',views.logout,name='adminlogout')
        
     ]
 

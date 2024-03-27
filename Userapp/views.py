@@ -79,7 +79,10 @@ def user_signup(request):
 
 
 
+@never_cache
 def user_home(request):
+    if request.user.is_authenticated and request.user.is_superuser:
+                return redirect('dashbord')
 
     return render(request,'index.html')
 

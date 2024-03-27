@@ -20,8 +20,11 @@ from django.utils import timezone
 from Userapp.models import *
 
 # Create your views here.
+@never_cache
 def login(request):
-    if request.method=='POST':
+        if request.user.is_authenticated:
+                return redirect('dashbord')
+        if request.method=='POST':
          
       
                 username=request.POST["username"]
@@ -44,14 +47,16 @@ def login(request):
                
                
 
-    return render(request,'login.html')
-
-
+        return render(request,'login.html')
+@never_cache
+@login_required(login_url='adminlogin')
 def dashbord(request):
+        
         return render(request,'dashbord.html')
 
 
-
+@never_cache
+@login_required(login_url='adminlogin')
 def view_user(request):
  
  try:
@@ -59,7 +64,10 @@ def view_user(request):
         return render(request,'userdetails.html',{'data':user})
  except :
         return render(request,'userdetails.html')
- 
+
+
+@never_cache
+@login_required(login_url='adminlogin')
 def category(request):
         try:
 
@@ -83,8 +91,9 @@ def category(request):
                                 return redirect('category')
                 
                         item=Catagory(cat_name=ca_name,cat_description=ca_description,cover_image=cover_photo)
-                        print("hi")
-                        item.save()     
+                        
+                        item.save() 
+                        return redirect('view_category')    
 
                         
                         
@@ -97,12 +106,22 @@ def category(request):
                
         return render(request,'category.html')
        
-              
+@never_cache
+@login_required(login_url='adminlogin')             
 def brand(request):
     
     
     return render(request,'brand.html')
-    
+@never_cache
+@login_required(login_url='adminlogin')   
 def view_category(request):
-        return render(request,'')
+        try:
+                data=Catagory.objects.all()
+                return render(request,'view_category.html',{'data':data})
+        except:
+                pass
+        return render(request,'view_category.html')
        
+def logout(request):
+        authlogout(request)
+            
