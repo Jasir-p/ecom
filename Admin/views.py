@@ -29,7 +29,7 @@ def login(request):
 
                 try:
                         user = authenticate(request, username=username, password=password)
-                        if user is not None:
+                        if user is not None and user.is_superuser:
                                 log(request, user)
                                 return redirect('dashbord')
                         else:
@@ -53,5 +53,56 @@ def dashbord(request):
 
 
 def view_user(request):
+ 
+ try:
         user=CustomUser.objects.all().order_by('-pk')
         return render(request,'userdetails.html',{'data':user})
+ except :
+        return render(request,'userdetails.html')
+ 
+def category(request):
+        try:
+
+                 if request.method=='POST':
+
+               
+                      
+
+                      
+                        ca_name = request.POST.get('cat_name', '') 
+                        ca_description = request.POST.get('cat_description', '')  
+                        cover_photo = request.FILES.get('cover_image', None)  
+
+
+                      
+                        if Catagory.objects.filter(cat_name=ca_name).exists():
+
+
+                             
+                                messages.error(request,'category already here')
+                                return redirect('category')
+                
+                        item=Catagory(cat_name=ca_name,cat_description=ca_description,cover_image=cover_photo)
+                        print("hi")
+                        item.save()     
+
+                        
+                        
+
+        except Exception as e:
+                      messages.error(request,str(e))
+                      return redirect('category')
+                
+
+               
+        return render(request,'category.html')
+       
+              
+def brand(request):
+    
+    
+    return render(request,'brand.html')
+    
+def view_category(request):
+        return render(request,'')
+       

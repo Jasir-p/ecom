@@ -1,0 +1,28 @@
+{% extends 'nav.html'%}
+{% block body %}
+<div class="container-fluid pt-4 px-4">
+    <div class="bg-light rounded p-4">
+        <h6 class="mb-4">Add Brand</h6>
+        <form method="post" action="" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="b_name" class="form-label">Brand Name</label>
+                <input type="text" class="form-control" id="b_name" name="b_name" placeholder="Enter brand name" required>
+            </div>
+            <div class="mb-3">
+                <label for="cover_image" class="form-label">Cover Image</label>
+                <input type="file" class="form-control" id="cover_image" name="cover_image" required>
+            </div>
+            <div class="mb-3">
+                <label for="b_description" class="form-label">Brand Description</label>
+                <textarea class="form-control" id="b_description" name="b_description" rows="3" placeholder="Enter brand description" required></textarea>
+            </div>
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="is_listed" name="is_listed" checked>
+                <label class="form-check-label" for="is_listed">Listed</label>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Brand</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

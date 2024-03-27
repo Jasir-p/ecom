@@ -1,0 +1,27 @@
+{% extends 'nav.html'%}
+{% block body %}
+    <div class="container">
+        <h1>Items Table</h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Image</th>
+                    <!-- Add other table headers if needed -->
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ item.name }}</td>
+                    <td><img src="{{ item.image.url }}" alt="{{ item.name }}" width="100"></td>
+                    <!-- Add other table cells if needed -->
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+   
+{% endblock%}

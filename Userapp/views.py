@@ -54,7 +54,7 @@ def user_signup(request):
                     messages.error(request, 'The username is not valid')
                     return redirect('SignUp')
           
-            elif CustomUser.objects.filter(username=username).exists():
+            elif CustomUser.objects.filter(email=email).exists():
                     messages.error(request, 'The username is already taken')
                     return redirect('SignUp')
             elif not is_valid_email(email):
@@ -92,14 +92,16 @@ def generate_otp_and_send_email(request,email):
     request.session['otp'] = otp
     request.session['time'] =otp_generated_at 
     print("hi")
-
+   
     send_mail(
-        subject='Welcome',
-        message=f'Your OTP for verification is: {otp}',
-        from_email=EMAIL_HOST_USER,
-        recipient_list=[email],
-        fail_silently=True
-    )
+            subject='Welcome',
+            message=f'Your OTP for verification is: {otp}',
+            from_email=EMAIL_HOST_USER,
+            recipient_list=[email],
+            fail_silently=False
+        )
+   
+          
    
 
 def otp(request):
