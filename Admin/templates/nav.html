@@ -8,6 +8,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
+    <script src="https://kit.fontawesome.com/20949e6496.js" crossorigin="anonymous"></script>
 
     <!-- Favicon -->
     <link href="{% static 'admin/dashbord/img/favicon.ico' %}" rel="icon">
@@ -68,9 +69,28 @@
                             <a href="{%url 'category' %}" class="dropdown-item"><i class="fa fa-keyboard me-2"></i>AddCategory</a>
                             <a href="" class="dropdown-item"><i class="fa fa-keyboard me-2"></i>Other Elements</a>
                         </div>
+
                     </div>
-                    <a href="{%url 'brand' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Brand</a>
-                    <a href="{%url 'category' %}" class="nav-item nav-link"><i class="fa fa-keyboard me-2"></i>Category</a>
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa-brands fa-bandcamp"></i>Brand</a>
+                        <div class="dropdown-menu bg-transparent border-0">
+                            <a href="{%url 'brand' %}" class="dropdown-item"><i class="fa fa-th me-2"></i>AddBrand</a>
+                            <a href="{%url 'viewbrand' %}" class="dropdown-item"><i class="fa fa-th me-2"></i>ViewBrand</a>
+                            <a href="" class="dropdown-item"><i class="fa fa-keyboard me-2"></i>Other Elements</a>
+                        </div>
+
+                    </div>
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa-brands fa-bandcamp"></i>Products</a>
+                        <div class="dropdown-menu bg-transparent border-0">
+                            <a href="{%url 'addproducts' %}" class="dropdown-item"><i class="fa fa-th me-2"></i>Add Products</a>
+                            <a href="{%url 'viewbrand' %}" class="dropdown-item"><i class="fa fa-th me-2"></i>ViewBrand</a>
+                            <a href="" class="dropdown-item"><i class="fa fa-keyboard me-2"></i>Other Elements</a>
+                        </div>
+
+                    </div>
+                   
+          
                     <a href="{%url 'userdetail' %}" class="nav-item nav-link"><i class="fa fa-table me-2"></i>USERS</a>
                     <a href="chart.html" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Charts</a>
                     <div class="nav-item dropdown">

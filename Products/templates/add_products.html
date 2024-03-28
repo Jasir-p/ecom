@@ -1,0 +1,48 @@
+{% extends 'nav.html'%}
+{% block body %}
+<div class="container-fluid pt-4 px-4">
+    <div class="bg-light rounded p-4">
+        <h1 class="mb-4">Create Product</h1>
+        <form method="post" action="{url}">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="name" class="form-label">Name:</label>
+                <input type="text" class="form-control" id="name" name="name" required>
+            </div>
+            <div class="mb-3">
+                <label for="price" class="form-label">Price:</label>
+                <input type="number" class="form-control" id="price" name="price" step="0.01" required>
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Description:</label>
+                <textarea class="form-control" id="description" name="description" rows="4" required></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="category" class="form-label">Category:</label>
+                <select class="form-select" id="category" name="category" required>
+                    <!-- Populate options dynamically from your database -->
+                    {% for category in categories %}
+                    <option value="{{ category.cat_id }}">{{ category.cat_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="brand" class="form-label">Brand:</label>
+                <select class="form-select" id="brand" name="brand" required>
+                    <!-- Populate options dynamically from your database -->
+                    {% for brand in brands %}
+                    <option value="{{ brand.id }}">{{ brand.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="is_listed" name="is_listed" checked>
+                    <label class="form-check-label" for="is_listed">Listed</label>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Create</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

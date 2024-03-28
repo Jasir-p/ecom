@@ -116,12 +116,68 @@ def brand(request):
 @login_required(login_url='adminlogin')   
 def view_category(request):
         try:
-                data=Catagory.objects.all()
+                data=Catagory.objects.filter(is_listed=True)
+                for i in data:
+                        print(i)
+        
                 return render(request,'view_category.html',{'data':data})
-        except:
-                pass
-        return render(request,'view_category.html')
+        except :
+                return render(request,'view_category.html')
+        
        
 def logout(request):
         authlogout(request)
-            
+
+def view_brands(request):
+        try:
+                data=brand.objects.all()
+
+                return render(request,'view_brand.html',{'data':data})
+        except:
+                return render(request,'view_brand.html')
+
+def brand_delete(request,b_id):
+        try:
+                item=Brand.objects.get(id=b_id)
+                item.is_listed=False
+                item.save()
+                return render('viewbrand')
+        except:
+                return render('viewbrand')
+def category_unlist(request,ca_id):
+        try:
+                item=Catagory.objects.get(id=ca_id)
+                item.is_listed=False
+                item.save()
+                return redirect('view_category')
+
+        except:
+                return redirect('view_category')
+def unlist_categories(request):
+        try:
+                data=Catagory.objects.filter(is_listed=False)
+                return render(request,'viewunlist_category.html',{'data':data})
+        
+        except:
+                return render(request,'viewunlist_category.html')
+        
+
+def edit_category(request,ca_id):
+        try:
+                data=Catagory.objects.get(id=ca_id)
+                if request.method=='POST':
+                        
+                        return redirect('view_category')
+                return render(request,'edit_category.html',{'data':data})
+        except:
+                return render(request,'edit_category.html')
+def list_category(request,ca_id):
+        
+        try:
+                item=Catagory.objects.get(id=ca_id)
+                item.is_listed=True
+                item.save()
+                return redirect('view_category')
+
+        except:
+                return redirect('unlistcategory')
