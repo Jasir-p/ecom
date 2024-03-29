@@ -3,7 +3,7 @@
 <div class="container-fluid pt-4 px-4">
     <div class="bg-light rounded p-4">
         <h1 class="mb-4">Create Product</h1>
-        <form method="post" action="{url}">
+        <form method="post" action="{% url 'addproducts' %}">
             {% csrf_token %}
             <div class="mb-3">
                 <label for="name" class="form-label">Name:</label>
@@ -22,25 +22,20 @@
                 <select class="form-select" id="category" name="category" required>
                     <!-- Populate options dynamically from your database -->
                     {% for category in categories %}
-                    <option value="{{ category.cat_id }}">{{ category.cat_name }}</option>
+                    <option value="{{ category.id }}">{{ category.cat_name }}</option>
                     {% endfor %}
                 </select>
             </div>
             <div class="mb-3">
                 <label for="brand" class="form-label">Brand:</label>
                 <select class="form-select" id="brand" name="brand" required>
-                    <!-- Populate options dynamically from your database -->
-                    {% for brand in brands %}
-                    <option value="{{ brand.id }}">{{ brand.name }}</option>
+                    
+                    {% for i in brands %}
+                    <option value="{{ i.id }}">{{ i.B_name }}</option>
                     {% endfor %}
                 </select>
             </div>
-            <div class="mb-3">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="is_listed" name="is_listed" checked>
-                    <label class="form-check-label" for="is_listed">Listed</label>
-                </div>
-            </div>
+           
             <button type="submit" class="btn btn-primary">Create</button>
         </form>
     </div>

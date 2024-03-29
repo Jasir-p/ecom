@@ -1,0 +1,39 @@
+{% extends 'nav.html'%}
+{% block body %}
+<div class="container">
+    
+    <form method="post" action="{% url 'addcolour' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="product">Product:</label>
+            <select class="form-select" id="product" name="product" required>
+                <option value="" disabled selected>Select Product</option>
+                {% for product in products %}
+                <option value="{{ product.id }}">{{ product.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="color_name">Color Name:</label>
+            <input type="text" class="form-control" id="color_name" name="color_name" required>
+        </div>
+        <div class="mb-3">
+            <label for="thumbnail">Thumbnail:</label>
+            <input type="file" class="form-control" id="thumbnail" name="thumbnail" required>
+        </div>
+        <div class="mb-3">
+            <label for="img1">Image 1:</label>
+            <input type="file" class="form-control" id="img1" name="img1" required>
+        </div>
+        <div class="mb-3">
+            <label for="img2">Image 2:</label>
+            <input type="file" class="form-control" id="img2" name="img2" required>
+        </div>
+        <div class="mb-3">
+            <label for="img3">Image 3:</label>
+            <input type="file" class="form-control" id="img3" name="img3" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Create</button>
+    </form>
+</div>
+{% endblock %}

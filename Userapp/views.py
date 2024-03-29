@@ -23,6 +23,26 @@ from django.utils import timezone
 # Create your views here.
 
 def user_login(request):
+        if request.user.is_authenticated:
+                return redirect('user_home')
+        if request.method=='POST':
+         
+      
+                username=request.POST.get("username")
+                password=request.POST.get("password")
+
+                try:
+                        user = authenticate(request, username=username, password=password)
+                        if user is not None :
+                                login(request, user)
+                                return redirect('user_home')
+                        else:
+                                 
+                                 messages.error(request,'incorrect username or password')  
+
+
+                except Exception as e:
+                        messages.error(str(e))
     
 
    
@@ -30,7 +50,7 @@ def user_login(request):
     
     
 
-    return render(request,'userlogin.html')
+        return render(request,'userlogin.html')
 def user_signup(request):
     try:
     
@@ -94,7 +114,7 @@ def generate_otp_and_send_email(request,email):
 
     request.session['otp'] = otp
     request.session['time'] =otp_generated_at 
-    print("hi")
+    
    
     send_mail(
             subject='Welcome',
@@ -174,4 +194,6 @@ def validate_mobile_number(mobile_number):
         return False
 
 
-      
+def logout(request):
+       authlogout(request)
+       return redirect('user_home')

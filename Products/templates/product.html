@@ -1,0 +1,46 @@
+{% extends 'nav.html'%}
+{% block body %}
+<div class="container-fluid pt-4 px-4">
+    <div class="bg-light rounded p-4">
+        <div class="col text-end">
+            <h5 > <a href="{% url 'unlistcategory'%}" >Unlist Category</a></h5>
+        </div>
+        
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Image</th>
+                    <th scope="col">Actions</th>
+                    <th scope="col">Image</th>
+                    <th scope="col">Actions</th>
+                    <!-- Add other table headers if needed -->
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in data %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.description}}</td>
+                    <td><img src="{{ item.cover_image.url }}" alt="" width="50" ></td>
+                    <td>
+                        <a href="{% url 'delcategory' item.id  %}" class="btn btn-danger">Unlist
+                            
+                        </a>
+                        <a href="{% url 'EditCatogory' item.id %}" class="btn btn-primary">
+                            Edit
+                            
+                        </a> 
+                    </td>
+                    <!-- Add other table cells if needed -->
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+   
+{% endblock%}

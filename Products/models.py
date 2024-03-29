@@ -17,7 +17,7 @@ class Product(models.Model):
 
     
     def __str__(self):
-        return self.p_name
+        return self.name
     
 
 class Color_products(models.Model):

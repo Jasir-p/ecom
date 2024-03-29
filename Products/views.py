@@ -25,7 +25,11 @@ def add_products(request):
     try:
         categories = Catagory.objects.all()
         brands = Brand.objects.all()
+        print('hi')
+
+        print(brands)
        
+
 
         
         if request.method == 'POST':
@@ -33,19 +37,40 @@ def add_products(request):
             price = request.POST.get('price')
             description = request.POST.get('description')
             category_id = request.POST.get('category')
-            brand_id = request.POST.get('brand')
+            brand = request.POST.get('brand')
+
+            print(category_id)
+
+
             
             
             if Product.objects.filter(name=name).exists():
                 messages.error('product already exist')
-            product = Product.objects.create(
+            
+           
+           
+           
+            product = Product(
                 name=name,
                 price=price,
                 description=description,
-                catagory=category_id,
-                brand=brand_id,
+                catagory_id=category_id,
+                brand_id=brand,
                 
             )
+            product.save()
+
         return render (request,'add_products.html',{'categories': categories, 'brands': brands})
     except:
         return render (request,'add_products.html')
+
+
+
+def add_colour(request):
+    try:
+        products=Product.objects.all()
+        print(products)
+    
+        return render(request,'add_colour.html',{'products':products})
+    except:
+        return render(request,'add_colour.html')

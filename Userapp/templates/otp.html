@@ -76,7 +76,7 @@
   </div>
   <div id="timer" class="timer">Time Remaining: <span id="time">120</span> seconds</div>
   {% if messages  %}
-  <button id="resendBtn" class="resend-btn" onclick="resendOTP()">Resend OTP</button>
+  {% comment %} <a href="{% url 'resend'%}" id="resendBtn" class="resend-btn" onclick="resendOTP()">Resend OTP</a> {% endcomment %}
   {% endif %}
   <button id="submitBtn" class="submit-btn" >Submit</button>
 </div>

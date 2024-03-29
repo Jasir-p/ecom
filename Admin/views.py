@@ -109,9 +109,26 @@ def category(request):
 @never_cache
 @login_required(login_url='adminlogin')             
 def brand(request):
-    
-    
-    return render(request,'brand.html')
+    try:
+        if request.method=='POST':
+                b_name = request.POST.get('name')
+                cover_image = request.FILES.get('cover_image')
+                b_description = request.POST.get('description')
+                
+                if Brand.objects.filter(B_name=b_name).exists():
+                        return render('brand')
+                brand = Brand(
+                B_name=b_name,
+                cover_image=cover_image,
+                B_description=b_description,
+                )
+                brand.save()
+                return render('brand')
+        return render(request,'brand.html')
+               
+        
+    except:
+        return render(request,'brand.html')
 @never_cache
 @login_required(login_url='adminlogin')   
 def view_category(request):
@@ -127,14 +144,18 @@ def view_category(request):
        
 def logout(request):
         authlogout(request)
-
+        return redirect('adminlogin')
+@never_cache
+@login_required(login_url='adminlogin')  
 def view_brands(request):
-        try:
-                data=brand.objects.all()
+       
+        data=Brand.objects.all()
+        
+        print(data)
 
-                return render(request,'view_brand.html',{'data':data})
-        except:
-                return render(request,'view_brand.html')
+        return render(request,'view_brand.html',{'data':data})
+        
+        
 
 def brand_delete(request,b_id):
         try:
@@ -152,7 +173,10 @@ def category_unlist(request,ca_id):
                 return redirect('view_category')
 
         except:
-                return redirect('view_category')
+               return redirect('view_category')
+        
+@never_cache
+@login_required(login_url='adminlogin')  
 def unlist_categories(request):
         try:
                 data=Catagory.objects.filter(is_listed=False)
@@ -161,7 +185,8 @@ def unlist_categories(request):
         except:
                 return render(request,'viewunlist_category.html')
         
-
+@never_cache
+@login_required(login_url='adminlogin')  
 def edit_category(request,ca_id):
         try:
                 data=Catagory.objects.get(id=ca_id)
@@ -170,7 +195,7 @@ def edit_category(request,ca_id):
                         return redirect('view_category')
                 return render(request,'edit_category.html',{'data':data})
         except:
-                return render(request,'edit_category.html')
+               return render(request,'edit_category.html')
 def list_category(request,ca_id):
         
         try:
