@@ -28,6 +28,7 @@ class Color_products(models.Model):
     img1=models.ImageField(upload_to='products/',null=True)
     img2=models.ImageField(upload_to='products/',null=True)
     img3=models.ImageField(upload_to='products/',null=True)
+    is_listed=models.BooleanField(default=True)
     
     def __str__(self):
         return f"{self.color_name} ({self.product.p_name})"

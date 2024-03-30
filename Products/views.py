@@ -74,3 +74,11 @@ def add_colour(request):
         return render(request,'add_colour.html',{'products':products})
     except:
         return render(request,'add_colour.html')
+
+
+def add_size(request):
+    try:
+        color_products=Color_products.objects.all()
+        return render(request,'add_size.html',{'color_products':color_products})
+    except:
+        return render(request,'add_size.html')

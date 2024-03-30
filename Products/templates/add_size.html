@@ -1,0 +1,29 @@
+{% extends 'nav.html' %}
+
+{% block content %}
+<div class="container">
+  <h1>Add Size Variant</h1>
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="color_product">Color Product:</label>
+        <select class="form-control" id="color_product" name="color_product" required>
+          <option value="" selected disabled>Select Color Product</option>
+          {% for color_product in color_products %}
+          <option value="{{ color_product.id }}">{{ color_product }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    <div class="form-group">
+      <label for="size">Size:</label>
+      <input type="text" class="form-control" id="size" name="size" placeholder="Enter size" required>
+    </div>
+    <div class="form-group">
+      <label for="quantity">Quantity:</label>
+      <input type="number" class="form-control" id="quantity" name="quantity" placeholder="Enter quantity" required>
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+</div>
+{% endblock %}

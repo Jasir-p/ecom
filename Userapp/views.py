@@ -136,8 +136,7 @@ def otp(request):
                 otp4 = request.POST.get('otp4')
 
                 full_otp = otp1 + otp2 + otp3 + otp4
-                print(full_otp)
-                print(request.session['otp'])
+               
                 if 'otp' in request.session:
                        
                         otp=request.session['otp']
@@ -145,7 +144,7 @@ def otp(request):
                         delta=timedelta(minutes=2)
                         time=datetime.fromisoformat(otp_generated)
                         
-                        print(time,time+delta)
+                       
                         
     
     
@@ -197,3 +196,27 @@ def validate_mobile_number(mobile_number):
 def logout(request):
        authlogout(request)
        return redirect('user_home')
+
+
+def resend_otp(request):
+        
+        otp = random.randint(1000, 9999)
+        otp_generated_at = datetime.now().isoformat()
+        print(otp_generated_at)
+
+        request.session['otp'] = otp
+        request.session['time'] =otp_generated_at 
+        email= request.session['email']
+        
+        
+        send_mail(
+                subject='Welcome',
+                message=f'Your OTP for verification is: {otp}',
+                from_email=EMAIL_HOST_USER,
+                recipient_list=[email],
+                fail_silently=False
+                )
+        return redirect('otp')
+
+
+   

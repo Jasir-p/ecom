@@ -7,6 +7,7 @@ urlpatterns = [
         
         path('UserSignUp/',views.user_signup,name='SignUp'),
         path('otp',views.otp,name='otp'),
-        path('ResendOtp/',views.generate_otp_and_send_email,name='resend')
+        path('ResendOtp/',views.resend_otp,name='resend'),
+        path('UserLogout/',views.logout,name='userlogout')
         
     ]

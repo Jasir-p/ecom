@@ -74,24 +74,35 @@
     <input type="text" id="otpInput3" class="otp-input" name="otp3" maxlength="1" onkeyup="moveToNext(this, 'otpInput3')">
     <input type="text" id="otpInput4" class="otp-input" name="otp4"maxlength="1" onkeyup="moveToNext(this, 'otpInput4')">
   </div>
-  <div id="timer" class="timer">Time Remaining: <span id="time">120</span> seconds</div>
-  {% if messages  %}
-  {% comment %} <a href="{% url 'resend'%}" id="resendBtn" class="resend-btn" onclick="resendOTP()">Resend OTP</a> {% endcomment %}
-  {% endif %}
-  <button id="submitBtn" class="submit-btn" >Submit</button>
-</div>
+  
+  <div class="button-container">
+    <div id="timer" class="timer">Time Remaining: <span id="time">120</span> seconds</div>
+    
+    <div class="button-group">
+      <button id="submitBtn" class="submit-btn">Submit</button>
+      <div id="resendContainer" style="display: none;">
+        <a href="{% url 'resend'%}" id="resendBtn" class="resend-btn" onclick="resendOTP()">Resend OTP</a>
+      </div>
+    </div>
+  </div>
+  </div>
 </form>
 
 <script>
   // Timer function
+  const h=document.getElementById("resendContainer")
+  console.log(h);
   var timeleft = 120;
   var timer = setInterval(function(){
     if(timeleft <= 0){
       clearInterval(timer);
       document.getElementById("time").innerHTML = "0";
       document.getElementById("submitBtn").disabled = true;
+      document.getElementById("resendContainer").style.display = "block"
+     
     } else {
       document.getElementById("time").innerHTML = timeleft;
+      
     }
     timeleft -= 1;
   }, 1000);
