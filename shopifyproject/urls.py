@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path,include
 from django.conf.urls.static import static
 from django.conf import settings
-from Products.views import *
+
 
 
 
@@ -26,7 +26,7 @@ from Products.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('favicon.ico', ignore_favicon),
+    
     path('',include('Admin.urls')),
     path('',include('Userapp.urls')),
     path('Product/',include('Products.urls')),
