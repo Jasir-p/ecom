@@ -1,4 +1,5 @@
 <html lang="en">
+  {% load static %}
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -67,7 +68,7 @@
   <form action="{% url 'otp' %}" method="post">
     {% csrf_token %}
 <div class="container">
-  <img src="company_logo.png" alt="Company Logo" class="logo">
+  <img src="{% static 'user/home/img/logo.png' %}" alt="Company Logo" class="">
   <div id="otpInputs">
     <input type="text" class="otp-input" maxlength="1" name="otp1" onkeyup="moveToNext(this, 'otpInput1')" autofocus>
     <input type="text" id="otpInput2" class="otp-input" name="otp2" maxlength="1" onkeyup="moveToNext(this, 'otpInput2')">
@@ -78,46 +79,81 @@
   <div class="button-container">
     <div id="timer" class="timer">Time Remaining: <span id="time">120</span> seconds</div>
     
-    <div class="button-group">
+    <div class="button-group" style="display:block ruby">
       <button id="submitBtn" class="submit-btn">Submit</button>
       <div id="resendContainer" style="display: none;">
         <a href="{% url 'resend'%}" id="resendBtn" class="resend-btn" onclick="resendOTP()">Resend OTP</a>
       </div>
     </div>
   </div>
+  {% if messages %}
+  <div class="messages text-center text-capitalize font-weight-bold">
+{% for message in messages %}
+{% if message.tags == 'error' %}
+<h5 class="text-danger">! {{ message }}</h5>
+{% elif message.tags == 'success' %}
+<h5 class="text-success">! {{ message }}</h5>
+{% else %}
+<h5>! {{ message }}</h5>
+{% endif %}
+{% endfor %}
+</div>
+{% endif %}
+    
   </div>
 </form>
 
 <script>
   // Timer function
-  const h=document.getElementById("resendContainer")
-  console.log(h);
-  var timeleft = 120;
-  var timer = setInterval(function(){
-    if(timeleft <= 0){
-      clearInterval(timer);
-      document.getElementById("time").innerHTML = "0";
-      document.getElementById("submitBtn").disabled = true;
-      document.getElementById("resendContainer").style.display = "block"
-     
-    } else {
-      document.getElementById("time").innerHTML = timeleft;
-      
-    }
-    timeleft -= 1;
-  }, 1000);
 
-  // Function to move focus to the next input field
+
+
+// Function to start the timer
+var timer;
+
+// Function to start the timer
+function startTimer(duration) {
+    var startTime = sessionStorage.getItem('startTime');
+    if (!startTime) {
+        startTime = Date.now();
+        sessionStorage.setItem('startTime', startTime);
+    }
+    var timeleft = Math.max(duration - Math.floor((Date.now() - startTime) / 1000), 0);
+    updateTimer(timeleft);
+
+    timer = setInterval(function() {
+        timeleft = Math.max(duration - Math.floor((Date.now() - startTime) / 1000), 0);
+        updateTimer(timeleft);
+        if (timeleft <= 0) {
+            clearInterval(timer);
+            document.getElementById("submitBtn").disabled = true; // Disable submit button when timer expires
+            document.getElementById("resendContainer").style.display = "block";
+        }
+    }, 1000);
+}
+
+// Function to update the timer display
+function updateTimer(timeleft) {
+    document.getElementById("time").innerHTML = timeleft;
+}
+
+// Function to resend OTP
+function resendOTP() {
+    // Your code to resend OTP goes here
+
+    // Restart the timer
+    sessionStorage.removeItem('startTime'); // Remove the previous start time
+    startTimer(120); // Restart the timer with the original duration (120 seconds)
+}
+
+// Start the timer
+startTimer(120); // 120 seconds timer duration
+
+
   function moveToNext(currentInput, nextInputId) {
     if (currentInput.value.length === 1) {
       document.getElementById(nextInputId).focus();
     }
-  }
-
-  // Function to resend OTP
-  function resendOTP() {
-    // Code to resend OTP
-    alert("OTP Resent!");
   }
 
   // Function to verify OTP

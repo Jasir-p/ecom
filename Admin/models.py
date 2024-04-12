@@ -1,4 +1,5 @@
 from django.db import models
+from PIL import Image
 
 # Create your models here.
 
@@ -14,6 +15,15 @@ class Catagory(models.Model):
     def __str__(self):
         return self.cat_name
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if self.cover_image:
+            img = Image.open(self.cover_image.path)
+            target_size = (300, 300)
+            img = img.resize(target_size, Image.BICUBIC)
+            img.save(self.cover_image.path)
+    
+
     
 class Brand(models.Model):
 
@@ -24,3 +34,13 @@ class Brand(models.Model):
     
     def __str__(self):
         return self.B_name
+
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if self.cover_image:
+            img = Image.open(self.cover_image.path)
+            target_size = (300, 300)
+            img = img.resize(target_size, Image.BICUBIC)
+            img.save(self. cover_image.path)
+    

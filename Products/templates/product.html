@@ -1,46 +1,100 @@
-{% extends 'nav.html'%}
+{% extends 'nav.html' %}
 {% block body %}
-<div class="container-fluid pt-4 px-4">
-    <div class="bg-light rounded p-4">
-        <div class="col text-end">
-            <h5 > <a href="{% url 'unlistcategory'%}" >Unlist Category</a></h5>
-        </div>
-        
-        <table class="table">
-            <thead>
+<body></body>
+
+<table border="1" class="table">
+    
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Thumbnail</th>
+                <th>Category</th>
+                <th>Brand</th>
+                <th>Price</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
                 <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Description</th>
-                    <th scope="col">Image</th>
-                    <th scope="col">Actions</th>
-                    <th scope="col">Image</th>
-                    <th scope="col">Actions</th>
-                    <!-- Add other table headers if needed -->
+                    <td>{{ product.name }}</td>
+                    <td><img src="{{ product.thumbnail.url }}" alt="Thumbnail" width="80px"></td>
+                    <td>{{ product.catagory }}</td>
+                    <td>{{ product.brand }}</td>
+                    <td>{{ product.price }}</td>
+                    <td><button class="more-btn" data-product-id="{{ product.id }}">More</button></td>
                 </tr>
-            </thead>
-            <tbody>
-                {% for item in data %}
-                <tr>
-                    <th scope="row">{{ forloop.counter }}</th>
-                    <td>{{ item.name }}</td>
-                    <td>{{ item.description}}</td>
-                    <td><img src="{{ item.cover_image.url }}" alt="" width="50" ></td>
-                    <td>
-                        <a href="{% url 'delcategory' item.id  %}" class="btn btn-danger">Unlist
-                            
-                        </a>
-                        <a href="{% url 'EditCatogory' item.id %}" class="btn btn-primary">
-                            Edit
-                            
-                        </a> 
+                <tr class="detail-row" id="detail-row-{{ product.id }}" style="display: none;">
+                    <td colspan="6">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Color</th>
+                                    <th>Size</th>
+                                    <th>Quantity</th>
+                                    
+                                    <th>Image1</th>
+                                    <th>Image2</th>
+                                    <th>Image3</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for color_product in product.color_product.all %}
+                                    <tr>
+                                        <td>{{ color_product.color_name }}</td>
+                                        <td>
+                                            <select name="size" class="size-select">
+                                                {% for size in color_product.size.all %}
+                                                    <option value="{{ size.size }}" data-quantity="{{ size.quantity }}">{{ size.size }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </td>
+                                        <td class="quantity">{{ color_product.size.first.quantity }}</td>
+                                        <td><img src="{{color_product.img1.url}}" alt="" width="50px" height="50px"></td>
+                                        <td><img src="{{color_product.img2.url}}" alt="" width="50px" height="50px"></td>
+                                        <td><img src="{{color_product.img3.url}}" alt="" width="50px" height="50px"></td>
+                                        <td><a href="#" class="btn btn-primary">Edit</a></td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     </td>
-                    <!-- Add other table cells if needed -->
                 </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</div>
-   
-{% endblock%}
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const moreButtons = document.querySelectorAll('.more-btn');
+            moreButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const productId = this.getAttribute('data-product-id');
+                    const detailRow = document.getElementById(`detail-row-${productId}`);
+                    if (detailRow) {
+                        detailRow.style.display = detailRow.style.display === 'none' ? 'table-row' : 'none';
+                    }
+                });
+            });
+        });
+    </script>
+    
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var sizeSelects = document.querySelectorAll('.size-select');
+
+    sizeSelects.forEach(function(select) {
+        select.addEventListener('change', function() {
+            var selectedOption = this.options[this.selectedIndex];
+            var quantityCell = this.closest('tr').querySelector('.quantity');
+            var quantity = selectedOption.dataset.quantity;
+            quantityCell.textContent = quantity;
+        });
+    });
+});
+</script>
+
+{% endblock %}
+ 

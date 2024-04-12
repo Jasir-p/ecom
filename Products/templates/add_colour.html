@@ -8,8 +8,8 @@
             <label for="product">Product:</label>
             <select class="form-select" id="product" name="product" required>
                 <option value="" disabled selected>Select Product</option>
-                {% for product in products %}
-                <option value="{{ product.id }}">{{ product.name }}</option>
+                {% for i in products %}
+                <option value="{{ i.id }}">{{ i.name }}</option>
                 {% endfor %}
             </select>
         </div>
@@ -17,10 +17,7 @@
             <label for="color_name">Color Name:</label>
             <input type="text" class="form-control" id="color_name" name="color_name" required>
         </div>
-        <div class="mb-3">
-            <label for="thumbnail">Thumbnail:</label>
-            <input type="file" class="form-control" id="thumbnail" name="thumbnail" required>
-        </div>
+        
         <div class="mb-3">
             <label for="img1">Image 1:</label>
             <input type="file" class="form-control" id="img1" name="img1" required>
@@ -35,5 +32,18 @@
         </div>
         <button type="submit" class="btn btn-primary">Create</button>
     </form>
+    {% if messages %}
+    <div class="messages text-center text-capitalize font-weight-bold">
+  {% for message in messages %}
+  {% if message.tags == 'error' %}
+  <h5 class="text-danger">! {{ message }}</h5>
+  {% elif message.tags == 'success' %}
+  <h5 class="text-success">! {{ message }}</h5>
+  {% else %}
+  <h5>! {{ message }}</h5>
+  {% endif %}
+  {% endfor %}
+</div>
+{% endif %}
 </div>
 {% endblock %}

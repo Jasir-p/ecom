@@ -1,6 +1,5 @@
-{% extends 'nav.html' %}
-
-{% block content %}
+{% extends 'nav.html'%}
+{% block body %}
 <div class="container">
   <h1>Add Size Variant</h1>
   <form method="post">
@@ -10,7 +9,7 @@
         <select class="form-control" id="color_product" name="color_product" required>
           <option value="" selected disabled>Select Color Product</option>
           {% for color_product in color_products %}
-          <option value="{{ color_product.id }}">{{ color_product }}</option>
+          <option value="{{ color_product.id }}">{{ color_product.color_name }}({{ color_product.product.name}})</option>
           {% endfor %}
         </select>
       </div>
@@ -20,10 +19,23 @@
     </div>
     <div class="form-group">
       <label for="quantity">Quantity:</label>
-      <input type="number" class="form-control" id="quantity" name="quantity" placeholder="Enter quantity" required>
+      <input type="text" class="form-control" id="quantity" name="quantity" placeholder="Enter quantity" required>
     </div>
     
     <button type="submit" class="btn btn-primary">Submit</button>
   </form>
+  {% if messages %}
+  <div class="messages text-center text-capitalize font-weight-bold">
+{% for message in messages %}
+{% if message.tags == 'error' %}
+<h5 class="text-danger">! {{ message }}</h5>
+{% elif message.tags == 'success' %}
+<h5 class="text-success">! {{ message }}</h5>
+{% else %}
+<h5>! {{ message }}</h5>
+{% endif %}
+{% endfor %}
+</div>
+{% endif %}
 </div>
 {% endblock %}

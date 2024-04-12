@@ -3854,3 +3854,25 @@ ol {
 		height: 250px;
 	}
 }
+.zoomable-image {
+	max-width: 100%;
+	height: auto;
+	cursor: pointer; /* Change cursor to pointer when hovering over the image */
+}
+/* Optional: Add styling for the overlay content */
+.overlay-content {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+	color: #fff;
+	text-align: center;
+	display: none; /* Initially hidden */
+	pointer-events: none; /* Ensure overlay content doesn't interfere with image zooming */
+}
+/* Show overlay content when hovering over the zoomed image */
+.zoomable-image:hover .overlay-content {
+	display: block;
+}

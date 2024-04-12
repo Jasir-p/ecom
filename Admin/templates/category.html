@@ -20,7 +20,19 @@
            
             <button type="submit" class="btn btn-submit">Add Category</button>
         </form>
-
+        {% if messages %}
+        <div class="messages text-center text-capitalize font-weight-bold">
+      {% for message in messages %}
+      {% if message.tags == 'error' %}
+      <h5 class="text-danger">! {{ message }}</h5>
+      {% elif message.tags == 'success' %}
+      <h5 class="text-success">! {{ message }}</h5>
+      {% else %}
+      <h5>! {{ message }}</h5>
+      {% endif %}
+      {% endfor %}
+      </div>
+      {% endif %}
     </div>
     {% endblock %}
 

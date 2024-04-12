@@ -22,15 +22,18 @@
                     {% for i in data%}
                         {% if not i.is_superuser %}
                     <tr>
-                        <th scope="row">{{forloop.i}}</th>
+                        <th scope="row">{{forloop.i.counter}}</th>
                         <td>{{i.username}}</td>
                         <td>{{i.email}}</td>
                         <td>{{i.phone}}</td>
-                        {% if i.is_active == True %}
-                        <td>Block</td>
-                        {% else%}
-                        <td>unBlock</td>
-                        {% endif %}
+
+                        <td>{% if i.is_active %}
+                             <a href="{% url 'blockuser' i.pk  %}" class="btn btn-danger">Block </a>
+                             {% else %}
+                             <a href="{% url 'unblockuser' i.pk  %}" class="btn btn-success">Unblock </a>
+                             {% endif %}
+                    </td>
+                       
                     </tr>
                      {% endif %}
                     {% endfor  %}

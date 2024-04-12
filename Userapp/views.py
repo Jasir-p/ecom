@@ -18,10 +18,12 @@ from django.core.mail import send_mail
 from shopifyproject.settings import EMAIL_HOST_USER
 from django.core.validators import EmailValidator
 from django.utils import timezone
+from Products.models import *
+from Admin.models import *
 
 
 # Create your views here.
-
+@never_cache
 def user_login(request):
         if request.user.is_authenticated:
                 return redirect('user_home')
@@ -43,33 +45,23 @@ def user_login(request):
 
                 except Exception as e:
                         messages.error(str(e))
-    
-
-   
-
-    
-    
-
         return render(request,'userlogin.html')
+
 def user_signup(request):
     try:
     
         if request.method == 'POST':
-            print('hi')
+            
             username = request.POST.get('name')
             password = request.POST.get('password')
             number = request.POST.get('number')
             email = request.POST.get('email')
         
-            if not all([username , email, password,]):
-                    messages.error(request,'Please fill up all the fields.')
-                    return redirect('SignUp')
-            elif CustomUser.objects.filter(username=username).exists():
+            
+            if CustomUser.objects.filter(username=username).exists():
                     messages.error(request, 'The username is already taken')
                     return redirect('SignUp')
-            elif not username:
-                    messages.error(request, 'Please provide a username')
-                    return redirect('SignUp')
+            
             elif not username.strip():
                     messages.error(request, 'The username is not valid')
                     return redirect('SignUp')
@@ -83,28 +75,46 @@ def user_signup(request):
             elif not validate_mobile_number(number):
                 messages.error(request, 'The Mobail number is not valid')
                 return redirect('SignUp')
+            elif len(password) < 8:
+                messages.error(request, 'The password should be at least 6 characters')
+                return redirect('SignUp')
+           
                 
-            request.session['name']=username
-            request.session['password']=password
-            request.session['phone']=number
-            request.session['email']=email
-            
-            generate_otp_and_send_email(request,email)
-            
-            return redirect(otp)
+            elif not any(char.isupper() for char in password):
+                messages.error(request, 'Password must contain at least one uppercase letter')
+                return redirect('SignUp')
+            elif not any(char.islower() for char in password):  # Corrected condition
+                messages.error(request, 'Password must contain at least one lowercase letter')
+                return redirect('SignUp')
+            elif not any(char.isdigit() for char in password):
+                messages.error(request, 'Password must contain at least one digit')
+                return redirect('SignUp')
+          
+            else:    
+                request.session['name']=username
+                request.session['password']=password
+                request.session['phone']=number 
+                request.session['email']=email
+                
+                generate_otp_and_send_email(request,email)
+                
+                return redirect(otp)
             
         return render(request,'usersignup.html')
     except Exception as e:
-           messages.error(e)
+           messages.error(request,e)
+           return redirect('SignUp')
 
 
 
 @never_cache
-def user_home(request):
-    if request.user.is_authenticated and request.user.is_superuser:
-                return redirect('dashbord')
 
-    return render(request,'index.html')
+def user_home(request):
+   
+        product=Color_products.objects.filter(is_listed=True).order_by('-id')[:5]
+        print(product)
+
+        return render(request,'index.html',{'product':product})
 
 
 def generate_otp_and_send_email(request,email):
@@ -157,17 +167,17 @@ def otp(request):
                                         request.session.pop('email')
                                         request.session.pop('phone')
         
-                                
+                                        messages.success(request, 'Registerd as successfully')
                                         return redirect('login')
                                 else:
 
-                                        messages.error("Incorrect OTP! Please try again.")
+                                        messages.error(request,"Incorrect OTP! Please try again.")
                                         
                                         return redirect('otp')
                         else:   
                                 expired_status = True  
                                 error_message = f"OTP has {'expired' if expired_status else 'not expired'}. Please request a new one."
-                                messages.error(request, error_message)
+                                messages.error(request, f"OTP has {'expired' if expired_status else 'not expired'}. Please request a new one." )
                                 return redirect('otp')
                 
         else:
@@ -217,6 +227,38 @@ def resend_otp(request):
                 fail_silently=False
                 )
         return redirect('otp')
+@never_cache
+@login_required(login_url='login') 
+def shop(request):
+        try:
+                category_id = request.GET.get('category_id')
+                print(category_id)
+                
+                products=Color_products.objects.select_related('product')
+                category=Catagory.objects.filter(is_listed=True)
+                brand=Brand.objects.filter(is_listed=True)
+                print(products)
+                return render(request,'shop.html',{'products':products,'category':category,'brand':brand})
+        except:       
+                 return render(request,'shop.html')
+        
+        
+@never_cache
+@login_required(login_url='login') 
+def shopdetails(request,p_id,id):
+        data=Color_products.objects.get(id=p_id)
+        item=Color_products.objects.filter(product=id)
+        
 
+        
+        return render(request,'shop-details.html',{'data':data,'item':item})
+        
+def category_filter(request):
+        category_id = request.GET.get('category_id')
+        print(category_id)
+        category=Catagory.objects.filter(is_listed=True)
+        brand=Brand.objects.filter(is_listed=True)
+        data=Product.objects.filter(catagory=category_id)
+        print('hii')
 
-   
+        return render(request,'shop.html',{'products':data,'category':category,'brand':brand})

@@ -3,7 +3,7 @@
 <div class="container-fluid pt-4 px-4">
     <div class="bg-light rounded p-4">
         <h1 class="mb-4">Create Product</h1>
-        <form method="post" action="{% url 'addproducts' %}">
+        <form method="post" action="{% url 'addproducts' %}" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="mb-3">
                 <label for="name" class="form-label">Name:</label>
@@ -35,9 +35,28 @@
                     {% endfor %}
                 </select>
             </div>
+            <div class="mb-3">
+                <label for="thumbnail">Thumbnail:</label>
+                <input type="file" class="form-control"  id="thumbnail"  name="thumbnail" required>
+            </div>
            
             <button type="submit" class="btn btn-primary">Create</button>
         </form>
+        {% if messages %}
+        <div class="messages text-center text-capitalize font-weight-bold">
+      {% for message in messages %}
+      {% if message.tags == 'error' %}
+      <h5 class="text-danger">! {{ message }}</h5>
+      {% elif message.tags == 'success' %}
+      <h5 class="text-success">! {{ message }}</h5>
+      {% else %}
+      <h5>! {{ message }}</h5>
+      {% endif %}
+      {% endfor %}
+      </div>
+      {% endif %}
     </div>
 </div>
+
+
 {% endblock %}

@@ -11,7 +11,7 @@
     <script src="https://kit.fontawesome.com/20949e6496.js" crossorigin="anonymous"></script>
 
     <!-- Favicon -->
-    <link href="{% static 'admin/dashbord/img/favicon.ico' %}" rel="icon">
+    
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -83,9 +83,11 @@
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa-brands fa-bandcamp"></i>Products</a>
                         <div class="dropdown-menu bg-transparent border-0">
+                            <a href="{% url 'viewproducts'%}" class="dropdown-item"><i class="fa fa-keyboard me-2"></i>Products</a>
                             <a href="{%url 'addproducts' %}" class="dropdown-item"><i class="fa fa-th me-2"></i>Add Products</a>
                             <a href="{%url 'addcolour' %}" class="dropdown-item"><i class="fa fa-th me-2"></i>Add Colours</a>
                             <a href="{% url 'addsize'%}" class="dropdown-item"><i class="fa fa-keyboard me-2"></i>Add Size</a>
+                            
                         </div>
 
                     </div>
@@ -218,3 +220,4 @@
 
 {% endblock %}
 
+</html>
