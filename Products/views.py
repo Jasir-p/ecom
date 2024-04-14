@@ -158,5 +158,17 @@ def view_product(request):
         
 # def edit_product(request,p_id):
 #     try
-def ignore_favicon(request):
-    return HttpResponse(status=204)
+def unlist_product(request,id):
+    try:
+            products=Product.objects.get(id=id)
+            products.is_listed=False
+            products.save()
+            return redirect('viewproducts')
+         
+    except:
+         
+           return redirect('viewproducts')
+
+         
+        
+     

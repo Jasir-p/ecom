@@ -41,11 +41,10 @@
                                 <div id="collapseOne" class="collapse show" data-parent="#accordionExample">
                                     <div class="card-body">
                                         <div class="shop__sidebar__categories">
-                                            <ul class="nice-scroll" >
+                                            <ul class="nice-scroll" id="category-list">
                                                 {% for i in category %}
-                                                <li value="{{i.id}}" id="category"><a href="">{{i.cat_name}}</a></li>
+                                                <li value="{{i.id}}" data-category-id="{{i.id}}"><a href="{% url 'filterd' i.id %}">{{i.cat_name}}</a></li>
                                                 {% endfor %}
-
                                             </ul>
                                         </div>
                                     </div>
@@ -58,37 +57,16 @@
                                 <div id="collapseTwo" class="collapse show" data-parent="#accordionExample">
                                     <div class="card-body">
                                         <div class="shop__sidebar__brand">
-                                            <ul>{% for i in brand %}
-                                                <li><a href="#">{{i.B_name}}</a></li>
+                                            <ul id="brand-list">
+                                                {% for i in brand %}
+                                                <li value="{{i.id}}" id="brand-{{i.id}}"><a href="#">{{i.B_name}}</a></li>
                                                 {% endfor %}
-                                               
                                             </ul>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="card">
-                                <div class="card-heading">
-                                    <a data-toggle="collapse" data-target="#collapseThree">Filter Price</a>
-                                </div>
-                                <div id="collapseThree" class="collapse show" data-parent="#accordionExample">
-                                    <div class="card-body">
-                                        <div class="shop__sidebar__price">
-                                            <ul>
-                                                <li><a href="#">$0.00 - $50.00</a></li>
-                                                <li><a href="#">$50.00 - $100.00</a></li>
-                                                <li><a href="#">$100.00 - $150.00</a></li>
-                                                <li><a href="#">$150.00 - $200.00</a></li>
-                                                <li><a href="#">$200.00 - $250.00</a></li>
-                                                <li><a href="#">250.00+</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-
-
+                            <!-- Add more filters if needed -->
                         </div>
                     </div>
                 </div>
@@ -115,7 +93,7 @@
                 </div>
                 <div class="row" id="products">
                     {% for i in products %}
-                    {%if i.product.catagory.is_listed and i.product.brand.is_listed %}
+                    {%if i.product.catagory.is_listed and i.product.brand.is_listed and i.product.is_listed %}
                     
                     <div class="col-lg-4 col-md-6 col-sm-6">
                         <div class="product__item">
@@ -210,21 +188,7 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <!-- <div class="col-lg-12 text-center">
-                <!-- <div class="footer__copyright__text">
-                    <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-                    <p>Copyright ©
-                        <!-- <script>
-                            document.write(new Date().getFullYear());
-                        </script>2020 -->
-                        All rights reserved | This template is made with <i class="fa fa-heart-o"
-                            aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
-                    </p>
-                    <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-                </div> -->
-            </div> -->
-        </div>
+        
     </div>
 </footer>
 <!-- Footer Section End -->
@@ -238,41 +202,47 @@
         </form>
     </div>
 </div>
-
+<!-- Include jQuery library -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
-<script>
-$(document).ready(function() {
-    console.log('Document ready');
-
-    // Attach click event to each category link
-    $('.shop__sidebar__categories ul li').click(function() {
-        console.log('Category clicked');
-        var category_id = $(this).attr('data-value'); // Get the category ID from the clicked list item
-        console.log('Category ID:', category_id);
-        
-        $.ajax({
-            url: '/shop/',
-            type: 'GET',
-            data: {
-                'category_id': category_id
-            },
-            success: function(data) {
-                console.log('AJAX success');
-                $('#products').html(data);
-            },
-            error: function(xhr, status, error) {
-                console.error('AJAX Error:', error);
-            }
+<!-- Your jQuery script -->
+{% comment %} <script>
+    $(document).ready(function() {
+        // Attach click event to each category link
+        $('#category-list li').off().click(function() {
+            // const category_id = "100"
+            const category_id = $(this).data('category-id');  // Get the category ID from the clicked list item
+            console.log('Category ID:', category_id);
+            filterProducts(category_id, null); // Pass category ID to filterProducts function
         });
+
+        // Attach click event to each brand link
+       
+
+        // Function to filter products based on category and brand
+        function filterProducts(category_id) {
+            $.ajax({
+                url: '/filterd/',
+                type: 'GET',
+                data: {
+                    'category_id': category_id,
+                    
+                },
+                success: function(data) {
+                    $('#products').html(data);
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX Error:', error);
+                }
+            });
+        }
     });
-});
-</script>
+</script> {% endcomment %}
+
+    
+    
+
+
 
 <!-- Search End -->
 

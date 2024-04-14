@@ -111,7 +111,7 @@ def user_signup(request):
 
 def user_home(request):
    
-        product=Color_products.objects.filter(is_listed=True).order_by('-id')[:5]
+        product=Color_products.objects.filter(is_listed=True).distinct('product')[:5]
         print(product)
 
         return render(request,'index.html',{'product':product})
@@ -230,19 +230,21 @@ def resend_otp(request):
 @never_cache
 @login_required(login_url='login') 
 def shop(request):
+       
         try:
-                category_id = request.GET.get('category_id')
-                print(category_id)
+               
                 
-                products=Color_products.objects.select_related('product')
-                category=Catagory.objects.filter(is_listed=True)
-                brand=Brand.objects.filter(is_listed=True)
+                products = Color_products.objects.select_related('product').distinct('product')
+                category = Catagory.objects.filter(is_listed=True)
+                brand = Brand.objects.filter(is_listed=True)
+                
+                
                 print(products)
-                return render(request,'shop.html',{'products':products,'category':category,'brand':brand})
-        except:       
-                 return render(request,'shop.html')
-        
-        
+                return render(request, 'shop.html', {'products': products, 'category': category, 'brand': brand})
+        except Exception as e:       
+                return render(request, 'shop.html', {'error': str(e)})
+
+                
 @never_cache
 @login_required(login_url='login') 
 def shopdetails(request,p_id,id):
@@ -253,12 +255,26 @@ def shopdetails(request,p_id,id):
         
         return render(request,'shop-details.html',{'data':data,'item':item})
         
-def category_filter(request):
-        category_id = request.GET.get('category_id')
-        print(category_id)
-        category=Catagory.objects.filter(is_listed=True)
-        brand=Brand.objects.filter(is_listed=True)
-        data=Product.objects.filter(catagory=category_id)
-        print('hii')
+def filterd(request,id):
+        try:
+               
+                
 
-        return render(request,'shop.html',{'products':data,'category':category,'brand':brand})
+                
+                # brand_id = request.GET.get('brand_id')
+                
+                products = Color_products.objects.select_related('product').filter(product__catagory=id)
+                category = Catagory.objects.filter(is_listed=True)
+                brand = Brand.objects.filter(is_listed=True)
+                print(products,'hi')
+                context={'products': products, 'category': category, 'brand': brand}
+            
+                # if brand_id:
+                #         products = products.filter(product__brand_id=brand_id)
+
+                        
+                return render(request, 'shop.html',context)
+                
+        except Exception as e:       
+                return render(request, 'shop.html', {'error': str(e)})
+       

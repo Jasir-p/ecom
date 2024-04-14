@@ -107,10 +107,10 @@
             </div>
             <div class="row product__filter">
                 {% for i in product %}
-                {%if i.product.catagory.is_listed and i.product.brand.is_listed %}
+                {%if i.product.catagory.is_listed and i.product.brand.is_listed and i.product.is_listed %}
                 <div class="col-lg-3 col-md-6 col-sm-6 col-md-6 col-sm-6 mix new-arrivals">
                     <div class="product__item">
-                        <div class="product__item__pic set-bg" data-setbg="">
+                        <div class="product__item__pic set-bg" data-setbg="{{i.product.thumbnail.url}}">
                             <a href="{% url 'shopdetails' i.id i.product.id %}"><img src="{{i.product.thumbnail.url}}"  alt=""></a>
                             <span class="label">New</span>
                             <ul class="product__hover">

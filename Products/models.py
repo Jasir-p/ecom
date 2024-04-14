@@ -11,8 +11,8 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     thumbnail=models.ImageField(upload_to='products/',null=True)
     description = models.TextField()
-    catagory=models.ForeignKey(Catagory,on_delete=models.CASCADE,)
-    brand=models.ForeignKey(Brand,on_delete=models.CASCADE,)
+    catagory=models.ForeignKey(Catagory,on_delete=models.CASCADE)
+    brand=models.ForeignKey(Brand,on_delete=models.CASCADE)
 
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -37,7 +37,7 @@ class Color_products(models.Model):
     def __str__(self):
         return f"{self.color_name} ({self.product.name})"
 
-        def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs):
             super().save(*args, **kwargs)
         
        

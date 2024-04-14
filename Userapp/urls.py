@@ -16,6 +16,7 @@ urlpatterns = [
         path('UserLogout/',views.logout,name='userlogout'),
         path('Shop/',views.shop,name='shop'),
         path('ShopDetails/<int:p_id>/<int:id>',views.shopdetails,name='shopdetails'),
-        path('categoryfilter/',views.category_filter,name='category_filter')
+        path('filterd/<int:id>',views.filterd,name='filterd'),
+    
         
     ]

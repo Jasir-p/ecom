@@ -25,7 +25,11 @@ from PIL import Image
 @never_cache
 def login(request):
         if request.user.is_authenticated and request.user.is_superuser:
+                
+                
                 return redirect('dashbord')
+        
+
         if request.method == 'POST':
          
       
@@ -54,56 +58,202 @@ def login(request):
 @never_cache
 @login_required(login_url='AdminLogin/')
 def dashbord(request):
+
         if request.user.is_superuser:
+
+
                 return render(request,'dashbord.html')
+        
         return redirect('adminlogin')
         
-       
+#_____________USERMANAGEMENT      
 
 @never_cache
 @login_required(login_url='adminlogin')
 def view_user(request):
+        
         if request.user.is_superuser:
+
+
                 user=CustomUser.objects.all()
                 
                 return render(request,'userdetails.html',{'data':user})
+        
         return redirect('adminlogin')
 
+
+def block_user(request,u_id):
+        
+        try:
+
+                data=CustomUser.objects.get(pk=u_id)
+                data.is_active=False
+                data.save()
+                return redirect('userdetail')
+        
+        except:
+
+                return redirect('userdetail')
+        
+
+def unblock_user(request,u_id):
+       
+                data=CustomUser.objects.get(pk=u_id)
+                data.is_active=True
+                data.save()
+                return redirect('userdetail')
+
+#______CATEGORYMANAGEMENT______
 @never_cache
 @login_required(login_url='adminlogin')
 def category(request):
+
         if request.user.is_superuser: 
 
+
                 if request.method=='POST':
+
+
                         try:
+
                                 ca_name = request.POST.get('cat_name').strip()  
                                 ca_description = request.POST.get('cat_description').strip()   
                                 cover_photo = request.FILES.get('cover_image', None)  
 
                                 if Catagory.objects.filter(cat_name__icontains=ca_name).exists():
+
+
                                         messages.error(request,'category already here')
                                         return redirect('category')
                                 
 
                                 elif not ca_name or not ca_name[0].isalpha():
+
+
                                         messages.error(request,'Field must start with a character')
                                         return redirect('category')
                                 elif not is_valid_image(cover_photo):
+
                                         messages.error(request, 'Image  is an invalid image file')
                                         return redirect('category')
+                                
                                 item=Catagory(cat_name=ca_name,cat_description=ca_description,cover_image=cover_photo)
                                 
                                 item.save() 
+
                                 return redirect('view_category')
                                 
                                         
                         except Exception as e:
+                                        
                                         messages.error(request,str(e))
                                         return redirect('category') 
                                                 
                 return render(request,'category.html')
+        
         return redirect('adminlogin')
+
+@never_cache
+@login_required(login_url='adminlogin')   
+def view_category(request):
+        if request.user.is_superuser:
+                try:
+                        data=Catagory.objects.filter(is_listed=True)
+                        
+                
+                        return render(request,'view_category.html',{'data':data})
+                except :
+                        return render(request,'view_category.html')
+
+        return redirect('adminlogin')
+
+
+@never_cache
+@login_required(login_url='adminlogin')  
+def edit_category(request,ca_id):
+        try:
        
+                
+                data = Catagory.objects.get(id=ca_id)
+
+                if request.method == 'POST':
+
+                        ca_name = request.POST.get('cat_name').strip()  
+                        ca_description = request.POST.get('cat_description').strip()   
+                        cover_photo = request.FILES.get('cover_image') 
+                        
+                        
+                        if not ca_name or not ca_name[0].isalpha():
+
+                                messages.error(request, 'Field must start with a character')
+                                return render(request, 'edit_category.html', {'data': data})
+                        
+                        if cover_photo:
+                                
+                                if not is_valid_image(cover_photo):
+
+                                        messages.error(request, 'Image 1 is an invalid image file')
+                                        return render(request, 'edit_category.html', {'data': data})
+                                else:
+
+                                        data.cover_image = cover_photo
+
+                        if Catagory.objects.filter(cat_name__icontains=ca_name).exclude(id=ca_id).exists():
+
+                                messages.error(request, 'Entered name already exists')
+                                return render(request, 'edit_category.html', {'data': data})
+
+                        data.cat_name = ca_name
+                        data.cat_description = ca_description
+                        data.save()
+
+                        return redirect('view_category')  
+
+                return render(request, 'edit_category.html', {'data': data})
+        except:
+                return redirect('view_category')
+
+def category_unlist(request,ca_id):
+
+        try:
+
+                item=Catagory.objects.get(id=ca_id)
+                item.is_listed=False
+                item.save()
+                return redirect('view_category')
+
+        except:
+               return redirect('view_category')
+
+@never_cache
+@login_required(login_url='adminlogin')  
+def unlist_categories(request):
+
+        if request.user.is_superuser:
+
+                try:
+                        data=Catagory.objects.filter(is_listed=False)
+                        return render(request,'viewunlist_category.html',{'data':data})
+                
+                except:
+
+                        return render(request,'viewunlist_category.html')
+        return redirect('adminlogin')
+
+
+def list_category(request,ca_id):
+        
+        try:
+                item=Catagory.objects.get(id=ca_id)
+                item.is_listed=True
+                item.save()
+                return redirect('view_category')
+
+        except:
+                return redirect('unlistcategory')
+
+
+
 @never_cache
 @login_required(login_url='adminlogin')             
 def brand(request):
@@ -115,11 +265,18 @@ def brand(request):
                                 b_description = request.POST.get('description').strip() 
                                 
                                 if Brand.objects.filter(B_name__icontains=b_name).exists():
+                                        messages.error(request,'brand already here')
+
                                         return render('brand')
-                                if not ca_name or not ca_name[0].isalpha():
+                                
+                                if not b_name or not b_name[0].isalpha():
+
                                         messages.error(request, 'Field must start with a character')
+
                                         return render('brand')
+                                
                                 if not is_valid_image(cover_image):
+
                                         messages.error(request, 'Image  is an invalid image file')
                                         return render('brand')
                                 brand = Brand(
@@ -136,20 +293,7 @@ def brand(request):
                         return render(request,'brand.html')
         return redirect('adminlogin')
     
-@never_cache
-@login_required(login_url='adminlogin')   
-def view_category(request):
-        if request.user.is_superuser:
-                try:
-                        data=Catagory.objects.filter(is_listed=True)
-                        
-                
-                        return render(request,'view_category.html',{'data':data})
-                except :
-                        return render(request,'view_category.html')
 
-        return redirect('adminlogin')
-        
        
         
        
@@ -183,91 +327,17 @@ def brand_delete(request,b_id):
                         return render('viewbrand')
         return redirect('adminlogin')
 
-def category_unlist(request,ca_id):
-        try:
-                item=Catagory.objects.get(id=ca_id)
-                item.is_listed=False
-                item.save()
-                return redirect('view_category')
-
-        except:
-               return redirect('view_category')
 
 
-@never_cache
-@login_required(login_url='adminlogin')  
-def unlist_categories(request):
-        if request.user.is_superuser:
-                try:
-                        data=Catagory.objects.filter(is_listed=False)
-                        return render(request,'viewunlist_category.html',{'data':data})
-                
-                except:
-                        return render(request,'viewunlist_category.html')
-        return redirect('adminlogin')
 
-@never_cache
-@login_required(login_url='adminlogin')  
-def edit_category(request,ca_id):
-       
-                
-        data = Catagory.objects.get(id=ca_id)
-        if request.method == 'POST':
-                ca_name = request.POST.get('cat_name').strip()  
-                ca_description = request.POST.get('cat_description').strip()   
-                cover_photo = request.FILES.get('cover_image')  
-                
-                if not ca_name or not ca_name[0].isalpha():
-                        messages.error(request, 'Field must start with a character')
-                        return render(request, 'edit_category.html', {'data': data})
-                
-                if cover_photo:
-                        if not is_valid_image(cover_photo):
-                                messages.error(request, 'Image 1 is an invalid image file')
-                                return render(request, 'edit_category.html', {'data': data})
-                        else:
-                                data.cover_image = cover_photo
 
-                if Catagory.objects.filter(cat_name__icontains=ca_name).exclude(id=ca_id).exists():
-                        messages.error(request, 'Entered name already exists')
-                        return render(request, 'edit_category.html', {'data': data})
 
-                data.cat_name = ca_name
-                data.cat_description = ca_description
-                data.save()
 
-                return redirect('view_category')  
-
-        return render(request, 'edit_category.html', {'data': data})
 
         
-def list_category(request,ca_id):
-        
-        try:
-                item=Catagory.objects.get(id=ca_id)
-                item.is_listed=True
-                item.save()
-                return redirect('view_category')
-
-        except:
-                return redirect('unlistcategory')
 
 
-def block_user(request,u_id):
-        try:
 
-                data=CustomUser.objects.get(pk=u_id)
-                data.is_active=False
-                data.save()
-                return redirect('userdetail')
-        except:
-                return redirect('userdetail')
-def unblock_user(request,u_id):
-       
-                data=CustomUser.objects.get(pk=u_id)
-                data.is_active=True
-                data.save()
-                return redirect('userdetail')
        
 def unlist_brand(request,b_id):
         try:
@@ -306,3 +376,5 @@ def is_valid_image(file):
     except Exception as e:
         
         return False
+    
+
