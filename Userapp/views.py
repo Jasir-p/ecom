@@ -75,7 +75,7 @@ def user_signup(request):
             elif not validate_mobile_number(number):
                 messages.error(request, 'The Mobail number is not valid')
                 return redirect('SignUp')
-            elif len(password) < 8:
+            elif len(password) < 6:
                 messages.error(request, 'The password should be at least 6 characters')
                 return redirect('SignUp')
            
@@ -108,7 +108,6 @@ def user_signup(request):
 
 
 @never_cache
-
 def user_home(request):
    
         product=Color_products.objects.filter(is_listed=True).distinct('product')[:5]
@@ -212,7 +211,7 @@ def resend_otp(request):
         
         otp = random.randint(1000, 9999)
         otp_generated_at = datetime.now().isoformat()
-        print(otp_generated_at)
+        
 
         request.session['otp'] = otp
         request.session['time'] =otp_generated_at 
@@ -233,13 +232,9 @@ def shop(request):
        
         try:
                
-                
                 products = Color_products.objects.select_related('product').distinct('product')
                 category = Catagory.objects.filter(is_listed=True)
                 brand = Brand.objects.filter(is_listed=True)
-                
-                
-                print(products)
                 return render(request, 'shop.html', {'products': products, 'category': category, 'brand': brand})
         except Exception as e:       
                 return render(request, 'shop.html', {'error': str(e)})
@@ -248,33 +243,25 @@ def shop(request):
 @never_cache
 @login_required(login_url='login') 
 def shopdetails(request,p_id,id):
+
         data=Color_products.objects.get(id=p_id)
         item=Color_products.objects.filter(product=id)
-        
-
-        
         return render(request,'shop-details.html',{'data':data,'item':item})
         
 def filterd(request,id):
         try:
                
-                
-
-                
-                # brand_id = request.GET.get('brand_id')
-                
-                products = Color_products.objects.select_related('product').filter(product__catagory=id)
+                products = Color_products.objects.select_related('product').filter(product__catagory=id).distinct('product')
                 category = Catagory.objects.filter(is_listed=True)
                 brand = Brand.objects.filter(is_listed=True)
-                print(products,'hi')
+                
                 context={'products': products, 'category': category, 'brand': brand}
             
-                # if brand_id:
-                #         products = products.filter(product__brand_id=brand_id)
+              
 
                         
                 return render(request, 'shop.html',context)
                 
         except Exception as e:       
-                return render(request, 'shop.html', {'error': str(e)})
+                return render(request, 'shop.html',)
        

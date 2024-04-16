@@ -1,0 +1,50 @@
+{% extends 'nav.html' %}
+{% block body %}
+
+<table border="1" class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Thumbnail</th>
+            <th>Category</th>
+            <th>Brand</th>
+            <th>Price</th>
+          
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for product in products %}
+        
+            <tr>
+                
+                    <td rowspan="">{{ product.name }}</td>
+                    
+                    <td rowspan=""><img src="{{ product.thumbnail.url }}" alt="Thumbnail" width="80px"></td>
+                   
+                    <td rowspan="">{{ product.catagory }}</td>
+                    <td rowspan="">{{ product.brand }}</td>
+                    <td rowspan="">{{ product.price }}</td>
+                    <td rowspan="">{{ product.brand }}</td>
+                    
+                
+                
+               
+                        <td rowspan="">
+                            <a href="{% url 'List_product' product.id %}"><button class="btn btn-success">List</button></a>
+                        </td>
+                
+            </tr>
+     
+        
+            
+        </a> 
+    {% endfor %}
+</tbody>
+</table> 
+
+<!-- Edit Product Modal -->
+
+
+{% endblock %}
+

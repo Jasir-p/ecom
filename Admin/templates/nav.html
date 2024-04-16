@@ -32,6 +32,42 @@
     <!-- Template Stylesheet -->
     <link href="{% static 'admin/dashbord/css/style.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'admin/category/css/style.css' %}" rel="stylesheet" type="text/css">
+    <style>
+        /* Modal Container */
+        .modal {
+            display: none; /* Hide the modal by default */
+            position: fixed; /* Position the modal relative to the viewport */
+            z-index: 1000; /* Ensure the modal appears above other content */
+            left: 50%; /* Center the modal horizontally */
+            top: 50%; /* Center the modal vertically */
+            transform: translate(-50%, -50%); /* Center the modal precisely */
+            background-color: white; /* Set the background color */
+            padding: 20px; /* Add padding */
+            border-radius: 5px; /* Add rounded corners */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Add a shadow */
+            max-width: 30%; /* Limit the maximum width of the modal */
+        }
+    
+        /* Modal Content */
+        .modal-content {
+            width: 100%; /* Allow the content to fill the modal width */
+            max-width: 600px; /* Limit the maximum width of the content */
+            margin: 0 auto; /* Center the content horizontally */
+        }
+    
+        /* Adjust z-index of navigation bar if necessary */
+        .navbar {
+            z-index: 999; /* Ensure navigation bar appears below modal */
+        }
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+        }
+    </style>
+    
+    
 </head>
 <body>
     <div class="container-xxl position-relative bg-white d-flex p-0">

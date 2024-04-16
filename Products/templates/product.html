@@ -1,54 +1,91 @@
 {% extends 'nav.html' %}
 {% block body %}
-<body></body>
+<div class="col text-end">
+    <h5 > <a href="{% url 'unlist_products' %}" >Unlist products</a></h5>
+</div>
 
 <table border="1" class="table">
-    
-        <thead>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Thumbnail</th>
+            <th>Category</th>
+            <th>Brand</th>
+            <th>Price</th>
+            <th>Color</th>
+            <th>Size</th>
+            <th>Quantity</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for product in products %}
+        {% for color_product in product.color_product.all %}
             <tr>
-                <th>Name</th>
-                <th>Thumbnail</th>
-                <th>Category</th>
-                <th>Brand</th>
-                <th>Price</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for product in products %}
-                <tr>
-                    <td>{{ product.name }}</td>
-                    <td><img src="{{ product.thumbnail.url }}" alt="Thumbnail" width="80px"></td>
-                    <td>{{ product.catagory }}</td>
-                    <td>{{ product.brand }}</td>
-                    <td>{{ product.price }}</td>
-                    <td><a href="{%url 'unlist_product' product.id %}"><button class=" btn btn-danger">Unlist</button></a>
-                        <a href=""><button class=" btn btn-primary">Edit</button></a></td>
+                {% if forloop.first %}
+                    <td rowspan="{{ product.color_product.count }}">{{ product.name }}</td>
+                    
+                    <td rowspan="{{ product.color_product.count }}"><img src="{{ product.thumbnail.url }}" alt="Thumbnail" width="80px"></td>
                    
-                    <td><a href=""><button class=" btn btn-danger">More</button></a></td>
-                </tr>
+                    <td rowspan="{{ product.color_product.count }}">{{ product.catagory }}</td>
+                    <td rowspan="{{ product.color_product.count }}">{{ product.brand }}</td>
+                    <td rowspan="{{ product.color_product.count }}">{{ product.price }}</td>
+                    
+                    
+                {% endif %}
                 
-            {% endfor %}
-        </tbody>
-    </table>
-    
-    
-    
+                <td>
+                    {{ color_product.color_name }}</td>
+                <td>
+                    <select name="size" class="size-select">
+                        {% for size in color_product.size.all %}
+                            <option value="{{ size.size }}" data-quantity="{{ size.quantity }}">{{ size.size }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td id="quantityDisplay" class="mt-2">{{ color_product.size.first.quantity }}</td>
+                
+                        <td rowspan="">
+                            <a href="{% url 'editproduct' color_product.id %}"><button class="btn btn-primary edit-product">Edit</button></a>
+                            
+                        </td>
+                        {% if forloop.first %}
+                        <td rowspan="">
+                            <a href="{% url 'unlist_product' product.id %}"><button class="btn btn-danger">Unlist</button></a>
+                        </td>
+                        {% endif %}
+                
+            </tr>
+        {% endfor %}
+        
+            
+        </a> 
+    {% endfor %}
+</tbody>
+</table> 
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    var sizeSelects = document.querySelectorAll('.size-select');
+<!-- Edit Product Modal -->
 
-    sizeSelects.forEach(function(select) {
-        select.addEventListener('change', function() {
-            var selectedOption = this.options[this.selectedIndex];
-            var quantityCell = this.closest('tr').querySelector('.quantity');
-            var quantity = selectedOption.dataset.quantity;
-            quantityCell.textContent = quantity;
-        });
-    });
-});
-</script>
 
 {% endblock %}
- 
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const sizeSelect = document.getElementById('sizeSelect');
+        const quantityDisplay = document.getElementById('quantityDisplay');
+
+        sizeSelect.addEventListener('change', function() {
+            const selectedSize = this.value;
+            const sizeOptions = this.options;
+            const selectedIndex = this.selectedIndex;
+
+            if (selectedIndex === 0) {
+                quantityDisplay.textContent = ''; // Clear quantity display if no size is selected
+            } else {
+                const selectedOption = sizeOptions[selectedIndex];
+                const quantity = selectedOption.getAttribute('data-quantity');
+                quantityDisplay.textContent = `Quantity: ${quantity}`;
+            }
+        });
+    });
+</script>

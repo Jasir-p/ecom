@@ -3,7 +3,7 @@
 <div class="container-fluid pt-4 px-4">
     <div class="bg-light rounded p-4">
         <div class="col text-end">
-            <h5 > <a href="{% url 'viewunlistbrand'%}" >Unlist Category</a></h5>
+            <h5 > <a href="{% url 'viewunlistbrand'%}" >Unlist Brand</a></h5>
         </div>
         
         <table class="table">
@@ -27,7 +27,7 @@
                         <a href="{% url 'unlistbrand' item.id  %}" class="btn btn-danger">Unlist
                             
                         </a>
-                        <a href="{% url 'EditCatogory' item.id %}" class="btn btn-primary">
+                        <a href="{% url 'edit_brand' item.id %}" class="btn btn-primary">
                             Edit
                             
                         </a> 

@@ -18,7 +18,8 @@ urlpatterns = [
     path('UnblockUser/<int:u_id>',views.unblock_user,name='unblockuser'),
     path('UnlistBrand/<int:b_id>',views.unlist_brand,name='unlistbrand'),
     path('ViewunlistBrand/',views.viewunlist_brands,name='viewunlistbrand'),
-    path('ListBrand/<int:b_id>',views.list_brand,name='listbrand')
+    path('ListBrand/<int:b_id>',views.list_brand,name='listbrand'),
+    path('EditBrand/<int:id>',views.edit_brand,name='edit_brand')
        
     ]
 

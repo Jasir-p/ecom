@@ -22,6 +22,13 @@ class Product(models.Model):
     
     def __str__(self):
         return self.name
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if self.thumbnail:
+            img = Image.open(self.thumbnail.path)
+            target_size = (260, 260)
+            img = img.resize(target_size, Image.BICUBIC)
+            img.save(self.thumbnail.path)
     
 
 class Color_products(models.Model):
@@ -37,30 +44,30 @@ class Color_products(models.Model):
     def __str__(self):
         return f"{self.color_name} ({self.product.name})"
 
-    def save(self, *args, **kwargs):
-            super().save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #         super().save(*args, **kwargs)
         
        
-            target_size = (50, 50)
+    #         target_size = (300, 300)
             
             
-            if self.img1:
-                img = Image.open(self.img1.path)
-                img = img.resize(target_size, Image.BICUBIC)
-                img.save(self.img1.path)
-                print('hi')
+    #         if self.img1:
+    #             img = Image.open(self.img1.path)
+    #             img = img.resize(target_size, Image.BICUBIC)
+    #             img.save(self.img1.path)
+                
 
             
-            if self.img2:
-                img = Image.open(self.img2.path)
-                img = img.resize(target_size, Image.BICUBIC)
-                img.save(self.img2.path)
+    #         if self.img2:
+    #             img = Image.open(self.img2.path)
+    #             img = img.resize(target_size, Image.BICUBIC)
+    #             img.save(self.img2.path)
 
         
-            if self.img3:
-                img = Image.open(self.img3.path)
-                img = img.resize(target_size, Image.BICUBIC)
-                img.save(self.img3.path)
+    #         if self.img3:
+    #             img = Image.open(self.img3.path)
+    #             img = img.resize(target_size, Image.BICUBIC)
+    #             img.save(self.img3.path)
 
 
 

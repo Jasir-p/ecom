@@ -43,6 +43,9 @@ def add_products(request):
             if not name or not name[0].isalpha():
                 messages.error(request, 'Field must start with a character')
                 return redirect('addproducts')
+            if len(name) < 2:
+                messages.error(request, 'Field must atleast two character')
+                return redirect('addproducts')
 
             elif int(price)<0:
                 messages.error(request,'price must be postive number')
@@ -62,6 +65,8 @@ def add_products(request):
                 
             )
             product.save()
+            messages.success(request, 'Product added successfully')
+            return redirect('addproducts')
 
         return render (request,'add_products.html',{'categories': categories, 'brands': brands})
     
@@ -73,25 +78,37 @@ def add_colour(request):
    
     
         products = Product.objects.filter(is_listed=True)
-        print(products)
+        
         if request.method == 'POST':
+
             name = request.POST.get('color_name').strip() 
             
             img1 = request.FILES.get('img1')
             img2 = request.FILES.get('img2')
             img3 = request.FILES.get('img3')
-            product_id = request.POST.get('product')  # Renamed variable to avoid conflict
+            product_id = request.POST.get('product')  
+
             if Color_products.objects.filter(product_id=product_id, color_name__icontains=name).exists():
+                    
                     messages.error(request, 'Color already exists for this product')
+                    return render('addcolour')
+
             elif not name:
-                messages.error(request, 'Please provide color name')  # Pass request to messages.error
+
+                messages.error(request, 'Please provide color name')
+                return render('addcolour') 
           
             elif not is_valid_image(img1):
                 messages.error(request, 'Image 1 is an invalid image file')
+                return render('addcolour')
             elif not is_valid_image(img2):
                 messages.error(request, 'Image 2 is an invalid image file')
+                return render('addcolour') 
+
             elif not is_valid_image(img3):
                 messages.error(request, 'Image 3 is an invalid image file')
+                return render('addcolour') 
+
             else:
                 
               
@@ -101,7 +118,9 @@ def add_colour(request):
                     messages.success(request, 'Color added successfully')
         
         return render(request, 'add_colour.html', {'products': products})
+    
     except Exception as e:
+
         messages.error(request,str(e))
    
 
@@ -114,19 +133,28 @@ def add_size(request):
             color_id = request.POST.get('color_product')
             size = request.POST.get('size').strip() 
             quantity = int(request.POST.get('quantity'))
+            if size not in ['S', 'M', 'L', 'XL', 'XXL']:
+                 
+                messages.error(request,"Invalid size. Please choose from S, M, L, XL, XXL.")
+                return redirect('addsize')
+            
 
             if quantity <= 0:
-                    raise ValidationError('Quantity must be a positive number')
+                    messages.error(request,'Quantity must be a positive number')
+                    return redirect('addsize')
 
               
             color_product = Color_products.objects.get(id=color_id)
-            print(color_product)
+            
             if color_product.size.filter(size__icontains=size).exists():
-                    raise ValidationError('Size already exists for this color')
+                    messages.error(request,'Size already exists for this color')
+                    return redirect('addsize')
 
                 
             size_instance = size_variant(size=size, quantity=quantity, Color_products=color_product)
             size_instance.save()
+            
+            messages.success(request,'Size added')
 
         return render(request,'add_size.html',{'color_products':color_products})
     except Exception as e:
@@ -149,15 +177,21 @@ def is_valid_image(file):
 @never_cache
 @login_required(login_url='adminlogin') 
 def view_product(request):
+    
     try:
         products=Product.objects.filter(is_listed=True).prefetch_related('color_product__size')
-        print(products)
-        return render(request,'product.html',{'products':products})
+        
+        context={
+             
+              'products':products
+
+             
+        }
+        return render(request,'product.html',context)
     except:
         return render(request,'product.html')
         
-# def edit_product(request,p_id):
-#     try
+
 def unlist_product(request,id):
     try:
             products=Product.objects.get(id=id)
@@ -169,6 +203,48 @@ def unlist_product(request,id):
          
            return redirect('viewproducts')
 
+def edit_product(request,id):
+    try:
          
+        product = Color_products.objects.prefetch_related('size').get(id=id)
+        categories = Catagory.objects.all()
+        brands = Brand.objects.all()
+        context={
+                'categories':categories,
+                'brands':brands,
+                'product':product
+
+                
+            }
+        
+        
+        return render(request,"edit_product.html",context)
+    except:
+         return render(request,"edit_product.html")
+         
+def view_unlist(request):
+    try:
+        products=Product.objects.filter(is_listed=False)
+        
+        context={
+             
+              'products':products
+
+             
+        }
+        return render(request,'unlist_product.html',context)
+    except:
+        return render(request,'unlist_product.html')
+        
+def list_product(request,id):
+    try:
+            products=Product.objects.get(id=id)
+            products.is_listed=True
+            products.save()
+            return redirect('viewproducts')
+         
+    except:
+         
+           return redirect('viewproducts')               
         
      
