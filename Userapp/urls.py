@@ -17,6 +17,11 @@ urlpatterns = [
         path('Shop/',views.shop,name='shop'),
         path('ShopDetails/<int:p_id>/<int:id>',views.shopdetails,name='shopdetails'),
         path('filterd/<int:id>',views.filterd,name='filterd'),
+        path('AddAddress/',views.add_address,name="add_address"),
+        path('ViewAddress/',views.view_address,name='view_address'),
+        path('DeleteAddress/<int:address_id>',views.delete_address,name="delete_address"),
+        path('Wishlist/',views.wish_list,name='wishlist'),
+        path('addwishlist/<int:product_id>',views.add_to_wishlist,name='addwishlist'),
     
         
     ]

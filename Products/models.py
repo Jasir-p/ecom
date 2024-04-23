@@ -3,6 +3,7 @@ from Admin.models import *
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from PIL import Image
+from Userapp.models import *
 
 # Create your models here.
 
@@ -74,7 +75,10 @@ class Color_products(models.Model):
 class size_variant(models.Model):
     size = models.CharField(max_length=10)
     quantity = models.IntegerField()
-    
     Color_products=models.ForeignKey(Color_products,related_name = 'size',on_delete=models.CASCADE)   
     def __str__(self):
         return f"{self.size} ({self.Color_products.color_name})"
+    
+class Wishlist(models.Model):
+    customer = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    products = models.ManyToManyField(Product, related_name='wishlists')

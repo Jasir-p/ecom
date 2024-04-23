@@ -16,6 +16,21 @@
                         </div>
                     </div>
                 </div>
+
+                <script>
+                    {% if messages %}
+                    {% for message in messages %}
+                    {% if message.tags == 'error' %}
+                    swal("Error!", "{{ message }}", "error"); // Display error message with a warning icon
+                    {% elif message.tags == 'success' %}
+                    swal("Success!", "{{ message }}", "success"); // Display success message with a success icon
+                    {% else %}
+                    swal("Message", "{{ message }}"); // Display general message
+                    {% endif %}
+                    {% endfor %}
+                    {% endif %}
+                </script>
+           
                 <div class="row">
                     <div class="col-lg-3 col-md-3">
                         <ul class="nav nav-tabs" role="tablist">
@@ -81,15 +96,16 @@
                             <p>Coat with quilted lining and an adjustable hood. Featuring long sleeves with adjustable
                                 cuff tabs, adjustable asymmetric hem with elastic side tabs and a front zip fastening
                             with placket.</p>
-                            <div class="product__details__option">
-                                
+                            <form action="{% url 'add_cart' data.id %}" method='post'>
+                                {% csrf_token %}
+                            <div class="product__details__option"> 
                                 <div class="product__details__option__size">
-                                    
                                     <span>Size:</span>
                                     {% for size in data.size.all %}
-                                    <label for="xxl">{{size.size}}
-                                        <input type="radio" id="xxl">
-                                    </label>
+                                        {% if size.quantity > 0 %}
+                                    <label for="size_{{ size.id }}" class="active">{{ size.size }}
+                                    <input type="radio" id="size_{{ size.id }}" name="size" value="{{ size.id }}"> </label>
+                                        {% endif %}
                                     {% endfor %}
                                     
                                 </div>
@@ -97,9 +113,9 @@
                                    
                                     <span>Color:</span>
                                     {% for i in item %}
-                                    <label class="c-1" for="sp-1">
-                                        <a href=""></a>
-                                    </label>
+                                    
+                                        <img src="{{ i.img1.url }}" alt="{{ i.color_name}}" class="color-thumbnail" height="50px" width="50px" class="border">
+                                    
                                   {% endfor %}
                                 </div>
                             </div>
@@ -109,7 +125,11 @@
                                         <input type="text" value="1">
                                     </div>
                                 </div>
-                                <a href="#" class="primary-btn">add to cart</a>
+                                <div id="stock-info" style="display: none;"></div>
+                                <button class="btn btn-black" style="background-color: black;
+                                color: white;" id="add-to-cart-btn" >add to cart</button>
+                               
+                                </form>
                             </div>
                             <div class="product__details__btns__option">
                                 <a href="#"><i class="fa fa-heart"></i> add to wishlist</a>
@@ -307,7 +327,7 @@
                         </div>
                         <div class="product__item__text">
                             <h6>Piqué Biker Jacket</h6>
-                            <a href="#" class="add-cart">+ Add To Cart</a>
+                            <a href="" class="add-cart">+ Add To Cart</a>
                             <div class="rating">
                                 <i class="fa fa-star-o"></i>
                                 <i class="fa fa-star-o"></i>
@@ -492,6 +512,49 @@
                 margin: 50 // Example option: Add a 50px margin around the zoomed image
             });
         });
+
+      
+        
+            $(document).ready(function () {
+                $('.size-label input[type="radio"]').change(function () {
+                    var selectedSizeId = $(this).val();
+                    var selectedSize = $('.size-label input[type="radio"]:checked').siblings('label').text();
+        
+                    // Make an AJAX request to fetch the stock data from the server
+                    $.ajax({
+                        url: '/get_stock_data/', // Update the URL to your endpoint that provides stock data
+                        method: 'GET',
+                        data: { size_id: selectedSizeId }, // Send the selected size ID to the server
+                        success: function (response) {
+                            if (response.success) {
+                                var stockInfo = response.stock_info;
+                                if (stockInfo) {
+                                    $('#stock-info').text('Stock: ' + stockInfo.quantity);
+                                    if (stockInfo.quantity > 0) {
+                                        $('#add-to-cart-btn').show();
+                                    } else {
+                                        $('#add-to-cart-btn').hide();
+                                    }
+                                } else {
+                                    $('#stock-info').text('');
+                                    $('#add-to-cart-btn').hide();
+                                }
+                                $('#stock-info').show();
+                            } else {
+                                console.error('Failed to fetch stock data.');
+                            }
+                        },
+                        error: function () {
+                            console.error('Failed to fetch stock data.');
+                        }
+                    });
+                });
+            });
+        
+        
+     
+        
+        
     </script>
     <!-- Js Plugins -->
     <script src="{% static 'user/home/js/jquery-3.3.1.min.js' %}"></script>

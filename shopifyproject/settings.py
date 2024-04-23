@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'Admin',
     'Userapp',
     'Products',
+    'cart',
 ]
     
    
@@ -70,7 +71,8 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [BASE_DIR / "Admin/templates",
-                 BASE_DIR / "Userapp/templates"],
+                 BASE_DIR / "Userapp/templates",
+                 BASE_DIR /"cart/templates",],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

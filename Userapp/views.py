@@ -3,7 +3,7 @@ from datetime import timedelta, timezone, datetime
 import re
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
-
+from django.shortcuts import render, redirect, get_object_or_404
 import random
 from django.shortcuts import render,HttpResponse
 from django.contrib import messages
@@ -19,7 +19,9 @@ from shopifyproject.settings import EMAIL_HOST_USER
 from django.core.validators import EmailValidator
 from django.utils import timezone
 from Products.models import *
+from django.http import JsonResponse
 from Admin.models import *
+from cart.models import *
 
 
 # Create your views here.
@@ -264,4 +266,93 @@ def filterd(request,id):
                 
         except Exception as e:       
                 return render(request, 'shop.html',)
+def view_address(request):
+      address=Address.objects.filter(user=request.user)
+      return render(request,'view_address.html' ,{'address': address})
+
+
+
+
+
+@login_required
+def add_address(request):
+    if request.method == 'POST':
+        user = request.user
+        name = request.POST.get('name')
+        address = request.POST.get('address')
+        house_no = request.POST.get('house_no')
+        city = request.POST.get('city')
+        state = request.POST.get('state')
+        country = request.POST.get('country')
+        pincode = request.POST.get('pincode')
+        
+        address_obj = Address.objects.create(
+            user=user,
+            name=name,
+            address=address,
+            House_no=house_no,
+            city=city,
+            state=state,
+            country=country,
+            pincode=pincode
+        )
+        address_obj.save()
+        return JsonResponse({'message': 'Address added successfully'})
+    return render(request, 'add_address.html')
+
+@login_required
+def update_address(request, address_id):
+    address = get_object_or_404(Address, id=address_id)
+    if request.method == 'POST':
+        address.name = request.POST.get('name')
+        address.address = request.POST.get('address')
+        address.House_no = request.POST.get('house_no')
+        address.city = request.POST.get('city')
+        address.state = request.POST.get('state')
+        address.country = request.POST.get('country')
+        address.pincode = request.POST.get('pincode')
+        address.save()
+        return JsonResponse({'message': 'Address updated successfully'})
+    return render(request, 'update_address.html', {'address': address})
+
+@login_required
+def delete_address(request, address_id):
+    address = get_object_or_404(Address, id=address_id)
+    address.delete()
+    return redirect('view_address')
+        
+def wish_list(request):
+
+        try:
+              wish_list=Wishlist.objects.get(customer=request.user)
+              if wish_list:
+                    wishlist=wish_list.products.all()
+                    return render(request,"wishlist.html",{'wishlist':wishlist}) 
+        except wish_list.DoesNotExist:
+        
+                return render(request,"wishlist.html") 
+
+def add_to_wishlist(request, product_id):
+     
+    
+    
+        wishlist, created = Wishlist.objects.get_or_create(customer=request.user)
+            
+        product = get_object_or_404(Product, pk=product_id)
+        
+
+        if wishlist.products.filter(pk=product_id).exists():
+            messages.info(request, 'This product is already in your wishlist.')
+        else:
+            
+            wishlist.products.add(product)
+            messages.success(request, 'Product added to wishlist successfully.')
+            
+    
+        return redirect('wishlist') 
+    
+    
+                      
+
        
+                      

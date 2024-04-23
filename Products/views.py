@@ -18,6 +18,7 @@ from django.core.files.uploadedfile import UploadedFile
 from PIL import Image
 from .models import *
 from Admin.urls import *
+from django.http import JsonResponse
 
 # Create your views here.
 
@@ -247,4 +248,15 @@ def list_product(request,id):
          
            return redirect('viewproducts')               
         
-     
+def get_stock_data(request):
+    if request.method == 'GET':
+        size_id = request.GET.get('size_id')
+        try:
+            size = size_variant.objects.get(pk=size_id)
+            
+            stock_info = {'size': size.size, 'quantity': size.quantity}
+            return JsonResponse({'success': True, 'stock_info': stock_info})
+        except size_variant.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Size not found'}, status=404)
+    else:
+        return JsonResponse({'success': False, 'error': 'Invalid request method'}, status=405)    

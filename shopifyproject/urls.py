@@ -30,6 +30,7 @@ urlpatterns = [
     path('',include('Admin.urls')),
     path('',include('Userapp.urls')),
     path('Product/',include('Products.urls')),
+    path('',include('cart.urls')),
 ]
 urlpatterns+=static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
