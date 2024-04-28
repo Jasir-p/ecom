@@ -81,4 +81,4 @@ class size_variant(models.Model):
     
 class Wishlist(models.Model):
     customer = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-    products = models.ManyToManyField(Product, related_name='wishlists')
+    products = models.ManyToManyField(Color_products, related_name='wishlists')

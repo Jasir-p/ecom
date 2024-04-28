@@ -61,6 +61,7 @@
                                     </div>
                                     <div class="product__cart__item__text">
                                         <h6>{{i.product.product.name}}</h6>
+                                        <h6>{{i.product.color_name}}({{i.product_size_color.size}})</h6>
                                         <h5>{{i.product.product.price}}</h5>
                                     </div>
                                 </td>
@@ -68,7 +69,7 @@
                                     <div class="quantity">
                                         <div class="pro-qty-2">
                                             <button class="qty-btn qty-minus">-</button>
-                                            <input type="text" class="quantity-input" id="quantity-{{ i.id }}" value="{{ i.quantity }}">
+                                            <input type="text" class="quantity-input" id="quantity-{{ i.id }}" value="{{ i.quantity }}" readonly>
                                             <button class="qty-btn qty-plus">+</button>
                                         </div>
                                     </div>
@@ -107,7 +108,7 @@
                         <li id="subtotal">Subtotal <span id="subtotal-amount"></span></li>
                         <li>Total <span id="total-amount"></span></li>
                     </ul>
-                    <a href="#" class="primary-btn">Proceed to checkout</a>
+                    <a href="{% url 'checkout' %}" class="primary-btn">Proceed to checkout</a>
                 </div>
             </div>
         </div>
@@ -214,8 +215,13 @@
                         $('#total-price-' + product_id).text(response.total_price);
                         // Update cart total after successful cart update
                         updateCartTotal();
-                    } else {
-                        console.log('Failed to update cart');
+                    }  else {
+		
+						Swal.fire({
+							icon: 'warning',
+							title: 'Oops...',
+							text: "Maximum quantity reached.",
+						});
                     }
                 },
                 error: function(xhr, status, error) {
@@ -269,7 +275,7 @@
         });
     
         // Call updateCartTotal function initially
-        updateCartTotal();
+        updateCartTotal(); 
     });
     
 </script>

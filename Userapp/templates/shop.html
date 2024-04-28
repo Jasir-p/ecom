@@ -34,38 +34,47 @@
                     </div>
                     <div class="shop__sidebar__accordion">
                         <div class="accordion" id="accordionExample">
-                            <div class="card">
-                                <div class="card-heading">
-                                    <a data-toggle="collapse" data-target="#collapseOne">Categories</a>
-                                </div>
-                                <div id="collapseOne" class="collapse show" data-parent="#accordionExample">
-                                    <div class="card-body">
-                                        <div class="shop__sidebar__categories">
-                                            <ul class="nice-scroll" id="category-list">
-                                                {% for i in category %}
-                                                <li value="{{i.id}}" data-category-id="{{i.id}}"><a href="{% url 'filterd' i.id %}">{{i.cat_name}}</a></li>
+                            <form id="filter-form" action="{% url 'filterd' %}" method="get">
+                                <!-- Categories -->
+                                <div class="card">
+                                    <div class="card-heading">
+                                        <a data-toggle="collapse" data-target="#collapseOne">Categories</a>
+                                    </div>
+                                    <div id="collapseOne" class="collapse show" data-parent="#accordionExample">
+                                        <div class="card-body">
+                                            <div class="shop__sidebar__categories">
+                                                {% for category in category %}
+                                                <input type="checkbox" name="category" value="{{ category.id }}" id="category-{{ category.id }}"
+                                                    {% if category.id in selected_categories %} checked {% endif %}>
+                                                <label for="category-{{ category.id }}">{{ category.cat_name }}</label><br>
                                                 {% endfor %}
-                                            </ul>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="card">
-                                <div class="card-heading">
-                                    <a data-toggle="collapse" data-target="#collapseTwo">Branding</a>
-                                </div>
-                                <div id="collapseTwo" class="collapse show" data-parent="#accordionExample">
-                                    <div class="card-body">
-                                        <div class="shop__sidebar__brand">
-                                            <ul id="brand-list">
-                                                {% for i in brand %}
-                                                <li value="{{i.id}}" id="brand-{{i.id}}"><a href="#">{{i.B_name}}</a></li>
+                            
+                                <!-- Brands -->
+                                <div class="card">
+                                    <div class="card-heading">
+                                        <a data-toggle="collapse" data-target="#collapseTwo">Brands</a>
+                                    </div>
+                                    <div id="collapseTwo" class="collapse show" data-parent="#accordionExample">
+                                        <div class="card-body">
+                                            <div class="shop__sidebar__brand">
+                                                {% for brand in brand %}
+                                                <input type="checkbox" name="brand" value="{{ brand.id }}" id="brand-{{ brand.id }}"
+                                                    {% if brand.id in selected_brands %} checked {% endif %}>
+                                                <label for="brand-{{ brand.id }}">{{ brand.B_name }}</label><br>
                                                 {% endfor %}
-                                            </ul>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            
+                                <!-- Submit button -->
+                                <button type="submit">Apply Filters</button>
+                            </form>
+                            
                             <!-- Add more filters if needed -->
                         </div>
                     </div>
@@ -82,13 +91,13 @@
                         <div class="col-lg-6 col-md-6 col-sm-6">
                             <div class="shop__product__option__right">
                                 <p>Sort by Price:</p>
-                                <select>
-                                    <option value="">Low To High</option>
-                                    <option value="">$0 - $55</option>
-                                    <option value="">$55 - $100</option>
+                                <select id="sort-by-price">
+                                    <option value="low_to_high">Low To High</option>
+                                    <option value="high_to_low">High To Low</option>
                                 </select>
                             </div>
                         </div>
+                        
                     </div>
                 </div>
                 <div class="row" id="products">
@@ -99,9 +108,9 @@
                         <div class="product__item">
                             <div class="product__item__pic set-bg " data-setbg>
                                 
-                                <a href="{% url 'shopdetails' i.id i.product.id %}"><img src="{{i.product.thumbnail.url}}" alt=""></a>
+                                <a href="{% url 'shopdetails' i.id  %}"><img src="{{i.product.thumbnail.url}}" alt=""></a>
                                 <ul class="product__hover">
-                                    <li><a href="#"><img src="{% static 'user/home/img/icon/heart.png' %}" alt=""></a>
+                                    <li><a href="{% url 'addwishlist' i.id  %}"><img src="{% static 'user/home/img/icon/heart.png' %}" alt=""></a>
                                     </li>
 
                                 </ul>
@@ -242,7 +251,23 @@
     
     
 
+<script>
+    // Function to handle form submission
+    function submitForm() {
+        document.getElementById("category-form").submit();  // Submit the form
+    }
 
+    // Add event listeners to checkboxes
+    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    checkboxes.forEach(function(checkbox) {
+        checkbox.addEventListener('change', submitForm);  // Submit the form when checkbox state changes
+    });
+
+    
+    
+    
+    
+</script>
 
 <!-- Search End -->
 

@@ -1,0 +1,68 @@
+{% extends 'nav.html' %}
+{% block body %}
+<div class="col-12">
+    <div class="bg-light rounded h-100 p-4">
+        <div class="col-md-9">
+                    <a href="" class="btn btn-success">Add New Address</a>
+                </div>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Color Name</th>
+                        <th scope="col">Image 1</th>
+                        <th scope="col">Image 2</th>
+                        <th scope="col">Image 3</th>
+                        <th scope="col">Size</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Edit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in products %}
+                    <tr>
+                        <td>{{ product.color_name }}</td>
+                        <td><img src="{{ product.img1.url }}" alt="Image 1" width="80px"></td>
+                        <td><img src="{{ product.img2.url }}" alt="Image 2" width="80px"></td>
+                        <td><img src="{{ product.img3.url }}" alt="Image 3" width="80px"></td>
+                        {% if product.size.exists %}
+                            <td>
+                                <select name="size" class="form-select" onchange="updateQuantityAndEditLink(this)">
+                                    {% for size in product.size.all %}
+                                        <option value="{{ size.id }}" data-quantity="{{ size.quantity }}">{{ size.size }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                            <td class="quantityDisplay"></td>
+                        {% else %}
+                            <td>No sizes available</td>
+                            <td></td>
+                        {% endif %}
+                        <td>
+                            <a class="btn btn-primary edit-link" href="#">Edit</a>
+                        </td>
+                        <td>
+                            <a class="btn btn-danger remove" href="{% url 'unlist_variant' product.id  %}">Unlist</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    function updateQuantityAndEditLink(select) {
+        const row = select.parentNode.parentNode;
+        const quantityDisplay = row.querySelector('.quantityDisplay');
+        const selectedOption = select.options[select.selectedIndex];
+        const quantity = selectedOption.getAttribute('data-quantity');
+
+        quantityDisplay.textContent = quantity;
+
+        const selectedSizeId = select.value;
+        const editLink = row.querySelector('.edit-link');
+        editLink.href = "{% url 'edit_variant' 0 %}".replace("0", selectedSizeId);
+    }
+</script>
+{% endblock %}

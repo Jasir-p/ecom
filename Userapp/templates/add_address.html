@@ -18,147 +18,87 @@
         </div>
     </div>
 </section>
-<div class="container-fluid x">
-    <div class="row flex-nowrap">
-        <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-dark">
-            <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
-                <a href="/" class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-                    <span class="fs-5 d-none d-sm-inline">Menu</span>
-                </a>
-                <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
-                    <li class="nav-item">
-                        <a href="#" class="nav-link align-middle px-0">
-                            <i class="fs-4 bi-house"></i> <span class="ms-1 d-none d-sm-inline">Home</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#submenu1" data-bs-toggle="collapse" class="nav-link px-0 align-middle">
-                            <i class="fs-4 bi-speedometer2"></i> <span class="ms-1 d-none d-sm-inline">Dashboard</span> </a>
-                        <ul class="collapse show nav flex-column ms-1" id="submenu1" data-bs-parent="#menu">
-                            <li class="w-100">
-                                <a href="#" class="nav-link px-0"> <span class="d-none d-sm-inline">Item</span> 1 </a>
-                            </li>
-                            <li>
-                                <a href="#" class="nav-link px-0"> <span class="d-none d-sm-inline">Item</span> 2 </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="#" class="nav-link px-0 align-middle">
-                            <i class="fs-4 bi-table"></i> <span class="ms-1 d-none d-sm-inline">Orders</span></a>
-                    </li>
-                    <li>
-                        <a href="#submenu2" data-bs-toggle="collapse" class="nav-link px-0 align-middle ">
-                            <i class="fs-4 bi-bootstrap"></i> <span class="ms-1 d-none d-sm-inline">Bootstrap</span></a>
-                        <ul class="collapse nav flex-column ms-1" id="submenu2" data-bs-parent="#menu">
-                            <li class="w-100">
-                                <a href="#" class="nav-link px-0"> <span class="d-none d-sm-inline">Item</span> 1</a>
-                            </li>
-                            <li>
-                                <a href="#" class="nav-link px-0"> <span class="d-none d-sm-inline">Item</span> 2</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="#submenu3" data-bs-toggle="collapse" class="nav-link px-0 align-middle">
-                            <i class="fs-4 bi-grid"></i> <span class="ms-1 d-none d-sm-inline">Products</span> </a>
-                            <ul class="collapse nav flex-column ms-1" id="submenu3" data-bs-parent="#menu">
-                            <li class="w-100">
-                                <a href="#" class="nav-link px-0"> <span class="d-none d-sm-inline">Product</span> 1</a>
-                            </li>
-                            <li>
-                                <a href="#" class="nav-link px-0"> <span class="d-none d-sm-inline">Product</span> 2</a>
-                            </li>
-                            <li>
-                                <a href="#" class="nav-link px-0"> <span class="d-none d-sm-inline">Product</span> 3</a>
-                            </li>
-                            <li>
-                                <a href="#" class="nav-link px-0"> <span class="d-none d-sm-inline">Product</span> 4</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="#" class="nav-link px-0 align-middle">
-                            <i class="fs-4 bi-people"></i> <span class="ms-1 d-none d-sm-inline">Customers</span> </a>
-                    </li>
-                </ul>
-                <hr>
-                <div class="dropdown pb-4">
-                    <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="https://github.com/mdo.png" alt="hugenerd" width="30" height="30" class="rounded-circle">
-                        <span class="d-none d-sm-inline mx-1">loser</span>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
-                        <li><a class="dropdown-item" href="#">New project...</a></li>
-                        <li><a class="dropdown-item" href="#">Settings</a></li>
-                        <li><a class="dropdown-item" href="#">Profile</a></li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li><a class="dropdown-item" href="#">Sign out</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="col py-3">
-            <section class="address-form spad">
-                <div class="container">
+<div class="container">
+    <div class="checkout__form">
+        <form action="#">
+            <div class="row">
+                <div class="col-lg-8 col-md-6">
+                    <h6 class="coupon__code"><span class="icon_tag_alt"></span> Have a coupon? <a href="#">Click
+                    here</a> to enter your code</h6>
+                    <h6 class="checkout__title">Billing Details</h6>
                     <div class="row">
-                        <div class="col-lg-6 offset-lg-3">
-                            <div class="address-form__wrapper">
-                                <form action="{% url 'add_address'%}" method="post">
-                                    {% csrf_token %}
-                                    <div class="row">
-                                        <div class="col-lg-12">
-                                            <label for="name">Name:</label>
-                                            <input type="text" id="name" name="name" class="form-control" required>
-                                        </div>
-                                        <div class="col-lg-12">
-                                            <label for="address">Address:</label>
-                                            <input type="text" id="address" name="address" class="form-control" required>
-                                        </div>
-                                        <div class="col-lg-12">
-                                            <label for="House_no">House No:</label>
-                                            <input type="text" id="House_no" name="house_no" class="form-control">
-                                        </div>
-                                        <div class="col-lg-12">
-                                            <label for="city">City:</label>
-                                            <input type="text" id="city" name="city" class="form-control" required>
-                                        </div>
-                                        <div class="col-lg-12">
-                                            <label for="state">State:</label>
-                                            <input type="text" id="state" name="state" class="form-control" required>
-                                        </div>
-                                        <div class="col-lg-12">
-                                            <label for="country">Country:</label>
-                                            <input type="text" id="country" name="country" class="form-control" required>
-                                        </div>
-                                        <div class="col-lg-12">
-                                            <label for="pincode">Pincode:</label>
-                                            <input type="text" id="pincode" name="pincode" class="form-control" required>
-                                        </div>
-                                        <div class="col-lg-12">
-                                            <button type="submit" class="site-btn">Save Address</button>
-                                        </div>
-                                    </div>
-                                </form>
+                        <div class="col-lg-6">
+                            <div class="checkout__input">
+                                <p>Fist Name<span>*</span></p>
+                                <input type="text">
+                            </div>
+                        </div>
+                       
+                    </div>
+                    <div class="checkout__input">
+                        <p>Country<span>*</span></p>
+                        <input type="text">
+                    </div>
+                    <div class="checkout__input">
+                        <p>Address<span>*</span></p>
+                        <input type="text" placeholder="Street Address" class="checkout__input__add">
+                        <input type="text" placeholder="Apartment, suite, unite ect (optinal)">
+                    </div>
+                    <div class="checkout__input">
+                        <p>Town/City<span>*</span></p>
+                        <input type="text">
+                    </div>
+                    <div class="checkout__input">
+                        <p>Country/State<span>*</span></p>
+                        <input type="text">
+                    </div>
+                    <div class="checkout__input">
+                        <p>Postcode / ZIP<span>*</span></p>
+                        <input type="text">
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="checkout__input">
+                                <p>Phone<span>*</span></p>
+                                <input type="text">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="checkout__input">
+                                <p>Email<span>*</span></p>
+                                <input type="text">
                             </div>
                         </div>
                     </div>
+                    <div class="checkout__input__checkbox">
+                        <label for="acc">
+                            Create an account?
+                            <input type="checkbox" id="acc">
+                            <span class="checkmark"></span>
+                        </label>
+                        <p>Create an account by entering the information below. If you are a returning customer
+                        please login at the top of the page</p>
+                    </div>
+                    <div class="checkout__input">
+                        <p>Account Password<span>*</span></p>
+                        <input type="text">
+                    </div>
+                    <div class="checkout__input__checkbox">
+                        <label for="diff-acc">
+                            Note about your order, e.g, special noe for delivery
+                            <input type="checkbox" id="diff-acc">
+                            <span class="checkmark"></span>
+                        </label>
+                    </div>
+                    <div class="checkout__input">
+                        <p>Order notes<span>*</span></p>
+                        <input type="text"
+                        placeholder="Notes about your order, e.g. special notes for delivery.">
+                    </div>
                 </div>
-            </section>
+            </div>
         </div>
     </div>
-</div>
-
-<!-- Breadcrumb Section Begin -->
-
-<!-- Breadcrumb Section End -->
-
-<!-- Address Form Section Begin -->
-
-<!-- Address Form Section End -->
-
-
+</div>        
 {% endblock %}
 

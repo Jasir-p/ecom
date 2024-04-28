@@ -1,0 +1,88 @@
+{% extends 'nav.html'%}
+{% block body %}
+
+<div class="container">
+    <h3 class="mb-4" >Edit Product</h3>
+    <form id="editProductForm" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <!-- Product Name -->
+        <div class="form-group">
+            <label for="productName">Name:</label>
+            <input type="text" class="form-control" id="product" name="productName" value="{{ variants.Color_products.product.id }}" disabled>
+        </div>
+        
+       
+        
+        <div class="form-group">
+            
+            <div class="form-group">
+                <label for="cat_name">Color Name:</label>
+                <input type="text" class="form-control" id="color_name" name="color_name" value="{{variants.Color_products.color_name}}">
+            </div>
+           <div class="row">
+            <div class="col-md-4">
+            <div class="form-group">
+                <label for="cover_image"> Image 1</label>
+                <input type="file" class="form-control" id="cover_image" name="img1">
+                {% if variants.Color_products.img1 %}
+                <img src="{{ variants.Color_products.img1.url }}" alt="Cover Image" style="max-width: 100px;" height='80px'>
+                {% endif %}
+            </div>
+        </div> 
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="cover_image">Image 2</label>
+                <input type="file" class="form-control" id="cover_image" name="img2">
+                {% if variants.Color_products.img2 %}
+                <img src="{{ variants.Color_products.img2.url }}" alt="Cover Image" style="max-width: 100px;" height='80px'>
+                {% endif %}
+            </div>
+        </div> 
+         <div class="col-md-4">
+            <div class="form-group">
+                <label for="cover_image">Image 3</label>
+                <input type="file" class="form-control" id="cover_image" name="img3">
+                {% if variants.Color_products.img3 %}
+                <img src="{{ variants.Color_products.img3.url }}" alt="Cover Image" style="max-width: 100px;"  height='80px'>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    
+   
+    <div class="row variant-row">
+        <div class="col-md-4">
+            <label for="size" class="control-label">Size:</label>
+            <input type="text" class="form-control" name="size" value="{{ variants.size }}" >
+        </div>
+        <div class="col-md-4">
+            <label for="quantity" class="control-label">Quantity:</label>
+            <input type="number" class="form-control" name="quantity" value="{{ variants.quantity }}">
+        </div>
+    </div>
+
+            
+          
+        </div>
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+    </form> 
+    
+    {% if messages %}
+    <div class="messages text-center text-capitalize font-weight-bold">
+  {% for message in messages %}
+  {% if message.tags == 'error' %}
+  <h5 class="text-danger">! {{ message }}</h5>
+  {% elif message.tags == 'success' %}
+  <h5 class="text-success">! {{ message }}</h5>
+  {% else %}
+  <h5>! {{ message }}</h5>
+  {% endif %}
+  {% endfor %}
+  </div>
+  {% endif %}
+</div>
+</div>
+
+    {% endblock %}

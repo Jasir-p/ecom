@@ -16,6 +16,7 @@
                         </div>
                     </div>
                 </div>
+                <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
                 <script>
                     {% if messages %}
@@ -30,6 +31,7 @@
                     {% endfor %}
                     {% endif %}
                 </script>
+
            
                 <div class="row">
                     <div class="col-lg-3 col-md-3">
@@ -114,7 +116,8 @@
                                     <span>Color:</span>
                                     {% for i in item %}
                                     
-                                        <img src="{{ i.img1.url }}" alt="{{ i.color_name}}" class="color-thumbnail" height="50px" width="50px" class="border">
+                                    <a href="{% url 'shopdetails' i.id %}"><img src="{{ i.img1.url }}" alt="{{ i.color_name}}" class="color-thumbnail" height="50px" width="50px" class="border"></a>
+
                                     
                                   {% endfor %}
                                 </div>
@@ -132,7 +135,7 @@
                                 </form>
                             </div>
                             <div class="product__details__btns__option">
-                                <a href="#"><i class="fa fa-heart"></i> add to wishlist</a>
+                                <a href="{% url 'addwishlist' data.id  %}"><i class="fa fa-heart"></i> add to wishlist</a>
                                 <a href="#"><i class="fa fa-exchange"></i> Add To Compare</a>
                             </div>
                             <div class="product__details__last__option">
@@ -286,7 +289,7 @@
                         <div class="product__item__pic set-bg" data-setbg="img/product/product-1.jpg">
                             <span class="label">New</span>
                             <ul class="product__hover">
-                                <li><a href="#"><img src="img/icon/heart.png" alt=""></a></li>
+                                <li><a href="{% url 'addwishlist' data.product.id  %}"><img src="img/icon/heart.png" alt=""></a></li>
                                 <li><a href="#"><img src="img/icon/compare.png" alt=""> <span>Compare</span></a></li>
                                 <li><a href="#"><img src="img/icon/search.png" alt=""></a></li>
                             </ul>

@@ -8,22 +8,23 @@
         <!-- Product Name -->
         <div class="form-group">
             <label for="productName">Name:</label>
-            <input type="text" class="form-control" id="productName" name="productName" value="{{ product.product.name }}">
+            <input type="text" class="form-control" id="productName" name="productName" value="{{ product.name }}">
         </div>
         <!-- Product Price -->
         <div class="form-group">
             <label for="productPrice">Price:</label>
-            <input type="text" class="form-control" id="productPrice" name="productPrice" value="{{ product.product.price }}">
+            <input type="text" class="form-control" id="productPrice" name="productPrice" value="{{ product.price }}">
         </div>
         <!-- Product Thumbnail -->
         <div class="form-group">
             <label for="productThumbnail">Thumbnail:</label>
             <input type="file" class="form-control-file" id="productThumbnail" name="productThumbnail">
+            <img src="{{ product.thumbnail.url }}" alt="Cover Image" style="max-width: 100px;" height='80px'>
         </div>
         <!-- Product Description -->
         <div class="form-group">
             <label for="productDescription">Description:</label>
-            <textarea class="form-control" id="productDescription" name="productDescription">{{ product.product.description }}</textarea>
+            <textarea class="form-control" id="productDescription" name="productDescription">{{ product.description }}</textarea>
         </div>
         <!-- Product Category -->
         <div class="form-group">
@@ -43,59 +44,13 @@
                 {% endfor %}
             </select>
         </div>
-        <div class="form-group">
-            <label for="productVariants">Variants:</label>
-            <div class="form-group">
-                <label for="cat_name">Category Name:</label>
-                <input type="text" class="form-control" id="color_name" name="color_name" value="{{product.color_name}}">
-            </div>
-           <div class="row">
-            <div class="col-md-4">
-            <div class="form-group">
-                <label for="cover_image"> Image 1</label>
-                <input type="file" class="form-control" id="cover_image" name="cover_image">
-                {% if product.img1 %}
-                <img src="{{ product.img1.url }}" alt="Cover Image" style="max-width: 100px;" height='80px'>
-                {% endif %}
-            </div>
-        </div> 
-        <div class="col-md-4">
-            <div class="form-group">
-                <label for="cover_image">Image 2</label>
-                <input type="file" class="form-control" id="cover_image" name="cover_image">
-                {% if product.img2 %}
-                <img src="{{ product.img2.url }}" alt="Cover Image" style="max-width: 100px;" height='80px'>
-                {% endif %}
-            </div>
-        </div> 
-         <div class="col-md-4">
-            <div class="form-group">
-                <label for="cover_image">Image 3</label>
-                <input type="file" class="form-control" id="cover_image" name="cover_image">
-                {% if product.img3 %}
-                <img src="{{ product.img3.url }}" alt="Cover Image" style="max-width: 100px;"  height='80px'>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-
+        
     
-    {% for size in product.size.all %}
-    <div class="row variant-row">
-        <div class="col-md-4">
-            <label for="size" class="control-label">Size:</label>
-            <input type="text" class="form-control" name="size" value="{{ size.size }}" readonly>
-        </div>
-        <div class="col-md-4">
-            <label for="quantity" class="control-label">Quantity:</label>
-            <input type="number" class="form-control" name="quantity" value="{{ size.quantity }}">
-        </div>
-    </div>
-{% endfor %}
+   
     
             
           
-        </div>
+    </div>
         <!-- Submit Button -->
         <button type="submit" class="btn btn-primary">Save Changes</button>
     </form> 

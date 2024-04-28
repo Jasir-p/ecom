@@ -28,14 +28,18 @@ class Cart(models.Model):
     coupon_applied = models.BooleanField(default=False,null=True,blank=True)
     total_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0,null=True)
 
-    def totel_amount(self):
-        total_amount=0
-        cart1=self.cartitem.all()
-        for i in cart1:
-       
-            total_amount += self.products.product.price * i.quanttity
+    def update_total_amount(self):
+        total_amount = sum(item.total_price for item in self.cart.all())
+        self.total_amount = total_amount
+        self.save()
+    def Totel(self):
+        Total=0
+        if self.total_amount >3000:
+            Total=self.total_amount
+        else:
+            Total=self.total_amount+50
+        return Total
 
-        return total_amount
 
 
    
@@ -46,6 +50,15 @@ class CartItem(models.Model):
     quantity = models.PositiveIntegerField(default=1)
     product_size_color = models.ForeignKey(size_variant, on_delete=models.CASCADE, null=True)
     total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0,null=True)
+
+    def save(self, *args, **kwargs):
+        if self.product_size_color.quantity >= self.quantity:
+            self.total_price = self.product.product.price * self.quantity
+            super().save(*args, **kwargs)
+            # Update the total_amount of the cart after saving the CartItem
+            self.cart.update_total_amount()
+        
+
 
 
 class Address(models.Model):

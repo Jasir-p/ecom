@@ -22,6 +22,7 @@ from Products.models import *
 from django.http import JsonResponse
 from Admin.models import *
 from cart.models import *
+from django.contrib.auth.hashers import check_password
 
 
 # Create your views here.
@@ -244,28 +245,49 @@ def shop(request):
                 
 @never_cache
 @login_required(login_url='login') 
-def shopdetails(request,p_id,id):
+def shopdetails(request,p_id):
 
         data=Color_products.objects.get(id=p_id)
-        item=Color_products.objects.filter(product=id)
+        item=Color_products.objects.filter(product=data.product.id)
         return render(request,'shop-details.html',{'data':data,'item':item})
         
-def filterd(request,id):
-        try:
-               
-                products = Color_products.objects.select_related('product').filter(product__catagory=id).distinct('product')
-                category = Catagory.objects.filter(is_listed=True)
-                brand = Brand.objects.filter(is_listed=True)
-                
-                context={'products': products, 'category': category, 'brand': brand}
-            
-              
 
-                        
-                return render(request, 'shop.html',context)
-                
-        except Exception as e:       
-                return render(request, 'shop.html',)
+def filterd(request):
+    if request.method == 'GET':
+        # Get selected category and brand IDs from the request
+        selected_categories = request.GET.getlist("category")
+        selected_brands = request.GET.getlist("brand")
+
+        if selected_categories or selected_brands:
+                products = Color_products.objects.filter(Q(product__catagory__in=selected_categories) | Q(product__brand__in=selected_brands)).distinct('product')
+
+        if selected_categories and selected_brands:
+                products = Color_products.objects.filter(Q(product__catagory__in=selected_categories) & Q(product__brand__in=selected_brands)).distinct('product')
+
+       
+
+        print(products)
+        # Fetch all categories and brands to pass to the template
+        categories = Catagory.objects.filter(is_listed=True)
+        brands = Brand.objects.filter(is_listed=True)
+
+        context = {
+            'products': products,
+            'category': categories,
+            'brand': brands,
+            'selected_categories': selected_categories,
+            'selected_brands': selected_brands,
+        }
+
+        return render(request, 'shop.html', context)
+
+
+
+# def selected_category(request,category):
+#       sele
+#       if category not 
+#       return selected_list
+
 def view_address(request):
       address=Address.objects.filter(user=request.user)
       return render(request,'view_address.html' ,{'address': address})
@@ -286,6 +308,7 @@ def add_address(request):
         country = request.POST.get('country')
         pincode = request.POST.get('pincode')
         
+
         address_obj = Address.objects.create(
             user=user,
             name=name,
@@ -338,7 +361,7 @@ def add_to_wishlist(request, product_id):
     
         wishlist, created = Wishlist.objects.get_or_create(customer=request.user)
             
-        product = get_object_or_404(Product, pk=product_id)
+        product = get_object_or_404(Color_products, pk=product_id)
         
 
         if wishlist.products.filter(pk=product_id).exists():
@@ -357,21 +380,25 @@ def change_password(request):
            Current_password=request.POST.get("current_password")
            New_password=request.POST.get('new_password1')
            New_password2=request.POST.get('new_password2')
+           
+
            if not  check_password(Current_password, request.user.password):
                  messages.error(request,'Current Password is error')
-            elif not any(char.isupper() for char in password):
+           if New_password == New_password2:
+                 pass
+           elif not any(char.isupper() for char in New_password2):
                 messages.error(request, 'Password must contain at least one uppercase letter')
                 return redirect('SignUp')
-            elif not any(char.islower() for char in password):  # Corrected condition
+           elif not any(char.islower() for char in New_password2):  # Corrected condition
                 messages.error(request, 'Password must contain at least one lowercase letter')
                 return redirect('SignUp')
-            elif not any(char.isdigit() for char in password):
+           elif not any(char.isdigit() for char in New_password2):
                 messages.error(request, 'Password must contain at least one digit')
-                return redirect('SignUp')
+                return redirect('SignUp') 
                  
 
       return render(request,"change_password.html")
-                      
+                          
 
        
                       

@@ -35,18 +35,25 @@ class AddCart(View):
             
         
         size=request.POST.get('size')
-        print(size)
-        product=Color_products.objects.get(id=id) 
-        size_instance=size_variant.objects.get(id=size)
+        
+        
+        product=Color_products.objects.get(id=id)
+        try: 
+            size_instance=size_variant.objects.get(id=size)
+        except size_variant.DoesNotExist:
+             messages.warning(request, 'Select a size')
+             return redirect('shopdetails',id)
+
         existing_cart_item = CartItem.objects.filter(cart=cart, product=product)
         if  existing_cart_item:
                 messages.warning(request,'Item already in the cart')
                 return redirect('viewcart')
         
         cart_item=CartItem.objects.create(cart=cart,product=product,product_size_color=size_instance)
+        cart_item.save()
         cart.save()
         messages.success(request,'Product succesfully added')
-        return redirect('shopdetails')
+        return redirect('shopdetails',id)
         
 
         
@@ -75,6 +82,8 @@ class Viewcart(View):
 
 
 
+
+
 class UpdateCartView(View):
     def post(self, request):
         # Ensure the user is authenticated
@@ -87,24 +96,35 @@ class UpdateCartView(View):
                 cart = Cart.objects.get(user=request.user)
                 item = CartItem.objects.get(cart=cart, id=product_id)
 
+                # Check if the requested quantity is available
+                available_quantity = item.product_size_color.quantity
+                requested_quantity = int(quantity)
+
+                if requested_quantity > available_quantity:
+                    
+                    return JsonResponse({'success': False, 'error': 'Insufficient quantity'})
+
                 # Update quantity and save
-                item.quantity = int(quantity)
+                item.quantity = requested_quantity
                 item.save()
 
                 # Calculate updated total price based on the new quantity
                 total_price = item.product.product.price * item.quantity
-                item.total_price=total_price
-               
+                item.total_price = total_price
+                item.save()
 
-                return JsonResponse({'success': True, 'total_price': total_price,})
+                return JsonResponse({'success': True, 'total_price': total_price})
+            
             except Cart.DoesNotExist:
                 return JsonResponse({'success': False, 'error': 'Cart not found'})
             except CartItem.DoesNotExist:
                 return JsonResponse({'success': False, 'error': 'CartItem not found'})
             except ValueError:
                 return JsonResponse({'success': False, 'error': 'Invalid quantity value'})
+        
         else:
             return JsonResponse({'success': False, 'error': 'User not authenticated'})
+
 
 
 def delete_cart(request,cart_id):
@@ -112,7 +132,7 @@ def delete_cart(request,cart_id):
              cart = Cart.objects.get(user=request.user)
              item = CartItem.objects.get(cart=cart, id=cart_id)
              item.delete()
-             return JsonResponse({'success': True})
+             return redirect('viewcart')
         except (Cart.DoesNotExist, CartItem.DoesNotExist):
             return JsonResponse({'success': False, 'error': 'Cart or item not found'})
 
@@ -122,7 +142,21 @@ def cart_total_view(request):
         cart = Cart.objects.get(user=request.user)
         cart_item=CartItem.objects.filter(cart__user=request.user).order_by('id')
         subtotal =sum(item.total_price for item in cart_item)
-        total = subtotal + 40  # Assuming you have shipping cost
+        total = cart.Totel() # Assuming you have shipping cost
         return JsonResponse({'subtotal': subtotal, 'total': total})
     else:
         return JsonResponse({'error': 'User not authenticated'})
+def checkout(request):
+    cart= Cart.objects.get(user=request.user)
+    
+    print(cart)
+    
+    item=CartItem.objects.filter(cart__user=request.user).order_by('id')
+    context={
+            'item':item,
+            'cart':cart
+        }
+        
+        
+
+    return render (request,'checkout.html',context)

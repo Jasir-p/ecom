@@ -7,7 +7,7 @@ import random
 from django.contrib import messages
 from django.db.models import Q
 
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 
 from django.contrib.auth import authenticate, login as log,logout as authlogout
 from django.contrib.auth.decorators import login_required
@@ -123,6 +123,7 @@ def add_colour(request):
     except Exception as e:
 
         messages.error(request,str(e))
+        return render(request, 'add_colour.html')
    
 
 @never_cache
@@ -178,9 +179,9 @@ def is_valid_image(file):
 @never_cache
 @login_required(login_url='adminlogin') 
 def view_product(request):
+     
     
-    try:
-        products=Product.objects.filter(is_listed=True).prefetch_related('color_product__size')
+        products=Product.objects.filter(is_listed=True)
         
         context={
              
@@ -189,8 +190,8 @@ def view_product(request):
              
         }
         return render(request,'product.html',context)
-    except:
-        return render(request,'product.html')
+    # except:
+    #     return render(request,'product.html')
         
 
 def unlist_product(request,id):
@@ -205,9 +206,10 @@ def unlist_product(request,id):
            return redirect('viewproducts')
 
 def edit_product(request,id):
-    try:
+   
          
-        product = Color_products.objects.prefetch_related('size').get(id=id)
+        product = Product.objects.get(id=id)
+        print(product)
         categories = Catagory.objects.all()
         brands = Brand.objects.all()
         context={
@@ -220,8 +222,8 @@ def edit_product(request,id):
         
         
         return render(request,"edit_product.html",context)
-    except:
-         return render(request,"edit_product.html")
+    # except:
+    #      return render(request,"edit_product.html")
          
 def view_unlist(request):
     try:
@@ -248,15 +250,100 @@ def list_product(request,id):
          
            return redirect('viewproducts')               
         
-def get_stock_data(request):
-    if request.method == 'GET':
-        size_id = request.GET.get('size_id')
-        try:
-            size = size_variant.objects.get(pk=size_id)
+
+
+def product_variant(request,id):
+
+    products=Color_products.objects.filter(product__id=id,is_listed=True)
+
+     
+     
+    return render(request,'variants.html',{'products':products})
+
+def edit_variant(request,id):
+    variants=get_object_or_404(size_variant,id=id)
+
+    if request.method == 'POST':
+        color_products = Color_products.objects.get(id=variants.Color_products.id)
+        print(color_products)
+        
+
+        name = request.POST.get('color_name').strip() 
             
-            stock_info = {'size': size.size, 'quantity': size.quantity}
-            return JsonResponse({'success': True, 'stock_info': stock_info})
-        except size_variant.DoesNotExist:
-            return JsonResponse({'success': False, 'error': 'Size not found'}, status=404)
-    else:
-        return JsonResponse({'success': False, 'error': 'Invalid request method'}, status=405)    
+        img1 = request.FILES.get('img1')
+        img2 = request.FILES.get('img2')
+        img3 = request.FILES.get('img3')
+        print(img1)
+        size=request.POST.get('size')
+        quantity=request.POST.get('quantity')
+        product_id = color_products.product.id 
+        print(product_id)
+        cat=Color_products.objects.filter(product__id=product_id, color_name__icontains=name).exclude( id=color_products.pk)
+        print(cat)
+      
+        if Color_products.objects.filter(product__id=product_id, color_name__icontains=name).exclude( id=color_products.pk).exists():
+            messages.error(request,'The color already exists')
+            return render(request,'edit_variant.html',{'variants':variants})
+        
+        if not name or not name[0].isalpha():
+                messages.error(request, 'Field must start with a character')
+                return render(request,'edit_variant.html',{'variants':variants})
+        
+        if len(name) < 2:
+                messages.error(request, 'Field must atleast two character')
+                return render(request,'edit_variant.html',{'variants':variants})
+        
+        if img1:
+            if not is_valid_image(img1):
+                    messages.error(request, 'Image 1 is an invalid image file')
+                    return render(request,'edit_variant.html',{'variants':variants})
+            else:
+                 
+                 color_products.img1=img1
+        if img2:    
+            if not is_valid_image(img2):
+                    messages.error(request, 'Image 2 is an invalid image file')
+                    return render(request,'edit_variant.html',{'variants':variants})
+            else:
+                 color_products.img2=img2
+
+        if img3:
+            if not is_valid_image(img3):
+                messages.error(request, 'Image 3 is an invalid image file')
+                return render(request,'edit_variant.html',{'variants':variants})
+            else:
+                  color_products.img3=img3
+
+        elif size_variant.objects.filter(Color_products__id=color_products.pk,size__icontains=size).exclude(id=variants.pk).exists():
+            messages.error(request,'The Size already exists')
+            return render(request,'edit_variant.html',{'variants':variants})
+        elif size not in ['S', 'M', 'L', 'XL', 'XXL']:
+                 
+                messages.error(request,"Invalid size. Please choose from S, M, L, XL, XXL.")
+                return render(request,'edit_variant.html',{'variants':variants})
+        elif int(quantity) <= 0:
+                    
+
+                    messages.error(request,'Quantity must be a positive number')
+                    return render(request,'edit_variant.html',{'variants':variants})    
+        else:
+             color_products.color_name=name
+             variants.size=size
+             variants.quantity=int(quantity)
+             variants.save()
+             color_products.save()
+             return redirect(product_variant,product_id)
+             
+             
+            
+             
+
+    return render(request,'edit_variant.html',{'variants':variants})
+
+
+def unlist_variant(request,id):
+     item=get_object_or_404(Color_products,id=id)
+     item.is_listed=False
+     item.save()
+     return redirect(product_variant,item.product.pk)
+     

@@ -111,11 +111,11 @@
                 <div class="col-lg-3 col-md-6 col-sm-6 col-md-6 col-sm-6 mix new-arrivals">
                     <div class="product__item">
                         <div class="product__item__pic set-bg" data-setbg="{{i.product.thumbnail.url}}">
-                            <a href="{% url 'shopdetails' i.id i.product.id %}"><img src="{{i.product.thumbnail.url}}"  alt=""></a>
+                            <a href="{% url 'shopdetails' i.id  %}"><img src="{{i.product.thumbnail.url}}"  alt=""></a>
                             <span class="label">New</span>
                             <ul class="product__hover">
                                 
-                                <li><a href="{% url 'addwishlist' i.product.id  %}"><img src="{% static 'user/home/img/icon/heart.png' %}" alt=""></a></li>
+                                <li><a href="{% url 'addwishlist' i.id  %}"><img src="{% static 'user/home/img/icon/heart.png' %}" alt=""></a></li>
                                 
                                 <li><a href="#"><img src="{% static 'user/home/img/icon/compare.png' %}" alt=""> <span>Compare</span></a></li>
                                 <li><a href="#"><img src="{% static 'user/home/img/icon/search.png' %}" alt=""></a></li>

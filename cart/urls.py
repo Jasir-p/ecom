@@ -8,5 +8,6 @@ urlpatterns = [
     path('update-cart/', UpdateCartView.as_view(), name='update_cart'),
     path('Deletecart/<int:cart_id>',delete_cart,name='deletecart'),
     path('Updatetotal/',cart_total_view,name='update_total'),
+    path('Checkout/',checkout,name="checkout")
     
 ]

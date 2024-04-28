@@ -43,31 +43,29 @@
         <div class="row">
             {% if wishlist %}
             {% for item in wishlist %}
-            <div class="col-lg-3 col-md-6 col-sm-6 col-md-6 col-sm-6">
+            <div class="col-lg-4 col-md-6 col-sm-6">
                 <div class="product__item">
-                    <div class="product__item__pic set-bg" data-setbg="{{ item.thumbnail.url }}">
-                        <img src="{{ item.thumbnail.url }}" alt="">
-                        <span class="label">New</span>
+                    <div class="product__item__pic set-bg " data-setbg>
+                                
+                        <a href="{% url 'shopdetails' item.id  %}"><img src="{{item.product.thumbnail.url}}" alt=""></a>
                         <ul class="product__hover">
-                            <li><a href="#"><img src="{% static 'user/home/img/icon/heart.png' %}" alt=""></a></li>
-                            <li><a href="#"><img src="{% static 'user/home/img/icon/compare.png' %}" alt=""> <span>Compare</span></a></li>
-                            <li><a href="#"><img src="{% static 'user/home/img/icon/search.png' %}" alt=""></a></li>
+                           
+                           
+
                         </ul>
                     </div>
                     <div class="product__item__text">
-                        <h6>{{ item.name }}</h6>
-                        <!-- Remove button -->
-                        <form action="" method="POST">
-                            {% csrf_token %}
-                            <button type="submit" class="remove-from-wishlist-btn">Remove</button>
-                        </form>
+                        <h6>{{item.product.name}}</h6>
+                        <a href="#" class="add-cart">Remove</a>
                         <div class="rating">
-                            <!-- Your rating stars code here -->
+                            <i class="fa fa-star-o"></i>
+                            <i class="fa fa-star-o"></i>
+                            <i class="fa fa-star-o"></i>
+                            <i class="fa fa-star-o"></i>
+                            <i class="fa fa-star-o"></i>
                         </div>
-                        <h5>{{ item.product.price }}</h5>
-                        <div class="product__color__select">
-                            <!-- Your color selection code here -->
-                        </div>
+                        <h5>{{item.product.price}}</h5>
+                       
                     </div>
                 </div>
             </div>

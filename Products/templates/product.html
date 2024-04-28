@@ -12,55 +12,43 @@
             <th>Category</th>
             <th>Brand</th>
             <th>Price</th>
-            <th>Color</th>
-            <th>Size</th>
-            <th>Quantity</th>
+            
+            
             <th>Action</th>
         </tr>
     </thead>
     <tbody>
         {% for product in products %}
-        {% for color_product in product.color_product.all %}
+        
             <tr>
-                {% if forloop.first %}
-                    <td rowspan="{{ product.color_product.count }}">{{ product.name }}</td>
+                
+                    <td >{{ product.name }}</td>
                     
-                    <td rowspan="{{ product.color_product.count }}"><img src="{{ product.thumbnail.url }}" alt="Thumbnail" width="80px"></td>
+                    <td><img src="{{ product.thumbnail.url }}" alt="Thumbnail" width="80px"></td>
                    
-                    <td rowspan="{{ product.color_product.count }}">{{ product.catagory }}</td>
-                    <td rowspan="{{ product.color_product.count }}">{{ product.brand }}</td>
-                    <td rowspan="{{ product.color_product.count }}">{{ product.price }}</td>
+                    <td>{{ product.catagory }}</td>
+                    <td>{{ product.brand }}</td>
+                    <td>{{ product.price }}</td>
                     
+                <td rowspan="">
+                    <a href="{% url 'product_variant' product.id %}"><button class="btn btn-success">Variants</button></a>
                     
-                {% endif %}
-                
-                <td>
-                    {{ color_product.color_name }}</td>
-                <td>
-                    <select name="size" class="size-select">
-                        {% for size in color_product.size.all %}
-                            <option value="{{ size.size }}" data-quantity="{{ size.quantity }}">{{ size.size }}</option>
-                        {% endfor %}
-                    </select>
                 </td>
-                <td id="quantityDisplay" class="mt-2">{{ color_product.size.first.quantity }}</td>
-                
                         <td rowspan="">
-                            <a href="{% url 'editproduct' color_product.id %}"><button class="btn btn-primary edit-product">Edit</button></a>
+                            <a href="{% url 'editproduct' product.id %}"><button class="btn btn-primary edit-product">Edit</button></a>
                             
                         </td>
-                        {% if forloop.first %}
+                      
                         <td rowspan="">
                             <a href="{% url 'unlist_product' product.id %}"><button class="btn btn-danger">Unlist</button></a>
                         </td>
-                        {% endif %}
+                        
                 
             </tr>
         {% endfor %}
         
             
-        </a> 
-    {% endfor %}
+    
 </tbody>
 </table> 
 
