@@ -352,6 +352,25 @@ def add_to_wishlist(request, product_id):
         return redirect('wishlist') 
     
     
+def change_password(request):
+      if request.method=="POST":
+           Current_password=request.POST.get("current_password")
+           New_password=request.POST.get('new_password1')
+           New_password2=request.POST.get('new_password2')
+           if not  check_password(Current_password, request.user.password):
+                 messages.error(request,'Current Password is error')
+            elif not any(char.isupper() for char in password):
+                messages.error(request, 'Password must contain at least one uppercase letter')
+                return redirect('SignUp')
+            elif not any(char.islower() for char in password):  # Corrected condition
+                messages.error(request, 'Password must contain at least one lowercase letter')
+                return redirect('SignUp')
+            elif not any(char.isdigit() for char in password):
+                messages.error(request, 'Password must contain at least one digit')
+                return redirect('SignUp')
+                 
+
+      return render(request,"change_password.html")
                       
 
        
