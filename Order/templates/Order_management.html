@@ -1,0 +1,37 @@
+{% extends 'nav.html'%}
+{% block body %}
+<div class="container-fluid pt-4 px-4">
+    <div class="bg-light rounded p-4">
+       
+        
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Tracking_id</th>
+                    <th scope="col">Username</th>
+                    <th scope="col">Total Amount</th>
+                    <th scope="col">Payment Method</th>
+                    <th scope="col">Payment Staus</th>
+                    <!-- Add other table headers if needed -->
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in data %}
+                <tr>
+                    <td><a href="{% url 'order_details' item.id %}">{{item.order_id}}</a></td>
+                    <td>{{ item.user.username }}</td>
+                    <td>{{ item.total_amount}}</td>
+                    <td>{{item.payment_method}}</td>
+                    <td>
+                        {{item.payment.status}}
+                      
+                    </td>
+                    <!-- Add other table cells if needed -->
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+   
+{% endblock%}

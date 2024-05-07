@@ -7,19 +7,24 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('Products', '0007_remove_color_products_thumbnail_product_thumbnail'),
-        ('cart', '0001_initial'),
+        ("Products", "0007_remove_color_products_thumbnail_product_thumbnail"),
+        ("cart", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='cart',
-            name='products',
-            field=models.ManyToManyField(through='cart.CartItem', to='Products.color_products'),
+            model_name="cart",
+            name="products",
+            field=models.ManyToManyField(
+                through="cart.CartItem", to="Products.color_products"
+            ),
         ),
         migrations.AlterField(
-            model_name='cartitem',
-            name='product',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='Products.color_products'),
+            model_name="cartitem",
+            name="product",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                to="Products.color_products",
+            ),
         ),
     ]

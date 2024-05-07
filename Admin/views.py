@@ -1,14 +1,14 @@
 from datetime import timedelta, timezone, datetime
-from django.core.validators import validate_email
+
 from django.core.exceptions import ValidationError
 
-import random
+
 from django.shortcuts import render, HttpResponse
 from django.contrib import messages
 from django.db.models import Q
 
 from django.shortcuts import render, redirect
-from .models import *
+from .models import Catagory, Brand
 from django.contrib.auth import authenticate, login as log, logout as authlogout
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache, cache_control
@@ -35,7 +35,7 @@ def login(request):
 
         try:
             user = authenticate(request, username=username, password=password)
-            if user is not None and user.is_superuser == True:
+            if user is not None and user.is_superuser:
                 log(request, user)
 
                 return redirect("dashbord")
@@ -52,7 +52,7 @@ def login(request):
 
 
 @never_cache
-@login_required(login_url="AdminLogin/")
+@login_required(login_url="adminlogin")
 def dashbord(request):
 
     if request.user.is_superuser:
@@ -87,7 +87,7 @@ def block_user(request, u_id):
         data.save()
         return redirect("userdetail")
 
-    except:
+    except CustomUser.DoesNotExist:
 
         return redirect("userdetail")
 
@@ -159,7 +159,7 @@ def view_category(request):
             data = Catagory.objects.filter(is_listed=True)
 
             return render(request, "view_category.html", {"data": data})
-        except:
+        except Catagory.DoesNotExist:
             return render(request, "view_category.html")
 
     return redirect("adminlogin")
@@ -209,7 +209,7 @@ def edit_category(request, ca_id):
             return redirect("view_category")
 
         return render(request, "edit_category.html", {"data": data})
-    except:
+    except Exception:
         return redirect("view_category")
 
 
@@ -222,7 +222,7 @@ def category_unlist(request, ca_id):
         item.save()
         return redirect("view_category")
 
-    except:
+    except Catagory.DoesNotExist:
         return redirect("view_category")
 
 
@@ -250,7 +250,7 @@ def list_category(request, ca_id):
         item.save()
         return redirect("view_category")
 
-    except:
+    except Catagory.DoesNotExist:
         return redirect("unlistcategory")
 
 
@@ -405,6 +405,6 @@ def is_valid_image(file):
 
         Image.open(file)
         return True
-    except Exception as e:
+    except Exception:
 
         return False

@@ -1,6 +1,7 @@
 """
 GDAL - Constant definitions
 """
+
 from ctypes import c_double, c_float, c_int16, c_int32, c_ubyte, c_uint16, c_uint32
 
 # See https://gdal.org/api/raster_c_api.html#_CPPv412GDALDataType

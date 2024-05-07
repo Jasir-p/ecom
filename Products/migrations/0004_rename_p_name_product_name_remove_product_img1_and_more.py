@@ -7,54 +7,62 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('Products', '0003_remove_color_products_img1_and_more'),
+        ("Products", "0003_remove_color_products_img1_and_more"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='product',
-            old_name='p_name',
-            new_name='name',
+            model_name="product",
+            old_name="p_name",
+            new_name="name",
         ),
         migrations.RemoveField(
-            model_name='product',
-            name='img1',
+            model_name="product",
+            name="img1",
         ),
         migrations.RemoveField(
-            model_name='product',
-            name='img2',
+            model_name="product",
+            name="img2",
         ),
         migrations.RemoveField(
-            model_name='product',
-            name='img3',
+            model_name="product",
+            name="img3",
         ),
         migrations.RemoveField(
-            model_name='size_variant',
-            name='product',
+            model_name="size_variant",
+            name="product",
         ),
         migrations.AddField(
-            model_name='color_products',
-            name='img1',
-            field=models.ImageField(null=True, upload_to='products/'),
+            model_name="color_products",
+            name="img1",
+            field=models.ImageField(null=True, upload_to="products/"),
         ),
         migrations.AddField(
-            model_name='color_products',
-            name='img2',
-            field=models.ImageField(null=True, upload_to='products/'),
+            model_name="color_products",
+            name="img2",
+            field=models.ImageField(null=True, upload_to="products/"),
         ),
         migrations.AddField(
-            model_name='color_products',
-            name='img3',
-            field=models.ImageField(null=True, upload_to='products/'),
+            model_name="color_products",
+            name="img3",
+            field=models.ImageField(null=True, upload_to="products/"),
         ),
         migrations.AlterField(
-            model_name='color_products',
-            name='product',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='color_product', to='Products.product'),
+            model_name="color_products",
+            name="product",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="color_product",
+                to="Products.product",
+            ),
         ),
         migrations.AlterField(
-            model_name='size_variant',
-            name='Color_products',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='size', to='Products.color_products'),
+            model_name="size_variant",
+            name="Color_products",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="size",
+                to="Products.color_products",
+            ),
         ),
     ]

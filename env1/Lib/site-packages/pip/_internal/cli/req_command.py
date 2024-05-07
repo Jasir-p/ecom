@@ -69,7 +69,6 @@ def _create_truststore_ssl_context() -> Optional["SSLContext"]:
 
 
 class SessionCommandMixin(CommandContextMixIn):
-
     """
     A class mixin for command classes needing _build_session().
     """
@@ -156,7 +155,6 @@ class SessionCommandMixin(CommandContextMixIn):
 
 
 class IndexGroupCommand(Command, SessionCommandMixin):
-
     """
     Abstract base class for commands with the index_group options.
 

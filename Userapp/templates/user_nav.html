@@ -9,10 +9,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Male-Fashion | Template</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-xmXMBqv2JLbG27Pz69gHv04UPG4e1ByQDE4C8VBUbPZD13F8Uhtn5yJpCdwi+5wQf3z1B/WoGiMOg2RkTX+/qg==" crossorigin="anonymous" />
 
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;800;900&display=swap"
     rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.3.45/css/materialdesignicons.css" integrity="sha256-NAxhqDvtY0l4xn+YVa6WjAcmd94NNfttjNsDmNatFVc=" crossorigin="anonymous" />
+<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <!-- Css Styles -->
     <link rel="stylesheet" href="{% static 'user/home/css/bootstrap.min.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'user/home/css/font-awesome.min.css' %}" type="text/css">
@@ -48,7 +51,7 @@
                 <a href="#">FAQs</a>
             </div>
             <div class="offcanvas__top__hover">
-                <span>Usd <i class="arrow_carrot-down"></i></span>
+                <span><i class="arrow_carrot-down"> Usd </i></span>
                 <ul>
                     <li>USD</li>
                     <li>EUR</li>
@@ -82,11 +85,13 @@
                     <div class="col-lg-6 col-md-5">
                         <div class="header__top__right">
                             <div class="header__top__links">
-                                <a href="#">Sign in</a>
-                                <a href="#">FAQs</a>
+                                {% if not user.is_authenticated %}
+                                <a href="{% url 'login' %}">Sign in</a>
+                                {% endif%}
+                                
                             </div>
                             <div class="header__top__hover">
-                                
+                                <span><i class="arrow_carrot-down"></i></span>
                                 <ul>
                                     <li>USD</li>
                                     <li>EUR</li>
@@ -118,7 +123,7 @@
                             <li><a href="#"><img src="{% static 'user/home/img/icon/user1.png' %}" alt=""></a>
                                 <ul class="dropdown">
                                     <li><a href="{% url 'userlogout'%}">logout</a></li>
-                                    <li><a href="{% url 'view_address'%}">Address</a></li>
+                                    <li><a href="{% url 'view_address'%}">Profile</a></li>
                                
                                   
                                     
@@ -128,7 +133,7 @@
 
                             
                             {% else %}
-                            <li><a href="{% url 'login' %}">Sign in</a></li>
+                            <li></li>
                             {% endif %}
                             
                         </ul>
@@ -141,6 +146,8 @@
                         <a href="#" class="search-switch"><img src="{% static 'user/home/img/icon/search.png' %}" alt=""></a>
                         <a href="{% url 'wishlist' %}"><img src="{% static 'user/home/img/icon/heart.png' %}" alt=""></a>
                         <a href="{% url 'viewcart'%}"><img src="{% static 'user/home/img/icon/cart.png' %}" alt=""> <span>0</span></a>
+                        <a href="#"><img src="{% static 'user/home/img/icon/user1.png' %}" alt="" width></a>
+                        
                         
                     </div>
                 </div>

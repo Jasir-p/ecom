@@ -266,9 +266,9 @@ class DatabaseSchemaEditor(BaseDatabaseSchemaEditor):
             % {
                 "column": self.quote_name(new_field.column),
                 "type": new_type,
-                "collation": " " + self._collate_sql(new_collation)
-                if new_collation
-                else "",
+                "collation": (
+                    " " + self._collate_sql(new_collation) if new_collation else ""
+                ),
             },
             [],
         )

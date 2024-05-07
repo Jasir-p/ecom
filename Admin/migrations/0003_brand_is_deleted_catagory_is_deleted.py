@@ -6,18 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('Admin', '0002_brand_is_listed_catagory_is_listed'),
+        ("Admin", "0002_brand_is_listed_catagory_is_listed"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='brand',
-            name='is_deleted',
+            model_name="brand",
+            name="is_deleted",
             field=models.BooleanField(default=True),
         ),
         migrations.AddField(
-            model_name='catagory',
-            name='is_deleted',
+            model_name="catagory",
+            name="is_deleted",
             field=models.BooleanField(default=True),
         ),
     ]

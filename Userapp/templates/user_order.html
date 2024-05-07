@@ -1,0 +1,94 @@
+{% extends 'user_nav.html' %}
+{% block body %}
+    {% load static %}
+    <style>
+        .order-spacing {
+            margin-bottom: 20px; /* Adjust the margin as needed */
+        }
+        
+        .order-card {
+            margin-bottom: 20px; /* Adjust the margin as needed */
+        }
+        
+    </style>
+
+    <section class="shopping-cart spad">
+        <div class="container">
+            <div class="main-body">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <!-- Left sidebar content -->
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex flex-column align-items-center text-center">
+                                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQtbEsykx-0fhTred6UwHDYtMFd2UgTJCG4gaklT1dx4suRO4_n5LJr4Gg28kquSX5fpNo&usqp=CAU" alt="Admin"
+                                        class="rounded-circle p-1 bg-warning" width="110">
+                                    <div class="mt-3">
+                                        <h4>Jyoti</h4>
+                                        <p class="text-secondary mb-1">+91 7493658737</p>
+                                        <p class="text-muted font-size-sm">Delhi, NCR</p>
+                                    </div>
+                                </div>
+                                <div class="list-group list-group-flush text-center mt-4">
+                                    <a href="{% url 'view_address' %}" class="list-group-item list-group-item-action border-0 ">
+                                        Profile Information
+                                    </a>
+                                    <a href="#" class="list-group-item list-group-item-action border-0" >Orders</a>
+                                    <a href="{% url 'changepassword'  %}" class="list-group-item list-group-item-action border-0">
+                                        Change Password
+                                    </a>
+                                    <a href="#" class="list-group-item list-group-item-action border-0">Logout</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-8">
+                        {% if orders%}
+                        <div class="shopping__cart__table">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Order ID</th>
+                                        <th>Order Date</th>
+                                        <th>Total Amount</th>
+                                        <th>Payment Method</th>
+                                        <th>Action</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Loop through orders -->
+                                    {% for order in orders %}
+                                    <tr class="order-spacing">
+                                        <td><a href="{% url 'view_order_details' order.id %}">{{ order.order_id }}</a></td>
+                                        <td>{{ order.created_at }}</td>
+                                        <td>{{ order.total_amount }}</td>
+                                        <td>{{ order.get_payment_method_display }}</td>
+                                        <td>{{ order.payment.status}}</td>
+                                        <td></td>
+                                    </tr>
+                                    <!-- Loop through order items -->
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                                                        <div class="text-center">
+                                                            <p>Your Order is empty.</p>
+                                                            <p>Explore our products and Order your Faviourite!</p>
+                                                            <a href="{% url 'shop' %}" class="btn btn-primary">Shop Now</a>
+                                                        </div>
+                                                    
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+ 

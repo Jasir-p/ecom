@@ -10,58 +10,140 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('Products', '0007_remove_color_products_thumbnail_product_thumbnail'),
+        ("Products", "0007_remove_color_products_thumbnail_product_thumbnail"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Coupon',
+            name="Coupon",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('code', models.CharField(max_length=50, unique=True)),
-                ('discount', models.DecimalField(decimal_places=2, max_digits=10)),
-                ('valid_from', models.DateField()),
-                ('valid_to', models.DateField()),
-                ('active', models.BooleanField(default=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("code", models.CharField(max_length=50, unique=True)),
+                ("discount", models.DecimalField(decimal_places=2, max_digits=10)),
+                ("valid_from", models.DateField()),
+                ("valid_to", models.DateField()),
+                ("active", models.BooleanField(default=True)),
             ],
         ),
         migrations.CreateModel(
-            name='Cart',
+            name="Cart",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('coupon_applied', models.BooleanField(blank=True, default=False, null=True)),
-                ('total_amount', models.DecimalField(decimal_places=2, default=0, max_digits=10, null=True)),
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "coupon_applied",
+                    models.BooleanField(blank=True, default=False, null=True),
+                ),
+                (
+                    "total_amount",
+                    models.DecimalField(
+                        decimal_places=2, default=0, max_digits=10, null=True
+                    ),
+                ),
+                (
+                    "user",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='CartItem',
+            name="CartItem",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('quantity', models.PositiveIntegerField(default=1)),
-                ('cart', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='cart.cart')),
-                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='Products.product')),
-                ('product_size_color', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='Products.size_variant')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("quantity", models.PositiveIntegerField(default=1)),
+                (
+                    "cart",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="cart.cart"
+                    ),
+                ),
+                (
+                    "product",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="Products.product",
+                    ),
+                ),
+                (
+                    "product_size_color",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="Products.size_variant",
+                    ),
+                ),
             ],
         ),
         migrations.AddField(
-            model_name='cart',
-            name='products',
-            field=models.ManyToManyField(through='cart.CartItem', to='Products.product'),
+            model_name="cart",
+            name="products",
+            field=models.ManyToManyField(
+                through="cart.CartItem", to="Products.product"
+            ),
         ),
         migrations.AddField(
-            model_name='cart',
-            name='coupon',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='cart.coupon'),
+            model_name="cart",
+            name="coupon",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to="cart.coupon",
+            ),
         ),
         migrations.CreateModel(
-            name='CustomerCoupon',
+            name="CustomerCoupon",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('applied_at', models.DateTimeField(auto_now_add=True)),
-                ('coupon', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='cart.coupon')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("applied_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "coupon",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="cart.coupon"
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
     ]

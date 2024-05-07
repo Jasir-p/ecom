@@ -3880,3 +3880,87 @@ ol {
 .zoomable-image:hover .overlay-content {
 	display: block;
 }
+
+.list-group-item.active {
+    background: #06C167 !important;
+}
+.bg-warning {
+    background: #06C167 !important;
+}
+.modal-content {
+        background-color: #fefefe;
+        margin: 4% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 70%;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s ease-in-out;
+        /*transform: translateY(-100%);*/
+    }
+    .close {
+        float: right;
+        text-align: right;
+        font-size: 30px;
+    }
+    .modal-content h2 {
+        text-align: center;
+        margin-top: -35px;
+    }
+    .button_div {
+        justify-content: center;
+        text-align: center;
+    }
+    .button_div button {
+        margin-right: 10px;
+        background: #06C167;
+        border: 1px solid #06C167;
+        padding: 5px 15px;
+        color: #FFFFFF;
+        border-radius: 2px;
+    }
+    #addAddressForm input {
+        padding: 5px;
+    }
+    .nice-select {
+        padding: 0px !important;
+        height: 38px !important;
+        line-height: 38px !important;
+    }
+    
+    .add_address_button {
+        background: #06C167;
+        border: 1px solid #06C167;
+        padding: 5px 15px;
+        color: #FFFFFF;
+        border-radius: 2px;
+    }
+    
+    @media (max-width: 768px) {
+        .main_flex_div {
+            display: flex;
+            flex-direction: column;
+        }
+        .inner_flex_div {
+            min-width: 100% !important;
+        }
+        .modal-content {
+            padding: 10px 0px !important;
+            min-width: 95% !important;
+            height: 700px;
+            overflow: scroll;
+        }
+        .close {
+            margin-right: 10px;
+        }
+    }
+	.product__name {
+		font-size: 16px; /* Adjust font size as needed */
+		font-weight: bold;
+		font-family: Arial, sans-serif; /* Use appropriate font family */
+		margin-top: 10px; /* Add some margin for spacing */
+	}
+	
+	
+
+	
+	

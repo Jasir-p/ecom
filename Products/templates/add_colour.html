@@ -2,15 +2,15 @@
 {% block body %}
 <div class="container">
     
-    <form method="post" action="{% url 'addcolour' %}" enctype="multipart/form-data">
+    <form method="post" action="" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="mb-3">
             <label for="product">Product:</label>
             <select class="form-select" id="product" name="product" required>
                 <option value="" disabled selected>Select Product</option>
-                {% for i in products %}
-                <option value="{{ i.id }}">{{ i.name }}</option>
-                {% endfor %}
+                
+                <option value="{{ products.id }}">{{ products.name }}</option>
+                
             </select>
         </div>
         <div class="mb-3">

@@ -98,6 +98,7 @@
                             <p>Coat with quilted lining and an adjustable hood. Featuring long sleeves with adjustable
                                 cuff tabs, adjustable asymmetric hem with elastic side tabs and a front zip fastening
                             with placket.</p>
+                            {% comment %} {% if total_quantity > 0 %} {% endcomment %}
                             <form action="{% url 'add_cart' data.id %}" method='post'>
                                 {% csrf_token %}
                             <div class="product__details__option"> 
@@ -133,6 +134,7 @@
                                 color: white;" id="add-to-cart-btn" >add to cart</button>
                                
                                 </form>
+                                
                             </div>
                             <div class="product__details__btns__option">
                                 <a href="{% url 'addwishlist' data.id  %}"><i class="fa fa-heart"></i> add to wishlist</a>

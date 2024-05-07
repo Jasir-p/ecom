@@ -8,11 +8,9 @@
         <label for="color_product">Color Product:</label>
         <select class="form-control" id="color_product" name="color_product" required>
           <option value="" selected disabled>Select Color Product</option>
-          {% for color_product in color_products %}
-          {% if color_product.product.is_listed %}
-          <option value="{{ color_product.id }}">{{ color_product.color_name }}({{ color_product.product.name}})</option>
-          {%endif%}
-          {% endfor %}
+          
+          <option value="{{  color_products.id }}">{{  color_products.color_name }}({{  color_products.product.name}})</option>
+          
         </select>
       </div>
     <div class="form-group">

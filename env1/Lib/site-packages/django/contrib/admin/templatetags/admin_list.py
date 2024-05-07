@@ -167,9 +167,9 @@ def result_headers(cl):
             "url_primary": cl.get_query_string({ORDER_VAR: ".".join(o_list_primary)}),
             "url_remove": cl.get_query_string({ORDER_VAR: ".".join(o_list_remove)}),
             "url_toggle": cl.get_query_string({ORDER_VAR: ".".join(o_list_toggle)}),
-            "class_attrib": format_html(' class="{}"', " ".join(th_classes))
-            if th_classes
-            else "",
+            "class_attrib": (
+                format_html(' class="{}"', " ".join(th_classes)) if th_classes else ""
+            ),
         }
 
 
@@ -263,9 +263,11 @@ def items_for_result(cl, result, form):
                 link_or_text = format_html(
                     '<a href="{}"{}>{}</a>',
                     url,
-                    format_html(' data-popup-opener="{}"', value)
-                    if cl.is_popup
-                    else "",
+                    (
+                        format_html(' data-popup-opener="{}"', value)
+                        if cl.is_popup
+                        else ""
+                    ),
                     result_repr,
                 )
 

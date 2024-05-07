@@ -22,74 +22,71 @@ from django.utils.translation import gettext as _
 from django.core.files.uploadedfile import UploadedFile
 from PIL import Image
 from django.views import View
+
 # Create your views here.
 
+
 class AddCart(View):
-    
-    def post(self,request,id):
-        
+
+    def post(self, request, id):
+
         try:
-            cart=Cart.objects.get(user=request.user)
+            cart = Cart.objects.get(user=request.user)
         except Cart.DoesNotExist:
-            cart= Cart.objects.create(user=request.user)
-            
-        
-        size=request.POST.get('size')
-        
-        
-        product=Color_products.objects.get(id=id)
-        try: 
-            size_instance=size_variant.objects.get(id=size)
+            cart = Cart.objects.create(user=request.user)
+
+        size = request.POST.get("size")
+
+        product = Color_products.objects.get(id=id)
+        try:
+            size_instance = size_variant.objects.get(id=size)
         except size_variant.DoesNotExist:
-             messages.warning(request, 'Select a size')
-             return redirect('shopdetails',id)
+            messages.warning(request, "Select a size")
+            return redirect("shopdetails", id)
 
         existing_cart_item = CartItem.objects.filter(cart=cart, product=product)
-        if  existing_cart_item:
-                messages.warning(request,'Item already in the cart')
-                return redirect('viewcart')
-        
-        cart_item=CartItem.objects.create(cart=cart,product=product,product_size_color=size_instance)
+        if existing_cart_item:
+            messages.warning(request, "Item already in the cart")
+            return redirect("viewcart")
+
+        cart_item = CartItem.objects.create(
+            cart=cart, product=product, product_size_color=size_instance
+        )
         cart_item.save()
         cart.save()
-        messages.success(request,'Product succesfully added')
-        return redirect('shopdetails',id)
-        
+        messages.success(request, "Product succesfully added")
+        return redirect("shopdetails", id)
 
-        
+
 class Viewcart(View):
-    def get(self,request):
+    def get(self, request):
+        try:
+            cart = Cart.objects.get(user=request.user)
+        except Cart.DoesNotExist:
+            cart = Cart.objects.create(user=request.user)
         cart1 = Cart.objects.get(user=request.user)
         print(cart1)
-        cart=CartItem.objects.filter(cart__user=request.user).order_by('id')
-        total=0
+        cart = CartItem.objects.filter(cart__user=request.user).order_by("id")
+        total = 0
         for i in cart:
-            total=0
-            total+=i.product.product.price * i.quantity
-            i.total_price=total
+            total = 0
+            total += i.product.product.price * i.quantity
+            i.total_price = total
             i.save()
-        
-        cart1.total_amount =sum(item.total_price for item in cart)
+
+        cart1.total_amount = sum(item.total_price for item in cart)
         cart1.save()
-        context={
-            'cart1':cart1,
-            'cart':cart
-        }
-        
-        return render(request,'shopping-cart.html',context)
-    
+        context = {"cart1": cart1, "cart": cart}
 
-
-
-
+        return render(request, "shopping-cart.html", context)
 
 
 class UpdateCartView(View):
     def post(self, request):
         # Ensure the user is authenticated
         if request.user.is_authenticated:
-            product_id = request.POST.get('product_id')
-            quantity = request.POST.get('quantity')
+            product_id = request.POST.get("product_id")
+            quantity = request.POST.get("quantity")
 
             try:
                 # Retrieve the cart and item
@@ -99,10 +96,13 @@ class UpdateCartView(View):
                 # Check if the requested quantity is available
                 available_quantity = item.product_size_color.quantity
                 requested_quantity = int(quantity)
+                print(available_quantity, requested_quantity)
 
                 if requested_quantity > available_quantity:
-                    
-                    return JsonResponse({'success': False, 'error': 'Insufficient quantity'})
+                    print("aksjnf")
+                    return JsonResponse(
+                        {"success": False, "error": "Insufficient quantity"}
+                    )
 
                 # Update quantity and save
                 item.quantity = requested_quantity
@@ -113,50 +113,49 @@ class UpdateCartView(View):
                 item.total_price = total_price
                 item.save()
 
-                return JsonResponse({'success': True, 'total_price': total_price})
-            
+                return JsonResponse({"success": True, "total_price": total_price})
+
             except Cart.DoesNotExist:
-                return JsonResponse({'success': False, 'error': 'Cart not found'})
+                return JsonResponse({"success": False, "error": "Cart not found"})
             except CartItem.DoesNotExist:
-                return JsonResponse({'success': False, 'error': 'CartItem not found'})
+                return JsonResponse({"success": False, "error": "CartItem not found"})
             except ValueError:
-                return JsonResponse({'success': False, 'error': 'Invalid quantity value'})
-        
+                return JsonResponse(
+                    {"success": False, "error": "Invalid quantity value"}
+                )
+
         else:
-            return JsonResponse({'success': False, 'error': 'User not authenticated'})
+            return JsonResponse({"success": False, "error": "User not authenticated"})
 
 
-
-def delete_cart(request,cart_id):
-        try:
-             cart = Cart.objects.get(user=request.user)
-             item = CartItem.objects.get(cart=cart, id=cart_id)
-             item.delete()
-             return redirect('viewcart')
-        except (Cart.DoesNotExist, CartItem.DoesNotExist):
-            return JsonResponse({'success': False, 'error': 'Cart or item not found'})
+def delete_cart(request, cart_id):
+    try:
+        cart = Cart.objects.get(user=request.user)
+        item = CartItem.objects.get(cart=cart, id=cart_id)
+        item.delete()
+        return redirect("viewcart")
+    except (Cart.DoesNotExist, CartItem.DoesNotExist):
+        return JsonResponse({"success": False, "error": "Cart or item not found"})
 
 
 def cart_total_view(request):
     if request.user.is_authenticated:
         cart = Cart.objects.get(user=request.user)
-        cart_item=CartItem.objects.filter(cart__user=request.user).order_by('id')
-        subtotal =sum(item.total_price for item in cart_item)
-        total = cart.Totel() # Assuming you have shipping cost
-        return JsonResponse({'subtotal': subtotal, 'total': total})
+        cart_item = CartItem.objects.filter(cart__user=request.user).order_by("id")
+        subtotal = sum(item.total_price for item in cart_item)
+        total = cart.Totel()  # Assuming you have shipping cost
+        return JsonResponse({"subtotal": subtotal, "total": total})
     else:
-        return JsonResponse({'error': 'User not authenticated'})
-def checkout(request):
-    cart= Cart.objects.get(user=request.user)
-    
-    print(cart)
-    
-    item=CartItem.objects.filter(cart__user=request.user).order_by('id')
-    context={
-            'item':item,
-            'cart':cart
-        }
-        
-        
+        return JsonResponse({"error": "User not authenticated"})
 
-    return render (request,'checkout.html',context)
+
+def checkout(request):
+    cart = Cart.objects.get(user=request.user)
+    address = Address.objects.filter(user=request.user)
+
+    print(cart)
+
+    item = CartItem.objects.filter(cart__user=request.user).order_by("id")
+    context = {"item": item, "cart": cart, "existing_addresses": address}
+
+    return render(request, "checkout.html", context)

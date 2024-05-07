@@ -54,6 +54,7 @@
                         </thead>
                         <tbody>
                             {% for i in cart %}
+                           
                             <tr>
                                 <td class="product__cart__item">
                                     <div class="product__cart__item__pic">
@@ -70,6 +71,7 @@
                                         <div class="pro-qty-2">
                                             <button class="qty-btn qty-minus">-</button>
                                             <input type="text" class="quantity-input" id="quantity-{{ i.id }}" value="{{ i.quantity }}" readonly>
+                                            <input type="hidden"  value="{{i.product_size_color.quantity}}"  id="quantity1-{{ i.id }}" hide>
                                             <button class="qty-btn qty-plus">+</button>
                                         </div>
                                     </div>
@@ -77,6 +79,7 @@
                                 <td class="cart__price" id="total-price-{{ i.id }}">{{ i.total_price }}</td>
                                 <td class="cart__close"><a href="{% url 'deletecart' i.id %}"><i class="fa fa-close"></i></a></td>
                             </tr>
+                            
                             {% endfor %}
                         </tbody>
                     </table>
@@ -94,6 +97,7 @@
                     </div>
                 </div>
             </div>
+            {% if cart %}
             <div class="col-lg-4">
                 <div class="cart__discount">
                     <h6>Discount codes</h6>
@@ -111,6 +115,7 @@
                     <a href="{% url 'checkout' %}" class="primary-btn">Proceed to checkout</a>
                 </div>
             </div>
+            {% endif %}
         </div>
     </div>
 </section>
@@ -195,11 +200,13 @@
 <!-- Search End -->
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="path/to/sweetalert.min.js"></script>
+
 
 <script>
     $(document).ready(function() {
         // Function to handle updating quantity
-        function updateQuantity(product_id, quantity) {
+        function updateQuantity(product_id, quantity,quantity1) {
             $.ajax({
                 type: 'POST',
                 url: '{% url "update_cart" %}',
@@ -215,13 +222,19 @@
                         $('#total-price-' + product_id).text(response.total_price);
                         // Update cart total after successful cart update
                         updateCartTotal();
+                        if (quantity >= quantity1) {
+                            $('#quantity-' + product_id).siblings('.qty-plus').prop('disabled', true);
+                        } else {
+                            $('#quantity-' + product_id).siblings('.qty-plus').prop('disabled', false);
+                        }
+                       
                     }  else {
+                        console.log(quantity)
+                     console.log(quantity1)
+
+                    
 		
-						Swal.fire({
-							icon: 'warning',
-							title: 'Oops...',
-							text: "Maximum quantity reached.",
-						});
+	                   console.log("erkjh")
                     }
                 },
                 error: function(xhr, status, error) {
@@ -249,7 +262,9 @@
         $('.pro-qty-2 .qty-btn').on('click', function() {
             var $input = $(this).siblings('.quantity-input');
             var product_id = $input.attr('id').replace('quantity-', '');
+            var $input1 = $(this).siblings('[id^="quantity1-"]'); 
             var quantity = parseInt($input.val());
+            var quantity1 = parseInt($input1.val());
     
             if ($(this).hasClass('qty-plus')) {
                 quantity = Math.min(9, quantity + 1); // Ensure quantity doesn't exceed 9
@@ -258,7 +273,7 @@
             }
     
             $input.val(quantity);
-            updateQuantity(product_id, quantity); // Update quantity
+            updateQuantity(product_id, quantity,quantity1); // Update quantity
         });
     
         // Event handler for input field change

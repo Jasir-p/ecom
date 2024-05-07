@@ -1,0 +1,94 @@
+{% extends 'user_nav.html' %}
+{% block body %}
+<style>
+    /* Basic styling */
+    #container {
+        max-width: 80%;
+        margin: 20px auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .card-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between; /* Add space between cards */
+        
+    }
+    .card {
+        width: 48%; /* Adjust card width */
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 20px;
+        margin-bottom: 20px; /* Add some space between cards */
+    }
+    .order-items-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+    .order-items-table th, .order-items-table td {
+        border: 1px solid #ccc;
+        padding: 8px;
+        text-align: left;
+    }
+    .order-items-table th {
+        background-color: #f2f2f2;
+    }
+    .td img {
+        max-width: 50px;
+        margin-right: 10px;
+    }
+</style>
+<div id="container">
+    
+    
+    <!-- Address Card -->
+    <div class="card-container">
+        <!-- User Address Card -->
+        <div class="card col-lg-4">
+            
+            <!-- Replace with dynamic data -->
+            <p>User Name: {{ order.name }}</p>
+            <p>Address: {{ order.address }}, {{ order.House_no }}, {{ order.city }}, {{ order.state }}, {{ order.country }}, {{ order.pincode }}</p>
+        </div>
+        <div class="card col-lg-4">
+            
+            <!-- Replace with dynamic data -->
+            <p>User Name: {{ order.name }}</p>
+            <p>Address: {{ order.address }}, {{ order.House_no }}, {{ order.city }}, {{ order.state }}, {{ order.country }}, {{ order.pincode }}</p>
+        </div>
+        
+        <!-- Order Items Card -->
+        <div class="card col-lg-12 ">
+          
+            <table class="order-items-table">
+                <thead>
+                    <tr><th></th>
+                        <th>Item </th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Status</th>
+                        <th>Tracking ID</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Replace with dynamic data -->
+                    {% for order_item in order.order.all %}
+                        <tr><td></td>
+                            <td class='td'><img src="{{ order_item.product.product.thumbnail.url }}" alt="{{ order_item.product.name }}">
+                                {{ order_item.product.product.name }}</td>
+                            <td>{{ order_item.quantity }}</td>
+                            <td>${{ order_item.product.product.price }}</td>
+                            <td>{{ order_item.status }}</td>
+                            <td><a href="{% url 'order_track' order_item.id %}">{{ order_item.trackig_id }}</a></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+</div>
+{% endblock %}

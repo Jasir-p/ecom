@@ -8,28 +8,28 @@
         <!-- Product Name -->
         <div class="form-group">
             <label for="productName">Name:</label>
-            <input type="text" class="form-control" id="productName" name="productName" value="{{ product.name }}">
+            <input type="text" class="form-control" id="productName" name="name" value="{{ product.name }}">
         </div>
         <!-- Product Price -->
         <div class="form-group">
             <label for="productPrice">Price:</label>
-            <input type="text" class="form-control" id="productPrice" name="productPrice" value="{{ product.price }}">
+            <input type="text" class="form-control" id="productPrice" name="price" value="{{ product.price }}">
         </div>
         <!-- Product Thumbnail -->
         <div class="form-group">
             <label for="productThumbnail">Thumbnail:</label>
-            <input type="file" class="form-control-file" id="productThumbnail" name="productThumbnail">
+            <input type="file" class="form-control-file" id="productThumbnail" name="Thumbnail">
             <img src="{{ product.thumbnail.url }}" alt="Cover Image" style="max-width: 100px;" height='80px'>
         </div>
         <!-- Product Description -->
         <div class="form-group">
             <label for="productDescription">Description:</label>
-            <textarea class="form-control" id="productDescription" name="productDescription">{{ product.description }}</textarea>
+            <textarea class="form-control" id="productDescription" name="description">{{ product.description }}</textarea>
         </div>
         <!-- Product Category -->
         <div class="form-group">
             <label for="productCategory">Category:</label>
-            <select class="form-control" id="productCategory" name="productCategory">
+            <select class="form-control" id="productCategory" name="Category">
                 {% for category in categories %}
                 <option value="{{ category.id }}" {% if product.product.catagory.id == category.id %}selected{% endif %}>{{ category.cat_name }}</option>
                 {% endfor %}
@@ -38,20 +38,12 @@
         <!-- Product Brand -->
         <div class="form-group">
             <label for="productBrand">Brand:</label>
-            <select class="form-control" id="productBrand" name="productBrand">
+            <select class="form-control" id="productBrand" name="Brand">
                 {% for brand in brands %}
                 <option value="{{ brand.id }}" {% if product.product.brand.id == brand.id %}selected{% endif %}>{{ brand.B_name }}</option>
                 {% endfor %}
             </select>
         </div>
-        
-    
-   
-    
-            
-          
-    </div>
-        <!-- Submit Button -->
         <button type="submit" class="btn btn-primary">Save Changes</button>
     </form> 
     
