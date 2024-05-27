@@ -1,0 +1,126 @@
+{% extends 'nav.html' %}
+{% block body %}
+<style>
+    /* Custom CSS styles for the table */
+    .sales-table {
+        background-color: white;
+        color: #222; /* Dark black color */
+    }
+    .sales-table th,
+    .sales-table td {
+        border-color: #dee2e6; /* Border color */
+    }
+    .inner-table {
+        border: none; /* Remove border */
+    }
+</style>
+<div class="container-fluid pt-4 px-4">
+    <div class="bg-white rounded shadow-sm p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="mb-0">Sales Report</h4>
+            <a href="" class="btn btn-success">Download Report</a>
+        </div>
+        
+        <form method="GET" class="row mb-4">
+            <div class="col-md-3">
+                <label for="reportType" class="form-label">Report Type</label>
+                <select id="reportType" name="report_type" class="form-control" onchange="showDateInputs()">
+                    <option value="day" {% if request.GET.report_type == 'day' %}selected{% endif %}>Day</option>
+                    <option value="week" {% if request.GET.report_type == 'week' %}selected{% endif %}>Week</option>
+                    <option value="month" {% if request.GET.report_type == 'month' %}selected{% endif %}>Month</option>
+                    <option value="year" {% if request.GET.report_type == 'year' %}selected{% endif %}>Year</option>
+                </select>
+            </div>
+            <div class="col-md-3" id="dayInput" style="display: none;">
+                <label for="day" class="form-label">Date</label>
+                <input type="date" id="day" name="day" class="form-control" value="{{ request.GET.day }}">
+            </div>
+            <div class="col-md-3" id="weekInput" style="display: none;">
+                <label for="week" class="form-label">Week</label>
+                <input type="week" id="week" name="week" class="form-control" value="{{ request.GET.week }}">
+            </div>
+            <div class="col-md-3" id="monthInput" style="display: none;">
+                <label for="month" class="form-label">Month</label>
+                <select id="month" name="month" class="form-control">
+                    {% for m in months %}
+                    <option value="{{ m }}" {% if request.GET.month == m|stringformat:"i" %}selected{% endif %}>
+                        {{ m|stringformat:"02d" }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3" id="yearInput" style="display: none;">
+                <label for="year" class="form-label">Year</label>
+                <select id="year" name="year" class="form-control">
+                    {% for y in years %}
+                    <option value="{{ y }}" {% if request.GET.year == y|stringformat:"i" %}selected{% endif %}>
+                        {{ y }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3 align-self-end">
+                <button type="submit" class="btn btn-primary mt-2">Filter</button>
+            </div>
+        </form>
+
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col" class="text-center">Order ID</th>
+                    <th scope="col">Products</th>
+                    <th scope="col" class="text-center">Coupon Applied</th>
+                </tr>
+            </thead>
+            <tbody class="table-white">
+                {% for order in grouped_orders %}
+                <tr >
+                    <th scope="row" class="text-center align-middle">{{ forloop.counter }}</th>
+                    <td class="text-center align-middle">{{ order.order.order_id }}</td>
+                    <td>
+                        <table class=" table inner-table mb-0 table-white">
+                            <tbody>
+                                {% for item in order.products %}
+                                <tr class="inner-table">
+                                    <td>{{ item.product.name }}</td>
+                                    <td>{{ item.quantity }}</td>
+                                    <td>{{ item.price|floatformat:2 }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </td>
+                    <td class="text-center align-middle">
+                        {% if order.coupon_applied %}
+                            Yes ({{order.discount_amount|floatformat:2 }})
+                        {% else %}
+                            No
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="mt-4">
+            <p><strong>Total Sales Count:</strong> {{ count }}</p>
+            <p><strong>Total Revenue:</strong> ${{ total|floatformat:2 }}</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showDateInputs() {
+        var reportType = document.getElementById('reportType').value;
+        document.getElementById('dayInput').style.display = reportType === 'day' ? 'block' : 'none';
+        document.getElementById('weekInput').style.display = reportType === 'week' ? 'block' : 'none';
+        document.getElementById('monthInput').style.display = reportType === 'month' ? 'block' : 'none';
+        document.getElementById('yearInput').style.display = reportType === 'year' ? 'block' : 'none';
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        showDateInputs(); // Ensure correct input is displayed based on initial selection
+    });
+</script>
+{% endblock %}

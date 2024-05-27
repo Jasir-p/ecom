@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "Products",
     "cart",
     "Order",
+    "Offer",
 ]
 
 
@@ -67,7 +68,9 @@ ROOT_URLCONF = "shopifyproject.urls"
 
 RAZOR_KEY_ID = "rzp_test_ev9UtjBDn8UC2J"
 RAZOR_KEY_SECRET = "rpdNb1B6Vr9aFr4mwORGjAId"
-
+SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin-allow-popups"
+TIME_ZONE = 'UTC'  # or your local time zone
+USE_TZ = True
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -76,6 +79,7 @@ TEMPLATES = [
             BASE_DIR / "Userapp/templates",
             BASE_DIR / "cart/templates",
             BASE_DIR / "Order/templates",
+            BASE_DIR / "Offer/templates",
         ],
         "APP_DIRS": True,
         "OPTIONS": {

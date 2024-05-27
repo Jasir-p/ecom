@@ -14,7 +14,6 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between; /* Add space between cards */
-        
     }
     .card {
         width: 48%; /* Adjust card width */
@@ -36,37 +35,38 @@
     .order-items-table th {
         background-color: #f2f2f2;
     }
+    .order-items-table a {
+        color: blue;
+        text-decoration: none;
+        transition: color 0.3s;
+    }
     .td img {
         max-width: 50px;
         margin-right: 10px;
     }
+    .heading {
+        font-size: 20px;
+        margin-bottom: 15px;
+    }
 </style>
 <div id="container">
-    
-    
-    <!-- Address Card -->
+    <!-- Address Cards -->
     <div class="card-container">
         <!-- User Address Card -->
         <div class="card col-lg-4">
-            
+            <h2 class="heading">Shipping Address</h2>
             <!-- Replace with dynamic data -->
-            <p>User Name: {{ order.name }}</p>
-            <p>Address: {{ order.address }}, {{ order.House_no }}, {{ order.city }}, {{ order.state }}, {{ order.country }}, {{ order.pincode }}</p>
+            <p><strong>User Name:</strong> {{ order.name }}</p>
+            <p><strong>Address:</strong> {{ order.address }}, {{ order.House_no }}, {{ order.city }}, {{ order.state }}, {{ order.country }}, {{ order.pincode }}</p>
         </div>
-        <div class="card col-lg-4">
-            
-            <!-- Replace with dynamic data -->
-            <p>User Name: {{ order.name }}</p>
-            <p>Address: {{ order.address }}, {{ order.House_no }}, {{ order.city }}, {{ order.state }}, {{ order.country }}, {{ order.pincode }}</p>
-        </div>
-        
         <!-- Order Items Card -->
-        <div class="card col-lg-12 ">
-          
+        <div class="card col-lg-7">
+            <h2 class="heading">Order Details</h2>
             <table class="order-items-table">
                 <thead>
-                    <tr><th></th>
-                        <th>Item </th>
+                    <tr>
+                        <th></th>
+                        <th>Item</th>
                         <th>Quantity</th>
                         <th>Price</th>
                         <th>Status</th>
@@ -76,11 +76,11 @@
                 <tbody>
                     <!-- Replace with dynamic data -->
                     {% for order_item in order.order.all %}
-                        <tr><td></td>
-                            <td class='td'><img src="{{ order_item.product.product.thumbnail.url }}" alt="{{ order_item.product.name }}">
-                                {{ order_item.product.product.name }}</td>
+                        <tr>
+                            <td class='td'><img src="{{ order_item.product.product.thumbnail.url }}" alt="{{ order_item.product.name }}"></td>
+                            <td>{{ order_item.product.product.name }}</td>
                             <td>{{ order_item.quantity }}</td>
-                            <td>${{ order_item.product.product.price }}</td>
+                            <td>{{ order_item.price }}</td>
                             <td>{{ order_item.status }}</td>
                             <td><a href="{% url 'order_track' order_item.id %}">{{ order_item.trackig_id }}</a></td>
                         </tr>
@@ -89,6 +89,5 @@
             </table>
         </div>
     </div>
-    
 </div>
 {% endblock %}

@@ -20,7 +20,7 @@ from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
 from django.conf.urls import handler404
-from Userapp.views import error_page
+# from Userapp.views import error_page
 
 
 urlpatterns = [
@@ -30,8 +30,9 @@ urlpatterns = [
     path("Product/", include("Products.urls")),
     path("", include("cart.urls")),
     path("", include("Order.urls")),
+    path("",include("Offer.urls")),
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-handler404 = "Userapp.views.error_page"
+# handler404 = "Userapp.views.error_page"

@@ -1,115 +1,147 @@
-
-
-<!-- Wishlist Section Begin -->
-{% extends 'user_nav.html'%}
+{% extends 'user_nav.html' %}
 {% block body %}
 
-<!-- Hero Section Begin -->
-{% load static %}
-<section class="hero">
-    <div class="hero__slider owl-carousel">
-        <div class="hero__items set-bg" data-setbg="{% static 'user/home/img/hero/hero-1.jpg' %}">
-            <!-- Hero content for the first slider -->
-        </div>
-        <div class="hero__items set-bg" data-setbg="{% static 'user/home/img/hero/hero-2.jpg' %}">
-            <!-- Hero content for the second slider -->
+<section class="shopping-cart spad">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="shopping__cart__table">
+                    {% if wishlist %}
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Price</th>
+                                <th>Stock Status</th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in wishlist %}
+                            <tr>
+                                <td class="text-center align-middle">
+                                    <div class="product__cart__item">
+                                        <div class="product__cart__item__pic">
+                                            <img src="{{ item.product.thumbnail.url }}" alt="" width="90px">
+                                            <h6 class="product__name">{{ item.product.name }} ({{ item.color_name }})</h6>
+                                        </div>
+                                    </div>
+                                </td>
+                                {% if item.product.offer_price %}
+                                <td class="align-middle">{{ item.product.offer_price }}</td>
+                                {% else%}
+                                <td class="align-middle">{{ item.product.price }}</td>
+                                {% endif %}
+                                <td class="align-middle" style="color: {% if item.total_quantity > 0 %}green{% else %}red{% endif %}; font-weight: bold; font-family: 'Arial', sans-serif;">
+                                    {% if item.total_quantity > 0 %}
+                                    In Stock
+                                    {% else %}
+                                    Out of Stock
+                                    {% endif %}
+                                </td>
+                                <td class="align-middle">
+                                    <button class="btn btn-primary add-to-cart-btn" data-product-id="{{ item.id }}" data-color-name="{{ item.color_name }}">Add to Cart</button>
+                                </td>
+                                <td class="align-middle">
+                                    <a href="{% url 'wishlist_remove' item.id %}" class="btn btn-danger">Remove</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <div class="text-center">
+                        <p>Your wishlist is empty.</p>
+                        <p>Explore our products and add items to your wishlist!</p>
+                        <a href="{% url 'shop' %}" class="btn btn-primary">Shop Now</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
         </div>
     </div>
 </section>
-<!-- Hero Section End -->
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-
 <script>
-    {% if messages %}
-    {% for message in messages %}
-    {% if message.tags == 'error' %}
-    swal("Error!", "{{ message }}", "error"); // Display error message with a warning icon
-    {% elif message.tags == 'success' %}
-    swal("Success!", "{{ message }}", "success"); // Display success message with a success icon
-    {% else %}
-    swal("Message", "{{ message }}"); // Display general message
-    {% endif %}
-    {% endfor %}
-    {% endif %}
+    const csrfToken = '{{ csrf_token }}';
+</script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script>
+    document.querySelectorAll('.add-to-cart-btn').forEach(function(button) {
+        button.addEventListener('click', function() {
+            let productId = button.dataset.productId;
+            let colorName = button.dataset.colorName;
+            fetchAndDisplaySizes(productId, colorName);
+        });
+    });
+
+    function fetchAndDisplaySizes(productId, colorName) {
+        let url = `/api/products/${productId}/sizes`;
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                displaySizes(data.sizes, colorName, productId);
+            })
+            .catch(error => {
+                console.error('Error fetching available sizes:', error);
+            });
+    }
+
+    function displaySizes(sizes, colorName, productId) {
+        let sizeOptions = '';
+        sizes.forEach(size => {
+            sizeOptions += `
+                <label for="size_${size.id}" class="active">${size.size}
+                    <input type="radio" id="size_${size.id}" name="size" value="${size.id}">
+                </label><br>`;
+        });
+
+        swal({
+            title: `Select Size for ${colorName}`,
+            content: {
+                element: 'div',
+                attributes: {
+                    innerHTML: sizeOptions
+                }
+            },
+            buttons: {
+                cancel: 'Cancel',
+                confirm: 'Add to Cart'
+            }
+        }).then((value) => {
+            if (value) {
+                let selectedSizeId = document.querySelector('input[name="size"]:checked').value;
+                addToCart(productId, selectedSizeId);
+            }
+        });
+    }
+
+    function addToCart(productId, sizeId) {
+    let url = `/wishlist-to-cart/${productId}/${sizeId}/`;
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token }}'
+        },
+           // Include the size data in the request body
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to add product to cart');
+        }
+        return response.json();
+    })
+    .then(data => {
+        swal('Success!', 'Product added to cart.', 'success');
+    })
+    .catch(error => {
+        console.error('Error adding product to cart:', error);
+        swal('Error!', 'Unable to add product to cart.', 'error');
+    });
+}
+
+    
 </script>
 
-<!-- Wishlist Section Begin -->
-
-        <section class="shopping-cart spad">
-            <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-lg-8">
-                        <div class="shopping__cart__table">
-                            {% if wishlist %}
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>Product</th>
-                                        <th>Price</th>
-                                        <th>Stock Status</th>
-                                        <th></th>
-                                        <th></th> <!-- Assuming you have a column for removing from wishlist -->
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                   
-                                    {% for i in wishlist %}
-                                      
-                                    <tr>
-                                        
-                                        <td class="text-center align-middle">
-                                            <div class="product__cart__item">
-                                                <div class="product__cart__item__pic">
-                                                    <img src="{{ i.product.thumbnail.url }}" alt="" width="90px">
-                                                    <h6 class="product__name">{{i.product.name}}({{i.color_name}})</h6>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="align-middle">{{i.product.price}}</td>
-                                        <td class="align-middle" style="color: {% if i.stock_status == 'In Stock' %}green{% else %}red{% endif %}; font-weight: bold; font-family: 'Arial', sans-serif;">
-                                            {% if i.stock_status == 'In Stock' %}
-                                                {{ i.stock_status }}
-                                            {% else %}
-                                                Out of Stock
-                                            {% endif %}
-                                        </td>
-                                        
-                                        <td class="align-middle">
-                                            <a href="{% url 'shopdetails' i.id %}" class="btn btn-dark">Go to Shopping</a>
-                                        </td>
-                                        <td class="align-middle">
-                                            <a href="{% url 'wishlist_remove' i.id %}" class="btn btn-danger">Remove</a>
-                                        </td>
-                                        
-                                    </tr>
-
-
-                                    {% endfor %}
-                                    
-                                    
-                                </tbody>
-                            </table>
-                            {% else %}
-                                                        <div class="text-center">
-                                                            <p>Your wishlist is empty.</p>
-                                                            <p>Explore our products and add items to your wishlist!</p>
-                                                            <a href="{% url 'shop' %}" class="btn btn-primary">Shop Now</a>
-                                                        </div>
-                                                    
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    {% endif %}
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-<!-- Wishlist Section End -->
-
 {% endblock %}
-
-
-

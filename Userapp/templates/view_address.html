@@ -2,140 +2,77 @@
 {% block body %}
 
 {% load static %}
-    <section class="my-5">
-        <div class="container">
-            <div class="main-body">
-                <div class="row">
-                    <div class="col-lg-4">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="d-flex flex-column align-items-center text-center">
-                                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQtbEsykx-0fhTred6UwHDYtMFd2UgTJCG4gaklT1dx4suRO4_n5LJr4Gg28kquSX5fpNo&usqp=CAU" alt="Admin"
-                                        class="rounded-circle p-1 bg-warning" width="110">
-                                    <div class="mt-3">
-                                        <h4>Jyoti</h4>
-                                        <p class="text-secondary mb-1">+91 7493658737</p>
-                                        <p class="text-muted font-size-sm">Delhi, NCR</p>
-                                    </div>
-                                </div>
-                                <div class="list-group list-group-flush text-center mt-4">
-                                    <a href="{% url 'view_address' %}" class="list-group-item list-group-item-action border-0 ">
-                                        Profile Information
-                                    </a>
-                                    <a href="{% url 'user_order'  %}" class="list-group-item list-group-item-action border-0" >Orders</a>
-                                    
-                                    <a href="{% url 'changepassword'  %}" class="list-group-item list-group-item-action border-0">
-                                        Change Password
-                                    </a>
-                                    <a href="#" class="list-group-item list-group-item-action border-0">Logout</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-8">
-                        <div class="card border-warning"> <!-- Added class for orange border -->
-                            <div class="card-body">
-                                <div class="profile-info">
-                                    <h5>Profile Information</h5>
-                                    <p><strong>Name:</strong>{{data.username}}</p>
-                                    <p><strong>Email Address:</strong> {{data.email}}</p>
-                                    <p><strong>Contact:</strong> {{data.phone}}</p>
-                                    <p><strong>Role:</strong> User</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card border-warning mt-4"> <!-- Added class for orange border -->
-                            <div class="card-body">
-                                {% if Address %}
-                                {% for address in Address %}
-                                <div class="address-item border-bottom pb-3 mb-3"> <!-- Added border and padding classes -->
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <p><strong>Address Type:</strong> {{ address.address_type }}</p>
-                                            <p><strong>Address:</strong> {{ address.address }}</p>
-                                            <p><strong>House No:</strong> {{ address.house_no }}</p>
-                                            <p><strong>City:</strong> {{ address.city }}</p>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <p><strong>Pincode:</strong> {{ address.pincode }}</p>
-                                            <p><strong>State:</strong> {{ address.state }}</p>
-                                            <p><strong>Country:</strong> {{ address.country }}</p>
-                                            <div class="d-flex justify-content-between">
-                                             <button type="button" class="btn btn-outline-info">Edit</button>
-                                             <a href="{% url 'delete_address' address.id %}"> <button type="button" class="btn btn-outline-danger">Delete</button></a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                {% endfor %}
-                                {% else %}
-                                
-                                <p class="text-danger m-3">No Address Found</p>
-                                {% endif %}
-                                <a href="{% url 'add_address' %}" class="btn btn-outline-primary mt-3">Add Address</a>
-                            </div>
-
-                            </div>
+<section class="my-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3">
+                <div class="card border-0 shadow rounded-lg">
+                    <div class="card-body text-center">
+                        <img src="{% static 'img/profile-pic.jpg' %}" alt="Profile Picture" class="rounded-circle mb-3" width="150">
+                        <h4 class="text-uppercase mb-1">Jyoti</h4>
+                        <p class="text-muted font-size-sm">Delhi, NCR</p>
+                        <div class="list-group list-group-flush mt-4">
+                            <a href="{% url 'view_address' %}" class="list-group-item list-group-item-action border-0">
+                                Profile Information
+                            </a>
+                            <a href="{% url 'user_order'  %}" class="list-group-item list-group-item-action border-0">
+                                Orders
+                            </a>
+                            <a href="{% url 'changepassword'  %}" class="list-group-item list-group-item-action border-0">
+                                Change Password
+                            </a>
+                            <a href="{% url 'view_coupon' %}" class="list-group-item list-group-item-action border-0">
+                                Coupons
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action border-0">
+                                Logout
+                            </a>
+                           
                         </div>
                     </div>
                 </div>
             </div>
+            <div class="col-lg-9">
+                <div class="card border-0 shadow rounded-lg">
+                    <div class="card-body">
+                        <div class="profile-info">
+                            <h5 class="text-uppercase mb-4">Profile Information</h5>
+                            <p><strong>Name:</strong> {{data.username}}</p>
+                            <p><strong>Email Address:</strong> {{data.email}}</p>
+                            <p><strong>Contact:</strong> {{data.phone}}</p>
+                            <p><strong>Role:</strong> User</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card mt-4 border-0 shadow rounded-lg">
+                    <div class="card-body">
+                        {% if Address %}
+                        {% for address in Address %}
+                        <div class="address-item border-bottom pb-3 mb-3">
+                            <p class="text-muted font-size-sm mb-0"><strong>Address Type:</strong> {{ address.address_type }}</p>
+                            <p class="mb-1"><strong>Address:</strong> {{ address.address }}</p>
+                            <p class="text-muted font-size-sm mb-1"><strong>House No:</strong> {{ address.House_no }}</p>
+                            <p class="text-muted font-size-sm mb-1"><strong>City:</strong> {{ address.city }}</p>
+                            <p class="text-muted font-size-sm mb-1"><strong>Pincode:</strong> {{ address.pincode }}</p>
+                            <p class="text-muted font-size-sm mb-1"><strong>State:</strong> {{ address.state }}</p>
+                            <p class="text-muted font-size-sm mb-1"><strong>Country:</strong> {{ address.country }}</p>
+                            <div class="d-flex justify-content-end">
+                                <a href="{% url 'edit_adress' address.id %}" class="btn btn-sm btn-info">Edit</a>
+                                <a href="{% url 'delete_address' address.id %}" class="btn btn-sm btn-danger ml-2">Delete</a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {% else %}
+                        <p class="text-danger m-3">No Address Found</p>
+                        {% endif %}
+                        <a href="{% url 'add_address' %}" class="btn btn-primary mt-3">Add Address</a>
+                    </div>
+                </div>
+            </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-        crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-        crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-        crossorigin="anonymous"></script>
-
-    <script>
-        function showProfileDetails() {
-            hideAllSections();
-            document.getElementById('profileDetails').style.display = 'block';
-            setActiveLink(0);
-        }
-
-        function showOrderDetails() {
-            hideAllSections();
-            document.getElementById('orderDetails').style.display = 'block';
-            setActiveLink(1);
-        }
-
-        function showAddressBook() {
-            hideAllSections();
-            document.getElementById('addressBook').style.display = 'block';
-            setActiveLink(2);
-        }
-
-        function hideAllSections() {
-            document.getElementById('orderDetails').style.display = 'none';
-            document.getElementById('profileDetails').style.display = 'none';
-            document.getElementById('addressBook').style.display = 'none';
-        }
-
-        function setActiveLink(index) {
-            document.querySelector('.list-group-item.active').classList.remove('active');
-            document.querySelectorAll('.list-group-item')[index].classList.add('active');
-        }
-
-        showProfileDetails();
-    </script>
-
-    <script src="{% static 'user/home/js/jquery-3.3.1.min.js' %}"></script>
-    <script src="{% static 'user/home/js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'user/home/js/jquery.nice-select.min.js' %}"></script>
-    <script src="{% static 'user/home/js/jquery.nicescroll.min.js' %}"></script>
-    <script src="{% static 'user/home/js/jquery.magnific-popup.min.js' %}"></script>
-    <script src="{% static 'user/home/js/jquery.countdown.min.js' %}"></script>
-    <script src="{% static 'user/home/js/jquery.slicknav.js' %}"></script>
-    <script src="{% static 'user/home/js/mixitup.min.js' %}"></script>
-    <script src="{% static 'user/home/js/owl.carousel.min.js' %}"></script>
-    <script src="{% static 'user/home/js/main.js' %}"></script>
+<script src="{% static 'user/home/js/jquery-3.3.1.min.js' %}"></script>
+<script src="{% static 'user/home/js/bootstrap.bundle.min.js' %}"></script>
 {% endblock %}

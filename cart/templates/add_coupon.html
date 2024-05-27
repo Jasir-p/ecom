@@ -1,0 +1,102 @@
+{% extends 'nav.html' %}
+{% load static %}
+
+{% block body %}
+
+ 
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+<main id="main" class="main">
+    <div class="pagetitle">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h1>Add Coupon</h1>
+            </div>
+        </div>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">Admin</li>
+                <li class="breadcrumb-item"><a href="#">Coupons</a></li>
+                <li class="breadcrumb-item active">Add Coupon</li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="col-12">
+        <div class="card recent-sales overflow-auto">
+            <div class="card-body p-5">
+                <form id="couponForm" method="post" >
+                    {% csrf_token %}
+                    <!-- General Form Elements -->
+                    <div class="row mb-3">
+                        <label class="col-sm-2 col-form-label">Coupon Title</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="title" id="coupon_title" placeholder="Enter Coupon Title" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-2 col-form-label">Coupon Code</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="code" id="coupon_code" placeholder="Enter Coupon Code" required>
+                        </div>
+                    </div>
+
+
+                    <div class="row mb-3">
+                        <label class="col-sm-2 col-form-label">Start Date</label>
+                        <div class="col-sm-8">
+                            <input type="date" class="form-control" name="start_date" id="valid_from" placeholder="Enter Valid From" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-2 col-form-label">End Date</label>
+                        <div class="col-sm-8">
+                            <input type="date" class="form-control" name="end_date" id="valid_to" placeholder="Enter Valid To" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-2 col-form-label">Quantity</label>
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control" name="quantity" id="quantity" placeholder="Enter Quantity" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-2 col-form-label">Minimum Order Amount</label>
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control" name="min_amount" id="minimum_order_amount" placeholder="Enter Minimum Order Amount" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-2 col-form-label">Discount Amount</label>
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control" name="discount_amount" id="discount_amount" placeholder="Enter Discount Amount" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label class="col-sm-2 col-form-label">Active</label>
+                        <div class="col-sm-8">
+                            <input type="checkbox" class="form-check-input" name="active" id="active" value="1" checked>
+                            <label class="form-check-label" for="active">Active</label>
+                        </div>
+                    </div>
+
+                    <!-- Include other fields according to your model -->
+
+                    <div class="row mb-3">
+                        <label class="col-sm-2 col-form-label">Submit</label>
+                        <div class="col-sm-8">
+                            <button type="submit" class="btn btn-dark">Add Coupon</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

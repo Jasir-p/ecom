@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>DASHMIN - Bootstrap Admin Template</title>
+    <title></title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
@@ -25,6 +25,15 @@
     <!-- Libraries Stylesheet -->
     <link href="{% static 'admin/dashbord/lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
     <link href="{% static 'admin/dashbord/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css' %}" rel="stylesheet" >
+    <link rel="stylesheet" href="{% static 'user/home/css/bootstrap.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'user/home/css/font-awesome.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'user/home/css/elegant-icons.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'user/home/css/magnific-popup.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'user/home/css/nice-select.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'user/home/css/owl.carousel.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'user/home/css/slicknav.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'user/home/css/style.css' %}" type="text/css">
+
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="{% static 'admin/dashbord/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
@@ -84,15 +93,15 @@
         <div class="sidebar pe-4 pb-3">
             <nav class="navbar bg-light navbar-light">
                 <a href="index.html" class="navbar-brand mx-4 mb-3">
-                    <h3 class="text-primary"><i class="fa fa-hashtag me-2"></i>DASHMIN</h3>
+                    <img src="{% static 'user/home/img/logo.png' %} " class= 'logo'>
                 </a>
                 <div class="d-flex align-items-center ms-4 mb-4">
                     <div class="position-relative">
-                        <img class="rounded-circle" src="img/user.jpg" alt="" style="width: 40px; height: 40px;">
-                        <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
+                        
+                        
                     </div>
                     <div class="ms-3">
-                        <h6 class="mb-0">Jhon Doe</h6>
+                        <h6 class="mb-0"></h6>
                         <span>Admin</span>
                     </div>
                 </div>
@@ -127,7 +136,7 @@
 
                     </div>
                     <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa-brands fa-bandcamp"></i>Order Management</a>
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa-brands fa-bandcamp"></i>Orders</a>
                         <div class="dropdown-menu bg-transparent border-0">
                             <a href="{% url 'order_management'%}" class="dropdown-item"><i class="fa fa-keyboard me-2"></i>Orders</a>
                             
@@ -136,6 +145,25 @@
                         </div>
 
                     </div>
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa-brands fa-bandcamp"></i>Offers</a>
+                        <div class="dropdown-menu bg-transparent border-0">
+                            <a href="{%url 'add_offer' %}" class="dropdown-item"><i class="fa fa-th me-2"></i>AddOffer</a>
+                            <a href="{%url 'view_offer' %}" class="dropdown-item"><i class="fa fa-th me-2"></i>ViewOffer</a>
+                            <a href="" class="dropdown-item"><i class="fa fa-keyboard me-2"></i>Other Elements</a>
+                        </div>
+
+                    </div>
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa-brands fa-bandcamp"></i>Coupon</a>
+                        <div class="dropdown-menu bg-transparent border-0">
+                            <a href="{%url 'add_coupon' %}" class="dropdown-item"><i class="fa fa-th me-2"></i>AddCoupon</a>
+                            <a href="{%url 'view_coupons' %}" class="dropdown-item"><i class="fa fa-th me-2"></i>ViewCoupon</a>
+                            <a href="" class="dropdown-item"><i class="fa fa-keyboard me-2"></i>Other Elements</a>
+                        </div>
+
+                    </div>
+                    
                    
           
                     <a href="{%url 'userdetail' %}" class="nav-item nav-link"><i class="fa fa-table me-2"></i>USERS</a>

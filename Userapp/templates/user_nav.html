@@ -14,6 +14,8 @@
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;800;900&display=swap"
     rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-xmXMBqv2JLbG27Pz69gHv04UPG4e1ByQDE4C8VBUbPZD13F8Uhtn5yJpCdwi+5wQf3z1B/WoGiMOg2RkTX+/qg==" crossorigin="anonymous" />
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.3.45/css/materialdesignicons.css" integrity="sha256-NAxhqDvtY0l4xn+YVa6WjAcmd94NNfttjNsDmNatFVc=" crossorigin="anonymous" />
 <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <!-- Css Styles -->
@@ -34,6 +36,14 @@
         margin-right: auto;
         margin-left: auto;
       }</style>
+
+      <style>
+        /* Adjust logo size and position */
+        .header__logo img {
+            width: 150px; /* Adjust the width as needed */
+            margin-top: 10px; /* Adjust the top margin as needed */
+        }
+    </style>
 </head>
 
 <body>
@@ -145,10 +155,10 @@
                         
                         <a href="#" class="search-switch"><img src="{% static 'user/home/img/icon/search.png' %}" alt=""></a>
                         <a href="{% url 'wishlist' %}"><img src="{% static 'user/home/img/icon/heart.png' %}" alt=""></a>
-                        <a href="{% url 'viewcart'%}"><img src="{% static 'user/home/img/icon/cart.png' %}" alt=""> <span>0</span></a>
-                        <a href="#"><img src="{% static 'user/home/img/icon/user1.png' %}" alt="" width></a>
+                        <a href="{% url 'viewcart'%}"><img src="{% static 'user/home/img/icon/cart.png' %}" alt=""> <span></span></a>
                         
-                        
+                        <a href="{% url 'wallet'%}"><img src="{% static 'user/home/img/icon/wallet.png' %}" alt=""> <span></span></a>
+                       
                     </div>
                 </div>
                 {% endif %}

@@ -1,10 +1,23 @@
 {% extends 'nav.html' %}
+
 {% block body %}
-<div class="col-12">
-    <div class="bg-light rounded h-100 p-4">
-        <div class="col-md-9">
-                    <a href="{% url 'addcolour' product_id %}" class="btn btn-success">Add Variant</a>
-                </div>
+<head>
+    <!-- Other head elements -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+
+<div class="container-fluid pt-4 px-4">
+    <div class="card bg-light rounded p-4">
+        <div class="row mb-3">
+            <div class="col-md-9">
+                <a href="{% url 'addcolour' product_id %}" class="btn btn-success">Add Variant</a>
+            </div>
+            <div class="col-md-3 text-end">
+                <a href="{% url 'unlisted_variants' product_id %}" class="btn btn-warning">
+                    <i class="fas fa-eye-slash"></i> Unlisted Variants
+                </a>
+            </div>
+        </div>
         <div class="table-responsive">
             <table class="table">
                 <thead>
@@ -16,12 +29,22 @@
                         <th scope="col">Size</th>
                         <th scope="col">Quantity</th>
                         <th scope="col">Edit</th>
+                        <th scope="col">Unlist</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for product in products %}
                     <tr>
-                        <td>{{ product.color_name }}</td>
+                        <td>
+                            {{ product.color_name }}
+                            {% if product.size.exists %}
+                                {% if product.is_in_stock %}
+                                <p><span class="badge bg-success">In Stock</span></p>
+                                {% else %}
+                                <p><span class="badge bg-danger">Out of Stock</span></p>
+                                {% endif %}
+                            {% endif %}
+                        </td>
                         <td><img src="{{ product.img1.url }}" alt="Image 1" width="80px"></td>
                         <td><img src="{{ product.img2.url }}" alt="Image 2" width="80px"></td>
                         <td><img src="{{ product.img3.url }}" alt="Image 3" width="80px"></td>
@@ -39,13 +62,12 @@
                             <td></td>
                         {% endif %}
                         <td>
-                            <a class="btn btn-success" href="{% url 'addsize' product.id %}">Add Size</a>
-                        </td>
-                        <td>
                             <a class="btn btn-primary edit-link" href="#">Edit</a>
                         </td>
                         <td>
-                            <a class="btn btn-danger remove" href="{% url 'unlist_variant' product.id  %}">Unlist</a>
+                            <a class="btn btn-danger remove" href="{% url 'unlist_variant' product.id %}">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
                         </td>
                     </tr>
                     {% endfor %}

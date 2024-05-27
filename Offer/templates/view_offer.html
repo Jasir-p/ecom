@@ -1,0 +1,48 @@
+{% extends 'nav.html' %}
+
+{% block body %}
+<div class="container-fluid pt-4 px-4">
+    <div class="bg-light rounded p-4">
+        <h2>Offers</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Offer Type</th>
+                    <th scope="col">Category/Product</th>
+                    <th scope="col">Discount Percentage</th>
+                    <th scope="col">Start Date</th>
+                    <th scope="col">End Date</th>
+                    <th scope="col">Actions</th>  <!-- Added Actions column -->
+                </tr>
+            </thead>
+            <tbody>
+                {% for offer in offers %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ offer.offer_type }}</td>
+                    <td>
+                        {% if offer.offer_type == 'category' %}
+                            {{ offer.category.cat_name }}
+                        {% elif offer.offer_type == 'product' %}
+                            {{ offer.product.name }}
+                        {% endif %}
+                    </td>
+                    <td>{{ offer.discount_percentage }}%</td>
+                    <td>{{ offer.start_date }}</td>
+                    <td>{{ offer.end_date }}</td>
+                    <td>
+                        <a href="{% url 'edit_offer' offer.id %}" class="btn btn-sm btn-primary">Edit</a>
+                        {% if offer.is_active %}
+                            <a href="{% url 'toggle_offer' offer.id %}" class="btn btn-sm btn-danger">Deactivate</a>
+                        {% else %}
+                            <a href="{% url 'toggle_offer' offer.id %}" class="btn btn-sm btn-success">Activate</a>
+                        {% endif %} 
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

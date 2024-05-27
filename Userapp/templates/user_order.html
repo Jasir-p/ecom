@@ -1,94 +1,212 @@
 {% extends 'user_nav.html' %}
 {% block body %}
-    {% load static %}
-    <style>
-        .order-spacing {
-            margin-bottom: 20px; /* Adjust the margin as needed */
-        }
-        
-        .order-card {
-            margin-bottom: 20px; /* Adjust the margin as needed */
-        }
-        
-    </style>
+{% load static %}
+<style>
+    /* Basic Styling for the Order View */
+    .order-container {
+        margin-top: 30px;
+    }
 
-    <section class="shopping-cart spad">
-        <div class="container">
-            <div class="main-body">
-                <div class="row">
-                    <div class="col-lg-4">
-                        <!-- Left sidebar content -->
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="d-flex flex-column align-items-center text-center">
-                                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQtbEsykx-0fhTred6UwHDYtMFd2UgTJCG4gaklT1dx4suRO4_n5LJr4Gg28kquSX5fpNo&usqp=CAU" alt="Admin"
-                                        class="rounded-circle p-1 bg-warning" width="110">
-                                    <div class="mt-3">
-                                        <h4>Jyoti</h4>
-                                        <p class="text-secondary mb-1">+91 7493658737</p>
-                                        <p class="text-muted font-size-sm">Delhi, NCR</p>
-                                    </div>
-                                </div>
-                                <div class="list-group list-group-flush text-center mt-4">
-                                    <a href="{% url 'view_address' %}" class="list-group-item list-group-item-action border-0 ">
-                                        Profile Information
-                                    </a>
-                                    <a href="#" class="list-group-item list-group-item-action border-0" >Orders</a>
-                                    <a href="{% url 'changepassword'  %}" class="list-group-item list-group-item-action border-0">
-                                        Change Password
-                                    </a>
-                                    <a href="#" class="list-group-item list-group-item-action border-0">Logout</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-8">
-                        {% if orders%}
-                        <div class="shopping__cart__table">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>Order ID</th>
-                                        <th>Order Date</th>
-                                        <th>Total Amount</th>
-                                        <th>Payment Method</th>
-                                        <th>Action</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- Loop through orders -->
-                                    {% for order in orders %}
-                                    <tr class="order-spacing">
-                                        <td><a href="{% url 'view_order_details' order.id %}">{{ order.order_id }}</a></td>
-                                        <td>{{ order.created_at }}</td>
-                                        <td>{{ order.total_amount }}</td>
-                                        <td>{{ order.get_payment_method_display }}</td>
-                                        <td>{{ order.payment.status}}</td>
-                                        <td></td>
-                                    </tr>
-                                    <!-- Loop through order items -->
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                        {% else %}
-                                                        <div class="text-center">
-                                                            <p>Your Order is empty.</p>
-                                                            <p>Explore our products and Order your Faviourite!</p>
-                                                            <a href="{% url 'shop' %}" class="btn btn-primary">Shop Now</a>
-                                                        </div>
-                                                    
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                        {% endif %}
+    .order-card {
+        background: #fff;
+        border: 1px solid #e5e5e5;
+        border-radius: 5px;
+        padding: 20px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        transition: box-shadow 0.3s;
+    }
+
+    .order-card:hover {
+        box-shadow: 0 0 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .order-card h4 {
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+
+    .order-card p {
+        font-size: 16px;
+        color: #666;
+        margin-bottom: 5px;
+    }
+
+    .retry-button {
+        background-color: #e74c3c;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .retry-button:hover {
+        background-color: #c0392b;
+    }
+
+    .profile-card {
+        background: #fff;
+        border: 1px solid #e5e5e5;
+        border-radius: 5px;
+        padding: 20px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    .profile-card img {
+        border-radius: 50%;
+        margin-bottom: 15px;
+    }
+
+    .profile-card h4 {
+        font-size: 22px;
+        font-weight: 700;
+    }
+
+    .profile-card p {
+        font-size: 14px;
+        color: #888;
+        margin: 0;
+    }
+
+    .list-group-item {
+        padding: 10px 15px;
+        border: none;
+        font-size: 16px;
+        transition: background-color 0.3s;
+    }
+
+    .list-group-item:hover {
+        background-color: #f8f9fa;
+    }
+
+    .text-center p {
+        font-size: 18px;
+        color: #555;
+    }
+
+    .btn-primary {
+        background-color: #333;
+        border: none;
+        padding: 10px 20px;
+        font-size: 16px;
+        transition: background-color 0.3s;
+    }
+
+    .btn-primary:hover {
+        background-color: #555;
+    }
+</style>
+
+<section class="order-container container">
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="card border-0 shadow rounded-lg">
+                <div class="card-body text-center">
+                    <img src="{% static 'img/profile-pic.jpg' %}" alt="Profile Picture" class="rounded-circle mb-3" width="150">
+                    <h4 class="text-uppercase mb-1">Jyoti</h4>
+                    <p class="text-muted font-size-sm">Delhi, NCR</p>
+                    <div class="list-group list-group-flush mt-4">
+                        <a href="{% url 'view_address' %}" class="list-group-item list-group-item-action border-0">
+                            Profile Information
+                        </a>
+                        <a href="{% url 'user_order'  %}" class="list-group-item list-group-item-action border-0">
+                            Orders
+                        </a>
+                        <a href="{% url 'changepassword'  %}" class="list-group-item list-group-item-action border-0">
+                            Change Password
+                        </a>
+                        <a href="{% url 'view_coupon' %}" class="list-group-item list-group-item-action border-0">
+                            Coupons
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action border-0">
+                            Logout
+                        </a>
+                       
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+        
+        <div class="col-lg-8">
+            {% if orders %}
+                {% for order in orders %}
+                    <div class="card order-card mb-4">
+                        <div class="card-body">
+                            <h4><a href="{% url 'view_order_details' order.id %}">{{ order.order_id }}</a></h4>
+                            <p>Order Date: {{ order.created_at }}</p>
+                            <p>Total Amount: {{ order.total_amount }}</p>
+                            <p>Payment Method: {{ order.get_payment_method_display }}</p>
+                            <p>Payment Status: {{ order.payment.status }}</p>
+                            
+                            {% if order.payment.status == 'failed' and order.get_payment_method_display == 'Razorpay' %}
+                                <form action="{% url 'retry_payment' order.id %}" method="POST" id="addMoneyForm">
+                                    {% csrf_token %}
+                                    <button type="submit" class="retry-button" 
+                                    data-order-id="{{ order.id }}" 
+                                    data-total-amount="{{ order.total_amount }}">Retry Payment</button>
+                        
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="text-center">
+                    <p>Your Order is empty.</p>
+                    <p>Explore our products and Order your Favourite!</p>
+                    <a href="{% url 'shop' %}" class="btn btn-primary">Shop Now</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const retryButtons = document.querySelectorAll('.retry-button');
+
+  retryButtons.forEach(function(button) {
+    button.addEventListener('click', function(event) {
+      event.preventDefault();
+      const orderId = button.dataset.orderId;
+      const totalAmount = button.dataset.totalAmount;
+      initializeRazorpay(orderId, totalAmount);
+    });
+  });
+
+  function initializeRazorpay(orderId, totalAmount) {
+    var options = {
+      "key": "rzp_test_ev9UtjBDn8UC2J",
+      "amount": totalAmount * 100,
+      "currency": "INR",
+      "name": "Your Company Name",
+      "description": "Retry Payment for Order #" + orderId,
+      "handler": function(response) {
+        console.log('Razorpay payment response:', response);
+        if (response.razorpay_payment_id) {
+          // Payment successful, reload the page
+          addMoneyForm.submit();
+        } else {
+          // Payment failed, show SweetAlert
+          swal("Payment Failed!", "Please try again.", "error");
+        }
+      },
+      "prefill": {
+        "email": "customer@example.com",
+        "contact": "9999999999"
+      }
+    };
+
+    var rzp = new Razorpay(options);
+    rzp.open();
+  }
+});
+</script>
+
 {% endblock %}
- 
+

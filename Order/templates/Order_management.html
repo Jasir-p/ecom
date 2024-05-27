@@ -1,37 +1,44 @@
-{% extends 'nav.html'%}
+{% extends 'nav.html' %}
 {% block body %}
 <div class="container-fluid pt-4 px-4">
-    <div class="bg-light rounded p-4">
-       
-        
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">Tracking_id</th>
-                    <th scope="col">Username</th>
-                    <th scope="col">Total Amount</th>
-                    <th scope="col">Payment Method</th>
-                    <th scope="col">Payment Staus</th>
-                    <!-- Add other table headers if needed -->
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in data %}
-                <tr>
-                    <td><a href="{% url 'order_details' item.id %}">{{item.order_id}}</a></td>
-                    <td>{{ item.user.username }}</td>
-                    <td>{{ item.total_amount}}</td>
-                    <td>{{item.payment_method}}</td>
-                    <td>
-                        {{item.payment.status}}
-                      
-                    </td>
-                    <!-- Add other table cells if needed -->
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Order Management</h5>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Tracking ID</th>
+                            <th scope="col">Username</th>
+                            <th scope="col">Total Amount</th>
+                            <th scope="col">Payment Method</th>
+                            <th scope="col">Payment Status</th>
+                            <!-- Add other table headers if needed -->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in data %}
+                        <tr>
+                            <td><a href="{% url 'order_details' item.id %}">{{ item.order_id }}</a></td>
+                            <td>{{ item.user.username }}</td>
+                            <td>${{ item.total_amount }}</td>
+                            <td>{{ item.payment_method }}</td>
+                            <td>
+                                {% if item.payment.status == 'Paid' %}
+                                    <span class="badge bg-success">{{ item.payment.status }}</span>
+                                {% elif item.payment.status == 'Pending' %}
+                                    <span class="badge bg-warning">{{ item.payment.status }}</span>
+                                {% else %}
+                                    <span class="badge bg-danger">{{ item.payment.status }}</span>
+                                {% endif %}
+                            </td>
+                            <!-- Add other table cells if needed -->
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
-   
-{% endblock%}
+{% endblock %}

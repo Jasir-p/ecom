@@ -1,5 +1,19 @@
 {% extends 'nav.html'%}
 {% block body %}
+<style>
+    .image-preview {
+        position: relative;
+        display: inline-block;
+    }
+    .image-preview img {
+        max-width: 100px;
+        display: none;
+    }
+    .image-preview:hover img {
+        display: block;
+    }
+</style>
+
 <div class="container">
     
     <form method="post" action="" enctype="multipart/form-data">
@@ -20,15 +34,27 @@
         
         <div class="mb-3">
             <label for="img1">Image 1:</label>
-            <input type="file" class="form-control" id="img1" name="img1" required>
+            <div class="input-group">
+                <input type="file" class="form-control" id="img1" name="img1" required>
+                <button type="button" class="btn btn-danger" id="remove-img1" style="display: none;">Remove</button>
+            </div>
+            <img id="preview1" src="#" alt="Image 1 Preview" style="display: none; max-width: 100px;">
         </div>
         <div class="mb-3">
             <label for="img2">Image 2:</label>
-            <input type="file" class="form-control" id="img2" name="img2" required>
+            <div class="input-group">
+                <input type="file" class="form-control" id="img2" name="img2" required>
+                <button type="button" class="btn btn-danger" id="remove-img2" style="display: none;">Remove</button>
+            </div>
+            <img id="preview2" src="#" alt="Image 2 Preview" style="display: none; max-width: 100px;">
         </div>
         <div class="mb-3">
             <label for="img3">Image 3:</label>
-            <input type="file" class="form-control" id="img3" name="img3" required>
+            <div class="input-group">
+                <input type="file" class="form-control" id="img3" name="img3" required>
+                <button type="button" class="btn btn-danger" id="remove-img3" style="display: none;">Remove</button>
+            </div>
+            <img id="preview3" src="#" alt="Image 3 Preview" style="display: none; max-width: 100px;">
         </div>
         <button type="submit" class="btn btn-primary">Create</button>
     </form>
@@ -46,4 +72,51 @@
 </div>
 {% endif %}
 </div>
+
+<script>
+    function previewImage(input, previewId, removeBtnId) {
+        var file = input.files[0];
+        if (file) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById(previewId).src = e.target.result;
+                document.getElementById(previewId).style.display = 'block';
+                document.getElementById(removeBtnId).style.display = 'block'; // Show remove button
+            }
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function removeImage(input, previewId, removeBtnId) {
+        input.value = '';
+        document.getElementById(previewId).src = '';
+        document.getElementById(previewId).style.display = 'none';
+        document.getElementById(removeBtnId).style.display = 'none'; // Hide remove button
+    }
+
+    document.getElementById('img1').addEventListener('change', function() {
+        previewImage(this, 'preview1', 'remove-img1');
+    });
+
+    document.getElementById('img2').addEventListener('change', function() {
+        previewImage(this, 'preview2', 'remove-img2');
+    });
+
+    document.getElementById('img3').addEventListener('change', function() {
+        previewImage(this, 'preview3', 'remove-img3');
+    });
+
+    document.getElementById('remove-img1').addEventListener('click', function() {
+        removeImage(document.getElementById('img1'), 'preview1', 'remove-img1');
+    });
+
+    document.getElementById('remove-img2').addEventListener('click', function() {
+        removeImage(document.getElementById('img2'), 'preview2', 'remove-img2');
+    });
+
+    document.getElementById('remove-img3').addEventListener('click', function() {
+        removeImage(document.getElementById('img3'), 'preview3', 'remove-img3');
+    });
+</script>
+
 {% endblock %}

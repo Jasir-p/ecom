@@ -180,8 +180,7 @@
     });
 
     var proQty = $('.pro-qty-2');
-    proQty.prepend('<span class="fa fa-angle-left dec qtybtn"></span>');
-    proQty.append('<span class="fa fa-angle-right inc qtybtn"></span>');
+   
     proQty.on('click', '.qtybtn', function () {
         var $button = $(this);
         var oldValue = $button.parent().find('input').val();

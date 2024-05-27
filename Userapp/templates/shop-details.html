@@ -94,15 +94,20 @@
                                 <i class="fa fa-star-o"></i>
                                 <span> - 5 Reviews</span>
                             </div>
-                            <h3>{{data.product.price}}<span>700.00</span></h3>
+                            {% if data.product.price > data.product.offer_price %}
+                            <h3>{{data.product.offer_price}}<span>{{data.product.price}}</span></h3>
+                            {% else %}
+                            <h3>{{data.product.price}}<span></span></h3>
+                            {% endif %}
                             <p>Coat with quilted lining and an adjustable hood. Featuring long sleeves with adjustable
                                 cuff tabs, adjustable asymmetric hem with elastic side tabs and a front zip fastening
                             with placket.</p>
-                            {% comment %} {% if total_quantity > 0 %} {% endcomment %}
+                            {% comment %} {% endcomment %}
                             <form action="{% url 'add_cart' data.id %}" method='post'>
                                 {% csrf_token %}
                             <div class="product__details__option"> 
                                 <div class="product__details__option__size">
+                                    {% if total_quantity > 0 %} 
                                     <span>Size:</span>
                                     {% for size in data.size.all %}
                                         {% if size.quantity > 0 %}
@@ -110,6 +115,11 @@
                                     <input type="radio" id="size_{{ size.id }}" name="size" value="{{ size.id }}"> </label>
                                         {% endif %}
                                     {% endfor %}
+                                    {% else %}
+                                    
+                                    <span class="badge badge-danger badge-lg">Out of Stock</span>
+                                    {% endif %}
+
                                     
                                 </div>
                                 <div class="product__details__option__color">
@@ -124,14 +134,12 @@
                                 </div>
                             </div>
                             <div class="product__details__cart__option">
-                                <div class="quantity">
-                                    <div class="pro-qty">
-                                        <input type="text" value="1">
-                                    </div>
-                                </div>
+                               
                                 <div id="stock-info" style="display: none;"></div>
+                                {% if total_quantity > 0 %} 
                                 <button class="btn btn-black" style="background-color: black;
                                 color: white;" id="add-to-cart-btn" >add to cart</button>
+                                {% endif %}
                                
                                 </form>
                                 
@@ -144,8 +152,8 @@
                                 <h5><span>Guaranteed Safe Checkout</span></h5>
                                 <img src="img/shop-details/details-payment.png" alt="">
                                 <ul>
-                                    <li><span>SKU:</span> 3812912</li>
-                                    <li><span>Categories:</span> Clothes</li>
+                                    <li><span>Brand:</span> {{data.product.brand}}</li>
+                                    <li><span>Categories:</span> {{data.product.catagory}}</li>
                                     <li><span>Tag:</span> Clothes, Skin, Body</li>
                                 </ul>
                             </div>

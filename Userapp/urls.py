@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from .views import*
 
 
 urlpatterns = [
@@ -14,6 +15,7 @@ urlpatterns = [
     path("filterd/", views.filterd, name="filterd"),
     path("AddAddress/", views.add_address, name="add_address"),
     path("ViewAddress/", views.view_address, name="view_address"),
+    path("EditAddress/<int:address_id>",views.update_address,name="edit_adress"),
     path("DeleteAddress/<int:address_id>", views.delete_address, name="delete_address"),
     path("Wishlist/", views.wish_list, name="wishlist"),
     path("addwishlist/<int:product_id>", views.add_to_wishlist, name="addwishlist"),
@@ -27,4 +29,9 @@ urlpatterns = [
     path("error/", views.error_page, name="error"),
     path("RequestCancel/<int:id>", views.request_status_cancel, name="request_cancel"),
     path("RequestReturn/<int:id>", views.request_status_return, name="request_return"),
+    path("Wallet/",views.wallet,name="wallet"),
+    path("Add_to_Wallet/,",views.add_to_wallet,name="add_to_wallet"),
+    path('ViewCoupon/',views.view_coupons,name="view_coupon"),
+    path('api/products/<int:product_id>/sizes', views.get_product_sizes, name='get_sizes'),
+    path('wishlist-to-cart/<int:id>/<int:size_id>/', views.wishlist_to_cart, name='wishlist_to_cart'),
 ]

@@ -37,26 +37,51 @@
             </div>
             <div class="mb-3">
                 <label for="thumbnail">Thumbnail:</label>
-                <input type="file" class="form-control"  id="thumbnail"  name="thumbnail" required>
+                <div class="input-group">
+                    <input type="file" class="form-control"  id="thumbnail"  name="thumbnail" required>
+                    <button type="button" class="btn btn-danger" id="remove-thumbnail" style="display: none;">Remove</button>
+                </div>
+                <img id="preview" src="#" alt="Thumbnail Preview" style="display: none; max-width: 100px;">
             </div>
            
             <button type="submit" class="btn btn-primary">Create</button>
         </form>
         {% if messages %}
         <div class="messages text-center text-capitalize font-weight-bold">
-      {% for message in messages %}
-      {% if message.tags == 'error' %}
-      <h5 class="text-danger">! {{ message }}</h5>
-      {% elif message.tags == 'success' %}
-      <h5 class="text-success">! {{ message }}</h5>
-      {% else %}
-      <h5>! {{ message }}</h5>
-      {% endif %}
-      {% endfor %}
-      </div>
-      {% endif %}
+            {% for message in messages %}
+                {% if message.tags == 'error' %}
+                    <h5 class="text-danger">! {{ message }}</h5>
+                {% elif message.tags == 'success' %}
+                    <h5 class="text-success">! {{ message }}</h5>
+                {% else %}
+                    <h5>! {{ message }}</h5>
+                {% endif %}
+            {% endfor %}
+        </div>
+        {% endif %}
     </div>
 </div>
 
+<script>
+    document.getElementById('thumbnail').addEventListener('change', function() {
+        var file = this.files[0];
+        if (file) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('preview').src = e.target.result;
+                document.getElementById('preview').style.display = 'block';
+                document.getElementById('remove-thumbnail').style.display = 'block'; // Show remove button
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+
+    document.getElementById('remove-thumbnail').addEventListener('click', function() {
+        document.getElementById('thumbnail').value = '';
+        document.getElementById('preview').src = '';
+        document.getElementById('preview').style.display = 'none';
+        document.getElementById('remove-thumbnail').style.display = 'none'; // Hide remove button
+    });
+</script>
 
 {% endblock %}

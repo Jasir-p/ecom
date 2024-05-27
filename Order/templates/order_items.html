@@ -1,97 +1,90 @@
 {% extends 'nav.html' %}
-
 {% block body %}
 <div class="container-fluid pt-4 px-4">
-    <div class="bg-light rounded p-4">
+    <div class="card bg-light rounded p-4">
         <!-- User Address Card -->
-        <div class="address-card">
-            <div class="card">
-                <div class="card-header">
-                    User Address
-                </div>
-                <div class="card-body">
-                    <p class="card-text">{{ Address.name }}</p>
-                    <p class="card-text">{{ Address.address }}, {{ Address.House_no }}</p>
-                    <p class="card-text">{{ Address.city }}, {{ Address.pincode }}</p>
-                    <p class="card-text">{{ Address.state }}, {{ Address.country }}</p>
-                </div>
-            </div>
-        </div>
+        <!-- User Address Card -->
+<div class="card mb-4">
+    <div class="card-header">
+        User Address
+    </div>
+    <div class="card-body">
+        <p><strong>Name:</strong> {{ Address.name }}</p>
+        <p><strong>Address:</strong> {{ Address.address }}, {{ Address.House_no }}</p>
+        <p><strong>City:</strong> {{ Address.city }}</p>
+        <p><strong>Pincode:</strong> {{ Address.pincode }}</p>
+        <p><strong>State:</strong> {{ Address.state }}</p>
+        <p><strong>Country:</strong> {{ Address.country }}</p>
+    </div>
+</div>
+
 
         <!-- Shopping Cart Table -->
-        <div class="shopping-cart-table mt-4">
+        <div class="table-responsive">
             <table class="table">
                 <thead>
                     <tr>
                         <th scope="col">Product</th>
                         <th scope="col">Name</th>
                         <th scope="col">Size</th>
-                        <th scope="col">Total</th>
+                        <th scope="col">Price</th>
                         <th scope="col">Quantity</th>
+                        <th scope="col">Total</th>
                         <th scope="col">Status</th>
-                        <th scope="col">Request Status</th> <!-- New column for request status -->
+                        <th scope="col">Status</th>
+                        
+                        <th scope="col">Update Status</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for item in data %}
-                   
                     <tr>
-                        
+                        <td><img src="{{ item.product.product.thumbnail.url }}" alt="" width="90px"></td>
                         <td>
-                            
-                                <img src="{{ item.product.product.thumbnail.url }}" alt="" width="90px">
-                                
-                        
-                        </td>
-                        <td>
-                        
                             <h6>{{ item.product.product.name }}</h6>
                             <h6>{{ item.product.color_name }}</h6>
-                            {% if item.request_status == 'Cancellation Requested' or item.request_status == 'Return' %}
-                                <p class="badge
-                                    {% if item.request_status == 'Cancellation Requested' %}bg-danger
-                                    {% elif item.request_status == 'Return' %}bg-warning
-                                    {% endif %}">
-                                    {{ item.request_status }}
-                                </p>
-                                {% endif %}
-                        </td>
-                        <td>
-                            <h6>{{ item.size.size }}</h6>
-                        </td>
-                        <td>{{ item.product.product.price }}</td>
-                        <td>{{ item.quantity }}</td>
-                        <td>
-                            <p style="color: 
-                                {% if item.status == 'Order confirmed' %}blue
-                                {% elif item.status == 'Shipped' %}blue
-                                {% elif item.status == 'Processing' %}orange
-                                {% elif item.status == 'Delivered' %}green
-                                {% elif item.status == 'Cancelled' %}red
-                                {% elif item.status == 'Returned' %}orange
-                                {% endif %};">
-                                {{ item.status }}
+                            {% if item.request_status == 'Cancellation Requested' or item.request_status == 'Return Requested' %}
+                            <p class="badge
+                                {% if item.request_status == 'Cancellation Requested' %}bg-danger
+                                {% elif item.request_status == 'Return Requested' %}bg-warning
+                                {% endif %}">
+                                {{ item.request_status }}
                             </p>
+                            {% endif %}
                         </td>
+                        <td><h6>{{ item.size.size }}</h6></td>
+                        <td>{{ item.price }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>{{ item.totel }}</td>
                         <td>
-                           
+                            
+                                <span class="badge 
+                                    {% if item.status == 'Order confirmed' or item.status == 'Shipped' %} bg-primary
+                                    {% elif item.status == 'Processing' %} bg-warning
+                                    {% elif item.status == 'Delivered' %} bg-success
+                                    {% elif item.status == 'Cancelled' or item.status == 'Returned' %} bg-danger
+                                    {% endif %}">
+                                    {{ item.status }}
+                                </span>
+                            
                         </td>
+                        <td></td>
                         <td>
                             <form method="post" action="{% url 'update_status' item.pk %}">
                                 {% csrf_token %}
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <select name="status" id="status" class="form-control mr-2 {% if item.status == 'Cancelled' or item.status == 'Returned' %}{% endif %}" {% if item.status == 'Cancelled' or item.status == 'Returned' %}disabled{% endif %}>
+                                    <select name="status" id="status" class="form-control mr-2" {% if item.status == 'Cancelled' or item.status == 'Returned' %} disabled {% endif %}>
                                         {% for choice in item.ORDER_STATUS_CHOICES %}
-                                            <option value="{{ choice.0 }}" {% if choice.0 == item.status %} selected {% endif %} {% if choice.0 == 'Cancelled' %} {% if item.status == 'Cancelled' %} style="color: red;" {% endif %} {% endif %}>{{ choice.1 }}</option>
+                                        <option value="{{ choice.0 }}" {% if choice.0 == item.status %} selected {% endif %} {% if choice.0 == 'Cancelled' %} style="color: red;" {% endif %}>
+                                            {{ choice.1 }}
+                                        </option>
                                         {% endfor %}
                                     </select>
-                                    <button type="submit" class="btn btn-primary" {% if item.status == 'Cancelled' or item.status == 'Returned' %}hidden{% endif %}>Update</button>
-                                    
+                                    <button type="submit" class="btn btn-primary" {% if item.status == 'Cancelled' or item.status == 'Returned' %} hidden {% endif %}>Update</button>
                                 </div>
                             </form>
                         </td>
                     </tr>
-                   
                     {% endfor %}
                 </tbody>
             </table>

@@ -36,7 +36,7 @@ def add_products(request):
         brand = request.POST.get("brand")
         Thumbnail = request.FILES.get("thumbnail")
 
-        if Product.objects.filter(name__icontains=name).exists():
+        if Product.objects.filter(name__iexact=name).exists():
             messages.error(request, "product already exist")
             return redirect("addproducts")
         if not name or not name[0].isalpha():
@@ -87,7 +87,7 @@ def add_colour(request, id):
             product_id = request.POST.get("product")
 
             if Color_products.objects.filter(
-                product_id=product_id, color_name__icontains=name
+                product_id=product_id, color_name__iexact=name
             ).exists():
 
                 messages.error(request, "Color already exists for this product")
@@ -151,7 +151,7 @@ def add_size(request, id):
 
             color_product = Color_products.objects.get(id=color_id)
 
-            if color_product.size.filter(size__icontains=size).exists():
+            if color_product.size.filter(size__iexact=size).exists():
                 messages.error(request, "Size already exists for this color")
                 return redirect("addsize", id)
 
@@ -224,7 +224,7 @@ def edit_product(request, id):
         brand = request.POST.get("Brand")
         Thumbnail = request.FILES.get("Thumbnail")
 
-        if Product.objects.filter(name__icontains=name).exclude(id=id).exists():
+        if Product.objects.filter(name__iexact=name).exclude(id=id).exists():
             messages.error(request, "product already exist")
             return redirect("editproduct", id)
         if not name or not name[0].isalpha():
@@ -310,7 +310,7 @@ def edit_variant(request, id):
         print(product_id)
         print(size)
         cat = Color_products.objects.filter(
-            product__id=product_id, color_name__icontains=name
+            product__id=product_id, color_name__iexact=name
         ).exclude(id=color_products.pk)
         print(cat)
 
@@ -362,7 +362,7 @@ def edit_variant(request, id):
         ):
             print(
                 size_variant.objects.filter(
-                    Color_products__id=color_products.pk, size__icontains=size
+                    Color_products__id=color_products.pk, size__iexact=size
                 ).exclude(id=variants.id)
             )
             messages.error(request, "The Size already exists")
@@ -391,5 +391,21 @@ def edit_variant(request, id):
 def unlist_variant(request, id):
     item = get_object_or_404(Color_products, id=id)
     item.is_listed = False
+    item.save()
+    return redirect(product_variant, item.product.pk)
+
+def unlisted_variants_view(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    unlisted_variants = Color_products.objects.filter(product=product, is_listed=False).prefetch_related('size')
+
+    context = {
+        'product': product,
+        'unlisted_variants': unlisted_variants,
+    }
+    return render(request, 'unlist_variant.html', context)
+
+def list_variant(request, id):
+    item = get_object_or_404(Color_products, id=id)
+    item.is_listed = True
     item.save()
     return redirect(product_variant, item.product.pk)

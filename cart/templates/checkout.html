@@ -2,7 +2,7 @@
 {% block body %}
 {% load static %}
 
-<<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.3.45/css/materialdesignicons.css" integrity="sha256-NAxhqDvtY0l4xn+YVa6WjAcmd94NNfttjNsDmNatFVc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.3.45/css/materialdesignicons.css" integrity="sha256-NAxhqDvtY0l4xn+YVa6WjAcmd94NNfttjNsDmNatFVc=" crossorigin="anonymous" />
 <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
@@ -13,157 +13,216 @@
         border-radius: 5px;
     }
 </style>
-<form action="{% url 'placed_order' %}" method='POST'>
-    {% csrf_token %}
 <div class="container">
     <div class="row">
-        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-
-        <script>
-            {% if messages %}
-            {% for message in messages %}
-            {% if message.tags == 'error' %}
-            swal("Error!", "{{ message }}", "error"); // Display error message with a warning icon
-            {% elif message.tags == 'success' %}
-            swal("Success!", "{{ message }}", "success"); // Display success message with a success icon
-            {% else %}
-            swal("Message", "{{ message }}"); // Display general message
-            {% endif %}
-            {% endfor %}
-            {% endif %}
-        </script>
-        
-        <div class="col-xl-8">
-            <div class="card">
-                <div class="checkout__order">
-                    <ol class="activity-checkout mb-0 px-4 mt-3">
-                        
-                        
-                        <li class="checkout-item">
-                            <div class="feed-item-list ">
-                                <div>
-                                    <h5 class="font-size-16 mb-1">Shipping Info</h5>
-                                    <p class="text-muted text-truncate mb-4">Neque porro quisquam est</p>
-                                    {% for i in existing_addresses %}
-                                    <div class="mb-3 shipping-info" >
-                                        <div class="row align-items-center">
-                                            <div class="col-lg-10">
-                                                <div data-bs-toggle="collapse">
-                                                    <label class="card-radio-label mb-0">
-                                                        <input type="radio" name="address" class="card-radio-input" checked="" value="{{i.id}}">
-                                                        <div class="card-radio text-truncate p-3" >
-                                                            <span class="fs-14 mb-4 d-block">{{i.name}}, {{i.address}}, {{i.House_no}}, {{i.city}}, PIN {{i.pincode}}, {{i.state}}, {{i.country}}</span>
-                                                            <span class="fs-14 mb-2 d-block">{{request.user.phone}}</span>
-                                                        </div>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-2">
-                                                <div class="edit-btn bg-light rounded">
-                                                    <a href="#" data-bs-toggle="tooltip" data-placement="top" title="" data-bs-original-title="Edit">
-                                                        <i class="bx bx-pencil font-size-16"></i>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {% endfor %}
-                                </div>
-                            </div>
-                        </li>
-                    </ol>
-                </div>
+        {% if not coupon_details_displayed %}
+        <div class="col-lg-4 offset-lg-8 mt-n3"> <!-- Applying negative margin top -->
+            <div class="cart-discount">
+                <h6>Discount codes</h6>
+                <form action="{% url 'checkout' %}" class="form" method="POST">
+                    {% csrf_token %}
+                    <div class="input-group mb-3">
+                        <input name="coupon_code" type="text" class="form-control" placeholder="Enter your coupon code" aria-label="Coupon code" aria-describedby="applyCouponBtn">
+                        <button class="btn btn-dark" type="Submit">Apply</button>
+                    </div>
+                </form>
             </div>
         </div>
-        <div class="col-lg-4">
-            <div class="checkout__order">
-                <h4 class="order__title">Your order</h4>
-                <div class="checkout__order__products">Product <span>Total</span></div>
-                <ul class="checkout__total__products">
-                    {% for i in item %}
-                    <li>{{ i.product.product.name }} <span>{{ i.total_price }}</span></li>
-                    {% endfor %}
-                </ul>
-                <ul class="checkout__total__all">
-                    <li>Subtotal <span>{{ cart.total_amount }}</span></li>
-                    {% if cart.total_amount > 3000 %}
-                    <li>Shipping Charge <span>0.00</span></li>
-                    {% else %}
-                    <li>Shipping Charge <span>50.00</span></li>
-                    {% endif %}
-                    <li>Total <span>{{ cart.Totel }}</span></li>
-                </ul>
-                <div>
-                    <h5 class="font-size-14 mb-3">Payment method :</h5>
-                    <div class="row">
-                        <div class="col-lg-3 col-sm-6">
-                            <div data-bs-toggle="collapse">
-                                <label class="card-radio-label">
-                                    <input type="radio" name="payment_method" id="pay-methodoption1" class="card-radio-input">
-                                    <span class="card-radio py-3 text-center text-truncate">
-                                        <i class="bx bx-wallet d-block h2 mb-3"></i>
-                                        Wallet
-                                    </span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-sm-6">
-                            <div>
-                                <label class="card-radio-label">
-                                    <input type="radio" name="payment_method" id="pay-methodoption2" class="card-radio-input" value='Razorpay'>
-                                    <span class="card-radio py-3 text-center text-truncate">
-                                        <i class="bx bxl-paypal d-block h2 mb-3"></i>
-                                        Paypal
-                                    </span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-sm-6">
-                            <div>
-                                <label class="card-radio-label">
-                                    <input type="radio" name="payment_method" id="pay-methodoption3" class="card-radio-input" checked="" value='Cash on Delivery'>
-                                    <span class="card-radio py-3 text-center text-truncate">
-                                        <i class="bx bx-money d-block h2 mb-3"></i>
-                                        <span>Cash on Delivery</span>
-                                    </span>
-                                </label>
+        {% endif %}
+    </div>
+    <div>
+        <form action="{% url 'placed_order' %}" class="checkout__form" method='POST'>
+            {% csrf_token %}
+            <input type="hidden" name="payment_status" id="payment-status" value="">
+            <input type="hidden" name="failure_reason" id="failure-reason" value="">
+            <div class="container">
+                <div class="row">
+                    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+                    <script>
+                        {% if messages %}
+                        {% for message in messages %}
+                        {% if message.tags == 'error' %}
+                        swal("Error!", "{{ message|safe }}", "error"); // Display error message with a warning icon
+                        {% elif message.tags == 'success' %}
+                        swal("Success!", "{{ message|safe }}", "success"); // Display success message with a success icon
+                        {% else %}
+                        swal("Message", "{{ message|safe }}"); // Display general message
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}
+                    </script>
+
+                    <div class="col-xl-8">
+                        <div class="card">
+                            <div class="checkout__order">
+                                <ol class="activity-checkout mb-0 px-4 mt-3">
+
+                                    <li class="checkout-item">
+                                        <div class="feed-item-list ">
+                                            <div>
+                                                <h5 class="font-size-16 mb-1">Shipping Info</h5>
+                                                <p class="text-muted text-truncate mb-4">Neque porro quisquam est</p>
+                                                {% for i in existing_addresses %}
+                                                <div class="mb-3 shipping-info">
+                                                    <div class="row align-items-center">
+                                                        <div class="col-lg-10">
+                                                            <div data-bs-toggle="collapse">
+                                                                <label class="card-radio-label mb-0">
+                                                                    <input type="radio" name="address" class="card-radio-input" checked="" value="{{i.id}}">
+                                                                    <div class="card-radio text-truncate p-3">
+                                                                        <span class="fs-14 mb-4 d-block">{{i.name}}, {{i.address}}, {{i.House_no}}, {{i.city}}, PIN {{i.pincode}}, {{i.state}}, {{i.country}}</span>
+                                                                        <span class="fs-14 mb-2 d-block">{{request.user.phone}}</span>
+                                                                    </div>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-2">
+                                                            <div class="edit-btn bg-light rounded">
+                                                                <a href="{% url 'check_address' i.id %}" data-bs-toggle="tooltip" data-placement="top" title="" data-bs-original-title="Edit">
+                                                                    <i class="bx bx-pencil font-size-16"></i>
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {% endfor %}
+                                                <div class="mb-3">
+                                                    <button type="button" class="site-btn" onclick="location.href='{% url 'check_add_address' %}'">Add New Address</button>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ol>
                             </div>
                         </div>
                     </div>
+                    <div class="col-lg-4">
+                        <div class="checkout__order">
+                            <h4 class="order__title">Your order</h4>
+                            <div class="checkout__order__products">Product <span>Total</span></div>
+                            <ul class="checkout__total__products">
+                                {% for i in item %}
+                                <li>{{ i.product.product.name }} <span>{{ i.total_price }}</span></li>
+                                {% endfor %}
+                            </ul>
+                            
+                            <ul class="checkout__total__all">
+                                {% if cart.coupon %}
+                                <ul>
+                                    <li>Coupon Applied: <span>{{ cart.coupon.code }} </span></li>
+                                    <li>Coupon Amount: <span>{{ cart.coupon.discount_amount }}</span></li>
+                                    
+                                </ul>
+                                {% endif %}
+                                <li>Subtotal <span>{{ cart.total_amount }}</span></li>
+                               
+                               
+                                {% if cart.total_amount > 3000 %}
+                                <li>Shipping Charge <span>0.00</span></li>
+                                {% else %}
+                                <li>Shipping Charge <span>50.00</span></li>
+                                {% endif %}
+                                <li id="totalAmount">Total <span>{{ cart.Totel }}</span></li>
+                            </ul>
+                            <div>
+                                <h5 class="font-size-14 mb-3">Payment method :</h5>
+                                <div class="row">
+                                    <div class="col-lg-3 col-sm-6">
+                                        <div data-bs-toggle="collapse">
+                                            <label class="card-radio-label">
+                                                <input type="radio" name="payment_method" id="pay-methodoption1" class="card-radio-input">
+                                                <span class="card-radio py-3 text-center text-truncate">
+                                                    <i class="bx bx-wallet d-block h2 mb-3"></i>
+                                                    Wallet
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-sm-6">
+                                        <div>
+                                            <label class="card-radio-label">
+                                                <input type="radio" name="payment_method" id="pay-methodoption2" class="card-radio-input" checked="" value='Razorpay'>
+                                                <span class="card-radio py-3 text-center text-truncate">
+                                                    <i class="bx bxl-paypal d-block h2 mb-3"></i>
+                                                    Razorpay
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-sm-6">
+                                        <div>
+                                            <label class="card-radio-label">
+                                                <input type="radio" name="payment_method" id="pay-methodoption3" class="card-radio-input" checked="" value='Cash On Delivery'>
+                                                <span class="card-radio py-3 text-center text-truncate">
+                                                    <i class="bx bx-money d-block h2 mb-3"></i>
+                                                    <span>Cash on Delivery</span>
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% if not coupon_details_displayed %}
+                            <button type="submit" id="place-order-btn" class="site-btn">PLACE ORDER</button>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
-                <button type="submit"  id="place-order-btn"  class="site-btn">PLACE ORDER</button>
             </div>
-        </div>
+        </form>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                var form = document.querySelector('.checkout__form');
+                var paymentStatusInput = document.getElementById('payment-status');
+                var failureReasonInput = document.getElementById('failure-reason');
+
+                form.addEventListener('submit', function (event) {
+                    var paymentMethod = document.querySelector('input[name="payment_method"]:checked');
+
+                    if (paymentMethod && paymentMethod.value === 'Razorpay') {
+                        event.preventDefault(); // Prevent form submission
+
+                        // Get total amount from the HTML element
+                        var totalAmountElement = document.getElementById('totalAmount');
+                        var totalAmountText = totalAmountElement.textContent;
+                        var totalAmount = parseInt(totalAmountText.match(/\d+/)[0]); // Extract digits from text
+
+                        // Initialize Razorpay payment
+                        initializeRazorpay(totalAmount);
+                    }
+                });
+
+                function initializeRazorpay(totalAmount) {
+                    // Initialize Razorpay payment options
+                    var options = {
+                        "key": "rzp_test_ev9UtjBDn8UC2J", // Your Razorpay key
+                        "amount": totalAmount * 100, // Convert to smallest currency unit
+                        "currency": "INR",
+                        "name": "Your Company Name",
+                        "description": "Order payment",
+                        "handler": function (response) {
+                            // Handle Razorpay payment success response
+                            paymentStatusInput.value = 'success';
+                            form.submit();
+                        },
+                        "modal": {
+                            "ondismiss": function() {
+                                
+                                paymentStatusInput.value = 'failed';
+                                failureReasonInput.value = 'Payment was cancelled by user';
+                                form.submit(); 
+                            }
+                        },
+                        
+                    };
+
+                    var rzp = new Razorpay(options);
+                    rzp.open();
+                }
+            });
+        </script>
     </div>
-</div>
-</form>
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var options = {
-            key: "{{ razorpay_merchant_key }}",
-            amount: "{{ razorpay_amount }}",
-            currency: "{{ currency }}",
-            name: "Dj Razorpay",
-            order_id: "{{ razorpay_order_id }}",
-            callback_url: "{{ callback_url }}"
-        };
-        var rzp = new Razorpay(options);
-
-        // Event listener for Place Order button
-        document.getElementById("place-order-btn").addEventListener("click", function () {
-            // Check if Razorpay payment option is selected
-            var paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
-            if (paymentMethod === "Razorpay") {
-                rzp.open(); // Open Razorpay payment modal
-            } else {
-                // Submit the checkout form for other payment methods
-                document.getElementById("checkout-form").submit();
-            }
-        });
-    });
-</script>
-
-
-
 {% endblock %}

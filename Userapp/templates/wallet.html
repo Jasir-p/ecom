@@ -1,0 +1,116 @@
+{% extends 'user_nav.html' %}
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 mx-auto">
+            <div class="card mt-5">
+                <div class="card-header bg-dark text-white">
+                    <h4>My Wallet</h4>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Wallet Balance: {{wallet.balance}}</h5>
+                    <p class="card-text">You can view your wallet balance and transaction history here.</p>
+                    <div id="addMoneySection">
+                        <a href="#" id="addMoneyBtn" class="btn btn-primary">Add Money</a>
+                        <form id="addMoneyForm" action="{% url 'add_to_wallet'  %}" method="post">
+                            {% csrf_token %}
+                        <div id="amountInputWrapper" style="display: none;">
+                            <label for="amount">Enter Amount:</label>
+                            <input type="number" id="amount" name="amount" class="form-control" placeholder="Enter amount">
+                            <button type="button" id="submitAmountBtn" class="btn btn-success mt-3">Submit</button>
+                            <button type="button" id="cancelAmountBtn" class="btn btn-secondary mt-3">Cancel</button>
+                        </div>
+                    </form>
+                    </div>
+                </div>
+            </div>
+            <div class="card mt-5">
+                <div class="card-header bg-dark text-white">
+                    <h4>Transaction History</h4>
+                </div>
+                
+                <ul class="list-group list-group-flush">
+                    {% for i in wallets %}
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between">
+                            
+                            {% if i.money_deposit %}
+                            <span>Deposit</span>
+                            {% elif i.money_withdrawn %}
+                            <span>Withdrawal</span>
+                                
+                            {% endif %}
+                                
+                            <span>{{i.transaction_id}}</span>
+                            {% if i.money_deposit %}
+                            <span class="text-success">+${{i.money_deposit}}</span>
+                            {% elif i.money_withdrawn %}
+                            <span class="text-success">-${{i.money_withdrawn}}</span>
+                            {% endif%}
+                        </div>
+                        <small class="text-muted">{{i.transaction_time}}</small>
+                    </li>
+                    {% endfor %}
+                   
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const addMoneyBtn = document.getElementById('addMoneyBtn');
+  const amountInputWrapper = document.getElementById('amountInputWrapper');
+  const submitAmountBtn = document.getElementById('submitAmountBtn');
+  const cancelAmountBtn = document.getElementById('cancelAmountBtn');
+  const addMoneyForm = document.getElementById('addMoneyForm');
+
+  addMoneyBtn.addEventListener('click', function() {
+    addMoneyBtn.style.display = 'none';
+    amountInputWrapper.style.display = 'block';
+  });
+
+  cancelAmountBtn.addEventListener('click', function() {
+    amountInputWrapper.style.display = 'none';
+    addMoneyBtn.style.display = 'block';
+  });
+
+  submitAmountBtn.addEventListener('click', function() {
+    const amount = document.getElementById('amount').value;
+    initializeRazorpay(amount);
+  });
+
+  function initializeRazorpay(totalAmount) {
+    var options = {
+      "key": "rzp_test_ev9UtjBDn8UC2J",
+      "amount": totalAmount * 100,
+      "currency": "INR",
+      "name": "Your Company Name",
+      "description": "Add Money to Wallet",
+      "handler": function(response) {
+        console.log('Razorpay payment response:', response);
+        if (response.razorpay_payment_id) {
+          // Payment successful, submit the form
+          addMoneyForm.submit();
+        } else {
+          // Payment failed, show SweetAlert
+          swal("Payment Failed!", "Please try again.", "error");
+        }
+      },
+      "prefill": {
+        "email": "customer@example.com",
+        "contact": "9999999999"
+      }
+    };
+
+    var rzp = new Razorpay(options);
+    rzp.open();
+  }
+});
+</script>
+
+{% endblock %}

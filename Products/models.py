@@ -1,9 +1,11 @@
 from django.db import models
 from Admin.models import *
-from django.db.models.signals import pre_save
+from django.db.models.signals import pre_save,post_save,post_delete
 from django.dispatch import receiver
 from PIL import Image
-from Userapp.models import *
+from django.db.models import Sum
+
+from Offer.models import *
 
 # Create your models here.
 
@@ -15,6 +17,7 @@ class Product(models.Model):
     description = models.TextField()
     catagory = models.ForeignKey(Catagory, on_delete=models.CASCADE)
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
+    offer_price=models.DecimalField(max_digits=10, decimal_places=2,null=True,blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -30,7 +33,7 @@ class Product(models.Model):
             target_size = (260, 260)
             img = img.resize(target_size, Image.BICUBIC)
             img.save(self.thumbnail.path)
-
+    
 
 class Color_products(models.Model):
 
@@ -46,6 +49,15 @@ class Color_products(models.Model):
 
     def __str__(self):
         return f"{self.color_name} ({self.product.name})"
+    
+    def is_in_stock(self):
+        
+        total_quantity = self.size.aggregate(total_quantity=Sum('quantity'))['total_quantity']
+        
+        if total_quantity is not None and total_quantity > 0:
+            return True
+        else:
+            return False
 
     # def save(self, *args, **kwargs):
     #         super().save(*args, **kwargs)
@@ -80,5 +92,55 @@ class size_variant(models.Model):
 
 
 class Wishlist(models.Model):
-    customer = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    customer = models.OneToOneField('Userapp.CustomUser', on_delete=models.CASCADE)
     products = models.ManyToManyField(Color_products, related_name="wishlists")
+
+
+@receiver([post_save, post_delete], sender=Offer)
+def update_product_price(sender, instance, **kwargs):
+
+    product = instance.product
+    category = instance.category
+    
+    if product:
+        product_offers = Offer.objects.filter(product=product)
+        max_discount = 0
+
+        for offer in product_offers:
+            if offer.discount_percentage > max_discount:
+                max_discount = offer.discount_percentage
+        
+        final_price = product.price
+        if max_discount > 0:
+            final_price -= (final_price * max_discount / 100)
+       
+        product.offer_price = round(final_price)
+        product.save()
+        
+    
+    if category:
+        products_in_category = Product.objects.filter(catagory=category)
+
+        for product_in_category in products_in_category:
+            
+            product_offers_in_category = Offer.objects.filter(product=product_in_category)
+
+            if product_offers_in_category.exists():
+
+                biggest_discount = max(offer.discount_percentage for offer in product_offers_in_category)
+            else:
+                biggest_discount = 0
+
+            category_offers = Offer.objects.filter(category=category)
+            biggest_discount_in_category = max((offer.discount_percentage for offer in category_offers), default=0)
+
+            final_discount = max(biggest_discount, biggest_discount_in_category)
+
+            final_price_in_category = product_in_category.price
+            if final_discount > 0:
+                final_price_in_category -= (final_price_in_category * final_discount / 100)
+
+            product_in_category.offer_price = round(final_price_in_category)
+            product_in_category.save()
+
+

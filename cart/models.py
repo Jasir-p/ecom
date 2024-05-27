@@ -1,5 +1,5 @@
 from django.db import models
-from Userapp.models import CustomUser
+
 from Products.models import Color_products, size_variant
 
 
@@ -7,24 +7,32 @@ from Products.models import Color_products, size_variant
 
 
 class Coupon(models.Model):
-    code = models.CharField(max_length=50, unique=True)
-    discount = models.DecimalField(max_digits=10, decimal_places=2)
-    valid_from = models.DateField()
-    valid_to = models.DateField()
+    title = models.CharField(max_length=50, null=True, blank=True)
+    code = models.CharField(max_length=50, unique=True, null=True, blank=True)
+    discount_amount = models.DecimalField(
+        null=True, blank=True, max_digits=10, decimal_places=2
+    )
+    start_date = models.DateField(null=True, blank=True)
+    end_date = models.DateField(null=True, blank=True)
+    quantity = models.IntegerField(null=True, blank=True)
+    min_amount = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        null=True,
+        blank=True,
+    )
     active = models.BooleanField(default=True)
-
-    def __str__(self):
-        return self.code
+    created = models.DateField(auto_now_add=True,null=True)
 
 
 class CustomerCoupon(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    user = models.ForeignKey('Userapp.CustomUser', on_delete=models.CASCADE)
     coupon = models.ForeignKey(Coupon, on_delete=models.CASCADE)
     applied_at = models.DateTimeField(auto_now_add=True)
 
 
 class Cart(models.Model):
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    user = models.OneToOneField('Userapp.CustomUser', on_delete=models.CASCADE)
     products = models.ManyToManyField(Color_products, through="CartItem")
     coupon = models.ForeignKey(Coupon, on_delete=models.SET_NULL, blank=True, null=True)
     coupon_applied = models.BooleanField(default=False, null=True, blank=True)
@@ -33,12 +41,27 @@ class Cart(models.Model):
     )
 
     def update_total_amount(self):
-        total_amount = sum(item.total_price for item in self.cart.all())
-        self.total_amount = total_amount
+        total_amount = sum(item.total_price for item in self.cartitem.all())  # Accessing CartItem objects through the related name
+        if self.coupon:
+            self.total_amount = total_amount - self.coupon.discount_amount
+        else:
+            self.total_amount = total_amount
         self.save()
 
+    def remove_coupon(self):
+        if self.coupon:
+            self.coupon = None
+            self.update_total_amount()  # Update total amount after removing the coupon
+
+    def coupon_applied_in(self):
+        total_amount = sum(item.total_price for item in self.cartitem.all())
+        if self.coupon:
+            if self.coupon.min_amount <= total_amount:
+                total_amount -= self.coupon.discount_amount
+        return total_amount
+    
     def check_cart_items_exist(self):
-        return self.cart.exists()
+        return self.cartitem.exists()
 
     def Totel(self):
 
@@ -52,7 +75,7 @@ class Cart(models.Model):
 
 
 class CartItem(models.Model):
-    cart = models.ForeignKey(Cart, related_name="cart", on_delete=models.CASCADE)
+    cart = models.ForeignKey(Cart, related_name="cartitem", on_delete=models.CASCADE)
     product = models.ForeignKey(Color_products, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
     product_size_color = models.ForeignKey(
@@ -64,14 +87,14 @@ class CartItem(models.Model):
 
     def save(self, *args, **kwargs):
         if self.product_size_color.quantity >= self.quantity:
-            self.total_price = self.product.product.price * self.quantity
+            self.total_price = self.product.product.offer_price * self.quantity
             super().save(*args, **kwargs)
             # Update the total_amount of the cart after saving the CartItem
             self.cart.update_total_amount()
 
 
 class Address(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    user = models.ForeignKey('Userapp.CustomUser', on_delete=models.CASCADE)
     name = models.CharField(max_length=100, blank=True, null=True)
     address = models.CharField(max_length=100)
     House_no = models.CharField(max_length=100, blank=True, null=True)

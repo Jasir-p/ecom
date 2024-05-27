@@ -1,0 +1,77 @@
+{% extends 'nav.html' %}
+
+{% block body %}
+<div class="container-fluid pt-4 px-4">
+    <div class="card bg-light rounded p-4">
+        
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Color Name</th>
+                        <th scope="col">Image 1</th>
+                        <th scope="col">Image 2</th>
+                        <th scope="col">Image 3</th>
+                        <th scope="col">Size</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Edit</th>
+                        <th scope="col">List</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for variant in unlisted_variants %}
+                    <tr>
+                        <td>
+                            {{ variant.color_name }}
+                            {% if variant.size.exists %}
+                                {% if variant.is_in_stock %}
+                                <p><span class="badge bg-success">In Stock</span></p>
+                                {% else %}
+                                <p><span class="badge bg-danger">Out of Stock</span></p>
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                        <td><img src="{{ variant.img1.url }}" alt="Image 1" width="80px"></td>
+                        <td><img src="{{ variant.img2.url }}" alt="Image 2" width="80px"></td>
+                        <td><img src="{{ variant.img3.url }}" alt="Image 3" width="80px"></td>
+                        {% if variant.size.exists %}
+                            <td>
+                                <select name="size" class="form-select" onchange="updateQuantityAndEditLink(this)">
+                                    {% for size in variant.size.all %}
+                                        <option value="{{ size.id }}" data-quantity="{{ size.quantity }}">{{ size.size }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                            <td class="quantityDisplay"></td>
+                        {% else %}
+                            <td>No sizes available</td>
+                            <td></td>
+                        {% endif %}
+                        <td>
+                            <a class="btn btn-primary edit-link" href="#">Edit</a>
+                        </td>
+                        <td>
+                            <a class="btn btn-success list" href="{% url 'list_variant' variant.id %}">List</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    function updateQuantityAndEditLink(select) {
+        const row = select.parentNode.parentNode;
+        const quantityDisplay = row.querySelector('.quantityDisplay');
+        const selectedOption = select.options[select.selectedIndex];
+        const quantity = selectedOption.getAttribute('data-quantity');
+
+        quantityDisplay.textContent = quantity;
+
+        const selectedSizeId = select.value;
+        const editLink = row.querySelector('.edit-link');
+        editLink.href = "{% url 'edit_variant' 0 %}".replace("0", selectedSizeId);
+    }
+</script>
+{% endblock %}
