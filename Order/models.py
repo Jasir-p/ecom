@@ -10,6 +10,7 @@ class Payment(models.Model):
     PAYMENT_METHOD_CHOICES = [
         ("COD", "Cash on Delivery"),
         ("Razorpay", "Razorpay"),
+        ("Wallet","Wallet"),
     ]
     user = models.ForeignKey('Userapp.CustomUser', on_delete=models.CASCADE)
     method = models.CharField(max_length=20, choices=PAYMENT_METHOD_CHOICES)
@@ -41,6 +42,12 @@ class Order(models.Model):
     state = models.CharField(max_length=50, blank=True, null=True)
     country = models.CharField(max_length=50, blank=True, null=True)
     pincode = models.CharField(max_length=20, blank=True, null=True)
+    coupon_amount= models.DecimalField(
+        null=True, blank=True, max_digits=10, decimal_places=2
+    )
+    min_amount=models.DecimalField(
+        null=True, blank=True, max_digits=10, decimal_places=2)
+    shipping_charge=models.BooleanField(default=False)
 
 
 class OrderProduct(models.Model):
@@ -91,3 +98,6 @@ class OrderProduct(models.Model):
         if self.delivery_date is None:
             self.set_expected_delivery_date()
         super().save(*args, **kwargs)
+    def totel_price(self):
+        amount=self.quantity * self.price
+        return amount

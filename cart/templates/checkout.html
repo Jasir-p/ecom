@@ -132,7 +132,7 @@
                                     <div class="col-lg-3 col-sm-6">
                                         <div data-bs-toggle="collapse">
                                             <label class="card-radio-label">
-                                                <input type="radio" name="payment_method" id="pay-methodoption1" class="card-radio-input">
+                                                <input type="radio" name="payment_method" id="pay-methodoption1" class="card-radio-input" value='Wallet'>
                                                 <span class="card-radio py-3 text-center text-truncate">
                                                     <i class="bx bx-wallet d-block h2 mb-3"></i>
                                                     Wallet
@@ -154,7 +154,7 @@
                                     <div class="col-lg-3 col-sm-6">
                                         <div>
                                             <label class="card-radio-label">
-                                                <input type="radio" name="payment_method" id="pay-methodoption3" class="card-radio-input" checked="" value='Cash On Delivery'>
+                                                <input type="radio" name="payment_method" id="pay-methodoption3" class="card-radio-input" checked="" value='Cash On Delivery'  {% if cart.Totel > 1000 %} disabled {% endif %}>
                                                 <span class="card-radio py-3 text-center text-truncate">
                                                     <i class="bx bx-money d-block h2 mb-3"></i>
                                                     <span>Cash on Delivery</span>
@@ -201,7 +201,7 @@
                         "key": "rzp_test_ev9UtjBDn8UC2J", // Your Razorpay key
                         "amount": totalAmount * 100, // Convert to smallest currency unit
                         "currency": "INR",
-                        "name": "Your Company Name",
+                        "name": "HipHopz",
                         "description": "Order payment",
                         "handler": function (response) {
                             // Handle Razorpay payment success response

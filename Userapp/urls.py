@@ -34,4 +34,11 @@ urlpatterns = [
     path('ViewCoupon/',views.view_coupons,name="view_coupon"),
     path('api/products/<int:product_id>/sizes', views.get_product_sizes, name='get_sizes'),
     path('wishlist-to-cart/<int:id>/<int:size_id>/', views.wishlist_to_cart, name='wishlist_to_cart'),
+    path("MyRefarels/",views.myrefrals,name='my_refarel'),
+    path("Search/",views.search_shop,name="search"),
+    path("Forgotpassword/",views.forgot_email,name='f_password'),
+    path('Otppassword/',views.check_otp,name="otp_password"),
+    path('Resendotppassword/',views.resend_otp_password,name="resend_otp_password"),
+    path("PasswordSection/",views.set_password,name='password_section'),
+    path('invoice/<int:order_id>/', views.generate_invoice, name='generate_invoice'),
 ]

@@ -1,0 +1,112 @@
+<!-- referrals.html -->
+{% extends 'user_nav.html' %}
+{% load static %}
+{% block body %}
+<section class="container my-5">
+    <div class="row">
+        <div class="col-lg-3">
+            <!-- Sidebar -->
+            <div class="card border-0 shadow rounded-lg">
+                <div class="card-body text-center">
+                    <img src="{% static 'img/profile-pic.jpg' %}" alt="Profile Picture" class="rounded-circle mb-3" width="150">
+                    <h4 class="text-uppercase mb-1">{{ user.username }}</h4>
+                    <p class="text-muted font-size-sm">{{ user.email }}</p>
+                    <div class="list-group list-group-flush mt-4">
+                        <a href="{% url 'view_address' %}" class="list-group-item list-group-item-action border-0">
+                            Profile Information
+                        </a>
+                        <a href="{% url 'user_order' %}" class="list-group-item list-group-item-action border-0">
+                            Orders
+                        </a>
+                        <a href="{% url 'changepassword' %}" class="list-group-item list-group-item-action border-0">
+                            Change Password
+                        </a>
+                        <a href="{% url 'view_coupon' %}" class="list-group-item list-group-item-action border-0">
+                            Coupons
+                        </a>
+                        <a href="{% url 'my_refarel' %}" class="list-group-item list-group-item-action border-0">
+                            My Refrals
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action border-0">
+                            Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-9">
+            <div class="card border-0 shadow rounded-lg">
+                <div class="card-body">
+                    <h5 class="text-uppercase mb-4">Referral Information</h5>
+                    <p><strong>Referral Code:</strong> <span id="">{{ user.referal_code }}</span>
+                        <strong>Referral Code:</strong> <span id="referralCode">{{ message }}</span>
+                        
+                        <button class="btn btn-sm btn-outline-primary ml-2" onclick="copyToClipboard()">Copy</button>
+                        <button class="btn btn-sm btn-outline-secondary ml-2" data-toggle="modal" data-target="#whatsappModal">Share</button>
+                    </p>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Referred User</th>
+                                    <th scope="col">Date Referred</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for referral in data %}
+                                <tr>
+                                    <th scope="row">{{ forloop.counter }}</th>
+                                    <td>{{ referral.user_name }}</td>
+                                    <td>{{ referral.date_referred }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- WhatsApp Share Modal -->
+<div class="modal fade" id="whatsappModal" tabindex="-1" role="dialog" aria-labelledby="whatsappModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="whatsappModalLabel">Share via WhatsApp</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- WhatsApp share button -->
+                <a id="whatsappShareBtn" href="#" class="btn btn-success btn-block">Share on WhatsApp</a>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+        document.getElementById("referralCode").style.display = "none";
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function copyToClipboard() {
+        var copyText = document.getElementById("referralCode").innerText;
+        navigator.clipboard.writeText(copyText).then(function() {
+            Swal.fire('Copied!', 'Referral code copied to clipboard.', 'success');
+        }, function(err) {
+            Swal.fire('Oops...', 'Could not copy text: ' + err, 'error');
+        });
+    }
+
+    $('#whatsappModal').on('show.bs.modal', function (event) {
+        var referralCode = document.getElementById("referralCode").innerText;
+        var whatsappShareUrl = "whatsapp://send?text=Use my referral code: " + referralCode + " to join!";
+        document.getElementById("whatsappShareBtn").href = whatsappShareUrl;
+    });
+</script>
+{% endblock %}

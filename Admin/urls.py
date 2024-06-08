@@ -20,5 +20,6 @@ urlpatterns = [
     path("ViewunlistBrand/", views.viewunlist_brands, name="viewunlistbrand"),
     path("ListBrand/<int:b_id>", views.list_brand, name="listbrand"),
     path("EditBrand/<int:id>", views.edit_brand, name="edit_brand"),
-    path("Salesreport/",views.sales_report,name="sales_report")
+    # path("Salesreport/",views.sales_report,name="sales_report"),
+     path('download-sales-report/', views.download_sales_report, name='download_sales_report'),
 ]

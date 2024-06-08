@@ -1,23 +1,19 @@
 {% extends 'user_nav.html' %}
+
 {% block body %}
+
+{% load static %}
+
 <style>
-    /* Basic styling */
-    #container {
-        max-width: 80%;
-        margin: 20px auto;
-        padding: 20px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
+    /* Add your custom styles here */
     .card-container {
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between; /* Add space between cards */
     }
     .card {
-        width: 48%; /* Adjust card width */
-        border: 1px solid #ccc;
+        width: 100%; /* Adjust card width */
+        border: 2px solid Gray;
         border-radius: 5px;
         padding: 20px;
         margin-bottom: 20px; /* Add some space between cards */
@@ -40,7 +36,7 @@
         text-decoration: none;
         transition: color 0.3s;
     }
-    .td img {
+    .order-items-table img {
         max-width: 50px;
         margin-right: 10px;
     }
@@ -48,46 +44,112 @@
         font-size: 20px;
         margin-bottom: 15px;
     }
+    .status-cancelled {
+        color: red;
+    }
+    .status-returned {
+        color: orange;
+    }
+    .total-amount {
+        font-weight: bold;
+        text-align: right;
+    }
+    .total-row {
+        text-align: right;
+        font-weight: bold;
+    }
+    .total-row td {
+        border: none;
+        padding-top: 10px;
+    }
+    .btn-invoice {
+        display: block;
+        margin: 20px auto; /* Center the button */
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        text-align: center;
+        text-decoration: none;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    .btn-invoice:hover {
+        background-color: #0056b3;
+    }
 </style>
-<div id="container">
-    <!-- Address Cards -->
-    <div class="card-container">
-        <!-- User Address Card -->
-        <div class="card col-lg-4">
-            <h2 class="heading">Shipping Address</h2>
-            <!-- Replace with dynamic data -->
-            <p><strong>User Name:</strong> {{ order.name }}</p>
-            <p><strong>Address:</strong> {{ order.address }}, {{ order.House_no }}, {{ order.city }}, {{ order.state }}, {{ order.country }}, {{ order.pincode }}</p>
+
+<div class="container">
+    <div class="row justify-content-end">
+        <!-- Address Cards -->
+        <div class="col-lg-4">
+            <div class="card">
+                <h2 class="heading">Shipping Address</h2>
+                <!-- Replace with dynamic data -->
+                <p><strong>User Name:</strong> {{ order.name }}</p>
+                <p><strong>Address:</strong> {{ order.address }}, {{ order.House_no }}, {{ order.city }}, {{ order.state }}, {{ order.country }}, {{ order.pincode }}</p>
+            </div>
         </div>
         <!-- Order Items Card -->
-        <div class="card col-lg-7">
+        <div class="col-lg-8">
+            <div class="card">
             <h2 class="heading">Order Details</h2>
-            <table class="order-items-table">
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th>Item</th>
-                        <th>Quantity</th>
-                        <th>Price</th>
-                        <th>Status</th>
-                        <th>Tracking ID</th>
+                <div class="table-responsive">
+                    
+                    <table class="order-items-table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Item</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                                <th>Total Amount</th>
+                                <th>Status</th>
+                                <th>Tracking ID</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Replace with dynamic data -->
+                            {% for order_item in order.order.all %}
+                                <tr>
+                                    <td><img src="{{ order_item.product.product.thumbnail.url }}" alt="{{ order_item.product.name }}"></td>
+                                    <td>{{ order_item.product.product.name }}</td>
+                                    <td>{{ order_item.quantity }}</td>
+                                    <td>{{ order_item.price }}</td>
+                                    <td>{{ order_item.totel_price }}</td>
+                                    <td class="{% if order_item.status == 'Cancelled' %}status-cancelled{% elif order_item.status == 'Returned' %}status-returned{% endif %}">{{ order_item.status }}</td>
+                                    <td><a href="{% url 'order_track' order_item.id %}">{{ order_item.trackig_id }}</a></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                    <table>
+                    <tr class="total-row">
+                        <td colspan="4" class="total-amount">Total Amount:</td>
+                        <td colspan="3">{{ totel_amount }}</td>
                     </tr>
-                </thead>
-                <tbody>
-                    <!-- Replace with dynamic data -->
-                    {% for order_item in order.order.all %}
-                        <tr>
-                            <td class='td'><img src="{{ order_item.product.product.thumbnail.url }}" alt="{{ order_item.product.name }}"></td>
-                            <td>{{ order_item.product.product.name }}</td>
-                            <td>{{ order_item.quantity }}</td>
-                            <td>{{ order_item.price }}</td>
-                            <td>{{ order_item.status }}</td>
-                            <td><a href="{% url 'order_track' order_item.id %}">{{ order_item.trackig_id }}</a></td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                    {% if order.coupon_id %}
+                    <tr class="total-row">
+                        <td colspan="4" class="total-amount">Coupon Applied:</td>
+                        <td colspan="3">{% if order.coupon_id %}{{ order.coupon_amount }}{% endif %}</td>
+                    </tr>
+                    {% endif %}
+                    <tr class="total-row">
+                        <td colspan="4" class="total-amount">Shipping Charge:</td>
+                        <td colspan="3">{% if order.shipping_charge %}50.00{% else %}0{% endif %}</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td colspan="4" class="total-amount">Total :</td>
+                        <td colspan="3">{{ order.total_amount }}</td>
+                    </tr>
+                </table>
+                <a href="{% url 'generate_invoice' order.id %}" class="btn-invoice">Download Invoice</a>
+            </div>
         </div>
     </div>
 </div>
+
 {% endblock %}

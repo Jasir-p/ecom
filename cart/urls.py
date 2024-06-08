@@ -14,4 +14,8 @@ urlpatterns = [
     path('Viewcoupons/',view_admin_coupon,name="view_coupons"),
     path('ChekAddAddress/',check_add_address,name="check_add_address"),
 
+    path('edit_coupon/<int:id>/', edit_coupon, name='edit_coupon'),
+    path('ActiveCoupon/<int:id>',coupon_is_active,name='active_coupon')
+
+
 ]

@@ -15,8 +15,7 @@ class Offer(models.Model):
     category = models.ForeignKey('Admin.Catagory', on_delete=models.CASCADE, null=True, blank=True)
     product = models.ForeignKey('Products.Product', on_delete=models.CASCADE, null=True, blank=True)
     discount_percentage = models.PositiveIntegerField()
-    new_price = models.PositiveIntegerField(default=0)
-    old_price = models.PositiveIntegerField(default=0)
+    
     start_date = models.DateField(default=timezone.now)
     is_active=models.BooleanField(default=True)
     end_date = models.DateField()

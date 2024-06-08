@@ -4,6 +4,21 @@
 <section class="shopping-cart spad">
     <div class="container">
         <div class="row justify-content-center">
+            <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+            <script>
+                {% if messages %}
+                {% for message in messages %}
+                {% if message.tags == 'error' %}
+                swal("Error!", "{{ message|safe }}", "error"); // Display error message with a warning icon
+                {% elif message.tags == 'success' %}
+                swal("Success!", "{{ message|safe }}", "success"); // Display success message with a success icon
+                {% else %}
+                swal("Message", "{{ message|safe }}"); // Display general message
+                {% endif %}
+                {% endfor %}
+                {% endif %}
+            </script>
             <div class="col-lg-8">
                 <div class="shopping__cart__table">
                     {% if wishlist %}

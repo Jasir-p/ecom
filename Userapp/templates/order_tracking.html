@@ -6,18 +6,74 @@
     .card {
         border-radius: 16px;
         box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        background-color: #f8f9fa; /* Gray background color */
     }
 
-    .progress-bar {
-        background-color: #f0f0f0;
+    .order-info {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
     }
 
-    .progress-bar-active {
-        background-color: #6520ff;
+    .order-info img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-right: 20px;
     }
 
-    .progress-text {
-        font-size: 14px;
+    .order-info div {
+        flex-grow: 1;
+    }
+
+    .timeline {
+        position: relative;
+        margin-top: 20px;
+    }
+
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 20px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: #ddd;
+    }
+
+    .timeline-step {
+        position: relative;
+        padding-left: 40px;
+        padding-bottom: 20px;
+    }
+
+    .timeline-step:not(:last-child)::before {
+        content: '';
+        position: absolute;
+        left: 10px;
+        top: 0;
+        bottom: 0;
+        width: 20px;
+        height: 20px;
+        border: 2px solid #ddd;
+        border-radius: 50%;
+        background: #fff;
+    }
+
+    .timeline-step.active::before {
+        border-color: #007bff;
+        background: #007bff;
+    }
+
+    .timeline-step.active .timeline-content {
+        color: #007bff;
+    }
+
+    .timeline-content {
+        font-weight: bold;
+        color: #666;
     }
 
     .btn-cancel {
@@ -33,10 +89,6 @@
     .reason-form {
         display: none;
     }
-    .card {
-        border-radius: 16px;
-        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-    }
 
     .success-message {
         background-color: #d4edda;
@@ -51,51 +103,51 @@
 <section class="py-5">
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-8">
+            <div class="col-md-4">  <!-- Increased column width here -->
                 {% if data.status == "Cancelled" %}
                 <div class="card p-4">
-                    
                     <div class="success-message">
-                        Your cancelation request has been approved.
+                        Your cancellation request has been approved.
                     </div>
-                    
-                    <!-- Add your tracking page content here -->
                 </div>
                 {% elif data.status == "Returned" %}
                 <div class="card p-4">
-                    
                     <div class="success-message">
-                        Your Returned request has been approved.
+                        Your return request has been approved.
                     </div>
-                    
-                    <!-- Add your tracking page content here -->
                 </div>
                 {% else %}
                 <div class="card p-4">
                     <h5 class="mb-4">Order Tracking</h5>
-                    <ul class="progress mb-4">
-                        <li class="progress-bar{% if data.status == 'Processing' or data.status == 'Shipped' or data.status == 'Delivered' %}-active{% endif %}"></li>
-                        <li class="progress-bar{% if data.status == 'Shipped' or data.status == 'Delivered' %}-active{% endif %}"></li>
-                        <li class="progress-bar{% if data.status == 'Delivered' %}-active{% endif %}"></li>
-                    </ul>
-                    <div class="row">
-
-                        <div class="col-sm-4">
-                            <p class="text-center progress-text{% if data.status == 'Processing' or data.status == 'Shipped' or data.status == 'Delivered' %} text-primary{% endif %}">Order Processing</p>
-                        </div>
-                        <div class="col-sm-4">
-                            <p class="text-center progress-text{% if data.status == 'Shipped' or data.status == 'Delivered' %} text-primary{% endif %}">Order Shipped</p>
-                        </div>
-                        <div class="col-sm-4">
-                            <p class="text-center progress-text{% if data.status == 'Delivered' %} text-primary{% endif %}">Order Delivered</p>
+                    <div class="order-info">
+                        <img src="{{data.product.product.thumbnail.url}}" alt="Product Image">
+                        <div>
+                            <p class="mb-1"><strong>{{data.product.product.name}}</strong></p>
+                            <p class="mb-1">{{data.price}}</p>
+                            
+                            <p class="mb-1">{{data.order.order_id}}</p>
+                            <p class="mb-0">Estimated delivery : {{ data.delivery_date|date:"d-m-y" }}</p>
                         </div>
                     </div>
-                    <div class="text-center mt-4">
-                        <p class="mb-2">Expected Arrival Date: <strong>{{ data.delivery_date|date:"Y-m-d" }}</strong></p>
-                        {% if tracking_id %}
-                        <p class="mb-2">Tracking ID: <strong>{{ tracking_id }}</strong></p>
-                        {% endif %}
+                   
+                    <div class="timeline">
+                       
+                        <div class="timeline-step   {% if data.status == 'Processing' or data.status == 'Shipped' or data.status == 'Delivered' %}active{% endif %}">
+                            <p class="timeline-content">The parcel is being collected</p>
+                        </div>
+                        <div class="timeline-step {% if data.status == 'Shipped' or data.status == 'Delivered' %}active{% endif %}">
+                            <p class="timeline-content">Ready to be sent</p>
+                        </div>
+                        <div class="timeline-step  {% if data.status == 'Shipped' or data.status == 'Delivered' %}active{% endif %}">
+                            <i class="ri-truck-fill"></i>
+                            <p class="timeline-content">The parcel has been sent</p>
+                        </div>
+                        
+                        <div class="timeline-step {% if data.status == 'Delivered' %}active{% endif %}">
+                            <p class="timeline-content">Received</p>
+                        </div>
                     </div>
+                    
                     {% if data.status == 'Processing' or data.status == 'Pending' %}
                         <div class="text-center mt-4">
                             <button type="button" class="btn btn-cancel" onclick="showReasonForm('cancel')">Cancel Order</button>
@@ -108,8 +160,16 @@
                     <form id="reasonForm" class="reason-form" action="{% if data.status == 'Processing' or data.status == 'Pending' %}{% url 'request_cancel' data.id %}{% elif data.status == 'Delivered' %}{% url 'request_return' data.id %}{% endif %}" method="post">
                         {% csrf_token %}
                         <div class="mb-3">
-                            <label for="reason" class="form-label">Reason for {% if data.status == 'Processing' or data.status == 'Pending' %}Cancelation{% elif data.status == 'Delivered' %}Return{% endif %}</label>
-                            <textarea class="form-control" id="reason" name="reason" rows="3" required></textarea>
+                            <label for="reason" class="form-label">Reason for {% if data.status == 'Processing' or data.status == 'Pending' %}Cancellation{% elif data.status == 'Delivered' %}Return{% endif %}</label>
+                            <select class="form-select" id="reason" name="reason" required>
+                                <option value="" disabled selected>Select a reason</option>
+                                <option value="Changed my mind">Changed my mind</option>
+                                <option value="Found a better price">Found a better price</option>
+                                <option value="Product is defective">Product is defective</option>
+                                <option value="Product no longer needed">Product no longer needed</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <textarea class="form-control mt-2" id="reasonOther" name="reasonOther" rows="3" placeholder="Please provide more details (if 'Other')" style="display: none;"></textarea>
                             <div class="form-control-feedback">Please provide a reason.</div>
                         </div>
                         <div class="text-center mt-4">
@@ -117,39 +177,30 @@
                         </div>
                     </form>
                 </div>
-                <div class="card p-4">
-                    {% if data.status == "Cancelled" %}
-                    <div class="success-message">
-                        Your cancelation request has been approved.
-                    </div>
-                    {% endif %}
-                    <!-- Add your tracking page content here -->
-                </div>
-                <div class="card p-4">
-                    {% if data.status == "Returned" %}
-                    <div class="success-message">
-                        Your Returned request has been approved.
-                    </div>
-                    {% endif %}
-                    <!-- Add your tracking page content here -->
-                </div>
+                {% endif %}
             </div>
-            {% endif %}
         </div>
     </div>
 </section>
 
 <script>
     function showReasonForm(action) {
+        const reasonForm = document.getElementById('reasonForm');
         if (action === 'cancel') {
-            document.getElementById('reasonForm').action = "{% url 'request_cancel' data.id %}";
-            document.getElementById('reasonForm').classList.remove('return');
+            reasonForm.action = "{% url 'request_cancel' data.id %}";
         } else if (action === 'return') {
-            document.getElementById('reasonForm').action = "{% url 'request_return' data.id %}";
-            document.getElementById('reasonForm').classList.add('return');
+            reasonForm.action = "{% url 'request_return' data.id %}";
         }
-        document.getElementById('reasonForm').classList.toggle('reason-form');
+        reasonForm.style.display = reasonForm.style.display === 'block' ? 'none' : 'block';
     }
+    document.getElementById('reason').addEventListener('change', function() {
+        const reasonOther = document.getElementById('reasonOther');
+        if (this.value === 'Other') {
+            reasonOther.style.display = 'block';
+        } else {
+            reasonOther.style.display = 'none';
+        }
+    });
 </script>
 
 {% endblock %}

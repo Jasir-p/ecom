@@ -32,6 +32,14 @@
         margin-bottom: 5px;
     }
 
+    .status-cancelled {
+        color: red ;
+    }
+
+    .status-success {
+        color: green;
+    }
+
     .retry-button {
         background-color: #e74c3c;
         color: #fff;
@@ -124,12 +132,11 @@
                         <a href="#" class="list-group-item list-group-item-action border-0">
                             Logout
                         </a>
-                       
                     </div>
                 </div>
             </div>
         </div>
-        
+
         <div class="col-lg-8">
             {% if orders %}
                 {% for order in orders %}
@@ -137,17 +144,26 @@
                         <div class="card-body">
                             <h4><a href="{% url 'view_order_details' order.id %}">{{ order.order_id }}</a></h4>
                             <p>Order Date: {{ order.created_at }}</p>
-                            <p>Total Amount: {{ order.total_amount }}</p>
                             <p>Payment Method: {{ order.get_payment_method_display }}</p>
-                            <p>Payment Status: {{ order.payment.status }}</p>
-                            
+                            {% if order.payment.status == 'Cancelled' %}
+                                <p class="status-cancelled">Payment Status: {{ order.payment.status }}</p>
+                            {% elif order.payment.status == 'Success' %}
+                                <p class="status-success">Payment Status: {{ order.payment.status }}</p>
+                            {% else %}
+                                <p>Payment Status: {{ order.payment.status }}</p>
+                            {% endif %}
+                            {% if order.payment.status != 'Cancelled' %}
+                                <p>Total Amount: {{ order.total_amount }}</p>
+                                {% if order.coupon_id %}
+                                    <p>Coupon Applied: {{ order.coupon_id }} (Discount: {{ order.coupon_amount }})</p>
+                                {% endif %}
+                            {% endif %}
                             {% if order.payment.status == 'failed' and order.get_payment_method_display == 'Razorpay' %}
                                 <form action="{% url 'retry_payment' order.id %}" method="POST" id="addMoneyForm">
                                     {% csrf_token %}
                                     <button type="submit" class="retry-button" 
                                     data-order-id="{{ order.id }}" 
                                     data-total-amount="{{ order.total_amount }}">Retry Payment</button>
-                        
                                 </form>
                             {% endif %}
                         </div>
@@ -175,6 +191,7 @@ document.addEventListener('DOMContentLoaded', function() {
       event.preventDefault();
       const orderId = button.dataset.orderId;
       const totalAmount = button.dataset.totalAmount;
+      console.log(orderId);
       initializeRazorpay(orderId, totalAmount);
     });
   });
@@ -184,7 +201,7 @@ document.addEventListener('DOMContentLoaded', function() {
       "key": "rzp_test_ev9UtjBDn8UC2J",
       "amount": totalAmount * 100,
       "currency": "INR",
-      "name": "Your Company Name",
+      "name": "HipHopz",
       "description": "Retry Payment for Order #" + orderId,
       "handler": function(response) {
         console.log('Razorpay payment response:', response);
@@ -209,4 +226,3 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 {% endblock %}
-

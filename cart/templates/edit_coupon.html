@@ -1,0 +1,116 @@
+{% extends 'nav.html' %}
+{% load static %}
+
+{% block body %}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+<main id="main" class="main">
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+                    <script>
+                        {% if messages %}
+                        {% for message in messages %}
+                        {% if message.tags == 'error' %}
+                        swal("Error!", "{{ message|safe }}", "error"); // Display error message with a warning icon
+                        {% elif message.tags == 'success' %}
+                        swal("Success!", "{{ message|safe }}", "success"); // Display success message with a success icon
+                        {% else %}
+                        swal("Message", "{{ message|safe }}"); // Display general message
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}
+                    </script>
+
+    <div class="pagetitle">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h1>Edit Coupon</h1>
+            </div>
+        </div>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">Admin</li>
+                <li class="breadcrumb-item"><a href="#">Coupons</a></li>
+                <li class="breadcrumb-item active">Edit Coupon</li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="col-12">
+        <div class="card recent-sales overflow-auto">
+            <div class="card-body p-5">
+                <form id="editCouponForm" method="post" action="{% url 'edit_coupon' coupon.id %}">
+                    {% csrf_token %}
+                    <div class="row mb-3">
+                        <label class="col-sm-2 col-form-label">Coupon Title</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="title" id="edit_coupon_title" value="{{ coupon.title }}" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-2 col-form-label">Coupon Code</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="code" id="edit_coupon_code" value="{{ coupon.code }}" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-2 col-form-label">Start Date</label>
+                        <div class="col-sm-8">
+                            <input type="date" class="form-control" name="start_date" id="edit_valid_from" value="{{ coupon.start_date }}" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-2 col-form-label">End Date</label>
+                        <div class="col-sm-8">
+                            <input type="date" class="form-control" name="end_date" id="edit_valid_to" value="{{ coupon.end_date }}" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-2 col-form-label">Quantity</label>
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control" name="quantity" id="edit_quantity" value="{{ coupon.quantity }}" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-2 col-form-label">Minimum Order Amount</label>
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control" name="min_amount" id="edit_minimum_order_amount" value="{{ coupon.min_amount }}" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-2 col-form-label">Discount Amount</label>
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control" name="discount_amount" id="edit_discount_amount" value="{{ coupon.discount_amount }}" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label class="col-sm-2 col-form-label">Active</label>
+                        <div class="col-sm-8">
+                            <input type="checkbox" class="form-check-input" name="active" id="edit_active" value="1" {% if coupon.is_active %}checked{% endif %}>
+                            <label class="form-check-label" for="edit_active">Active</label>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-sm-8 offset-sm-2">
+                            <button type="submit" class="btn btn-dark">Save Changes</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-p5mK5nN7ZqJycmZTzKxxQ3hV6lTFGZ08mGmf4/SN8I4eFwAv1lR1pRRPpIBENa7u" crossorigin="anonymous"></script>
+
+{% endblock %}

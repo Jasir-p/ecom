@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+    {% load static %}
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Forgot Password</title>
+    <link href="{% static 'user/assets/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
+    <style>
+      body {
+        background-color: #000;
+        color: #fff;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .card {
+        background-color: #333;
+        border: 1px solid #444;
+        width: 25rem;
+      }
+      .card-title {
+        color: #fff;
+      }
+      .form-control {
+        background-color: #555;
+        color: #fff;
+        border: 1px solid #666;
+      }
+      .btn-primary {
+        background-color: #007bff;
+        border: none;
+      }
+      .text-white a {
+        color: #007bff;
+      }
+      .text-white a:hover {
+        color: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="card-body">
+        <h3 class="card-title text-center">Forgot Password</h3>
+        <form method="post" action="{% url 'f_password' %}">
+          {% csrf_token %}
+          <div class="form-group mb-3">
+            <label for="email">Email address</label>
+            <input type="email" class="form-control" id="email" name="email" placeholder="Enter email" required>
+          </div>
+          <button type="submit" class="btn btn-primary w-100">Submit</button>
+        </form>
+        <div class="text-center mt-3">
+          <a href="" class="text-white">Don't have an account? Sign up</a>
+        </div>
+      </div>
+    </div>
+
+    <script src="{% static 'user/assets/js/bootstrap.bundle.min.js' %}"></script>
+  </body>
+</html>

@@ -34,6 +34,17 @@ class Product(models.Model):
             img = img.resize(target_size, Image.BICUBIC)
             img.save(self.thumbnail.path)
     
+@receiver(post_save, sender=Catagory)
+def update_color_products_listing_status(sender, instance, **kwargs):
+    
+        Product.objects.filter(catagory=instance).update(is_listed=instance.is_listed)
+
+
+@receiver(post_save, sender=Brand)
+def update_color_products_listing_status(sender, instance, **kwargs):
+    
+  Product.objects.filter(brand=instance).update(is_listed=instance.is_listed)
+
 
 class Color_products(models.Model):
 
@@ -58,6 +69,10 @@ class Color_products(models.Model):
             return True
         else:
             return False
+    @receiver(post_save, sender=Product)
+    def update_color_products_listing_status(sender, instance, **kwargs):
+    
+        Color_products.objects.filter(product=instance).update(is_listed=instance.is_listed)
 
     # def save(self, *args, **kwargs):
     #         super().save(*args, **kwargs)
@@ -96,14 +111,17 @@ class Wishlist(models.Model):
     products = models.ManyToManyField(Color_products, related_name="wishlists")
 
 
-@receiver([post_save, post_delete], sender=Offer)
+@receiver([post_save, post_delete,pre_save], sender=Offer)
 def update_product_price(sender, instance, **kwargs):
 
     product = instance.product
     category = instance.category
+    if not instance.is_active and product:
+        
+        product.offer_price = 0
     
-    if product:
-        product_offers = Offer.objects.filter(product=product)
+    if product and  instance.is_active :
+        product_offers = Offer.objects.filter(product=product,is_active=True)
         max_discount = 0
 
         for offer in product_offers:
@@ -116,14 +134,20 @@ def update_product_price(sender, instance, **kwargs):
        
         product.offer_price = round(final_price)
         product.save()
-        
+    if not instance.is_active and category:
+        products_in_category = Product.objects.filter(catagory=category)
+
+        for product_in_category in products_in_category:
+            product_in_category.offer_price = 0
+            product_in_category.save()
+
     
-    if category:
+    if category and instance.is_active:
         products_in_category = Product.objects.filter(catagory=category)
 
         for product_in_category in products_in_category:
             
-            product_offers_in_category = Offer.objects.filter(product=product_in_category)
+            product_offers_in_category = Offer.objects.filter(product=product_in_category,is_active=True)
 
             if product_offers_in_category.exists():
 

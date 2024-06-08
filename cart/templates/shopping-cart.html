@@ -24,6 +24,10 @@
     height: 30px;
     line-height: 30px;
 }
+.out-of-stock {
+    color: red;
+}
+
 </style>
 
 <!-- Breadcrumb Section Begin -->
@@ -50,11 +54,11 @@
                             {% if messages %}
                             {% for message in messages %}
                             {% if message.tags == 'error' %}
-                            swal("Error!", "{{ message }}", "error"); // Display error message with a warning icon
+                            swal("Error!", "{{ message|safe }}", "error"); // Display error message with a warning icon
                             {% elif message.tags == 'success' %}
-                            swal("Success!", "{{ message }}", "success"); // Display success message with a success icon
+                            swal("Success!", "{{ message|safe }}", "success"); // Display success message with a success icon
                             {% else %}
-                            swal("Message", "{{ message }}"); // Display general message
+                            swal("Message", "{{ message|safe }}"); // Display general message
                             {% endif %}
                             {% endfor %}
                             {% endif %}
@@ -88,16 +92,21 @@
                                         <h6>{{i.product.product.name}}</h6>
                                         <h6>{{i.product.color_name}}({{i.product_size_color.size}})</h6>
                                         <h5>{{i.product.product.price}}</h5>
+                                        {% if not i.product.is_listed %}
+                                        <span class="out-of-stock">Out of Stock</span>
+                                        {% endif %}
                                     </div>
                                 </td>
                                 <td class="quantity__item">
                                     <div class="quantity d-flex justify-content-center align-items-center">
+                                        
                                         <div class="pro-qty-2">
                                             <button class="qty-btn qty-minus">-</button>
-                                            <input type="text" class="quantity-input" id="quantity-{{ i.id }}" value="{{ i.quantity }}" readonly>
-                                            <input type="hidden" value="{{i.product_size_color.quantity}}" id="quantity1-{{ i.id }}" hide>
+                                            <input type="text" class="quantity-input" id="quantity-{{ i.id }}" value="{{ i.quantity }}">
+                                            <input type="hidden" value="{{i.product_size_color.quantity}}" id="quantity1-{{ i.id }}">
                                             <button class="qty-btn qty-plus">+</button>
                                         </div>
+                                       
                                     </div>
                                 </td>
                                 

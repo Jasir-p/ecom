@@ -39,6 +39,8 @@
                             <span>Deposit</span>
                             {% elif i.money_withdrawn %}
                             <span>Withdrawal</span>
+                            {% elif i.referral_deposit %}
+                            <span>Referal</span>
                                 
                             {% endif %}
                                 
@@ -46,7 +48,9 @@
                             {% if i.money_deposit %}
                             <span class="text-success">+${{i.money_deposit}}</span>
                             {% elif i.money_withdrawn %}
-                            <span class="text-success">-${{i.money_withdrawn}}</span>
+                            <span class="text-danger">-${{i.money_withdrawn}}</span>
+                            {% elif i.referral_deposit %}
+                            <span class="text-success">+${{i.referral_deposit}}</span>
                             {% endif%}
                         </div>
                         <small class="text-muted">{{i.transaction_time}}</small>

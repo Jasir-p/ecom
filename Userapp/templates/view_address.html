@@ -2,45 +2,122 @@
 {% block body %}
 
 {% load static %}
-<section class="my-5">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-3">
-                <div class="card border-0 shadow rounded-lg">
-                    <div class="card-body text-center">
-                        <img src="{% static 'img/profile-pic.jpg' %}" alt="Profile Picture" class="rounded-circle mb-3" width="150">
-                        <h4 class="text-uppercase mb-1">Jyoti</h4>
-                        <p class="text-muted font-size-sm">Delhi, NCR</p>
-                        <div class="list-group list-group-flush mt-4">
-                            <a href="{% url 'view_address' %}" class="list-group-item list-group-item-action border-0">
-                                Profile Information
-                            </a>
-                            <a href="{% url 'user_order'  %}" class="list-group-item list-group-item-action border-0">
-                                Orders
-                            </a>
-                            <a href="{% url 'changepassword'  %}" class="list-group-item list-group-item-action border-0">
-                                Change Password
-                            </a>
-                            <a href="{% url 'view_coupon' %}" class="list-group-item list-group-item-action border-0">
-                                Coupons
-                            </a>
-                            <a href="#" class="list-group-item list-group-item-action border-0">
-                                Logout
-                            </a>
-                           
-                        </div>
+<style>
+
+    .profile-card {
+        background: #fff;
+        border: 1px solid #e5e5e5;
+        border-radius: 5px;
+        padding: 20px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    .profile-card img {
+        border-radius: 50%;
+        margin-bottom: 15px;
+    }
+
+    .profile-card h4 {
+        font-size: 22px;
+        font-weight: 700;
+    }
+
+    .profile-card p {
+        font-size: 14px;
+        color: #888;
+        margin: 0;
+    }
+
+    .list-group-item {
+        padding: 10px 15px;
+        border: none;
+        font-size: 16px;
+        transition: background-color 0.3s;
+    }
+
+    .list-group-item:hover {
+        background-color: #f8f9fa;
+    }
+
+    .text-center p {
+        font-size: 18px;
+        color: #555;
+    }
+
+    .btn-primary {
+        background-color: #333;
+        border: none;
+        padding: 10px 20px;
+        font-size: 16px;
+        transition: background-color 0.3s;
+    }
+
+    .btn-primary:hover {
+        background-color: #555;
+    }
+</style>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="path/to/sweetalert.min.js"></script>
+<script>
+    {% if messages %}
+    {% for message in messages %}
+    {% if message.tags == 'error' %}
+    swal("Error!", "{{ message }}", "error"); // Display error message with a warning icon
+    {% elif message.tags == 'success' %}
+    swal("Success!", "{{ message }}", "success"); // Display success message with a success icon
+    {% else %}
+    swal("Message", "{{ message }}"); // Display general message
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+
+  
+</script>
+<section class="order-container container">
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="card border-0 shadow rounded-lg">
+                <div class="card-body text-center">
+                    <img src="{% static 'img/profile-pic.jpg' %}" alt="Profile Picture" class="rounded-circle mb-3" width="150">
+                    <h4 class="text-uppercase mb-1">Jyoti</h4>
+                    <p class="text-muted font-size-sm">Delhi, NCR</p>
+                    <div class="list-group list-group-flush mt-4">
+                        <a href="{% url 'view_address' %}" class="list-group-item list-group-item-action border-0">
+                            Profile Information
+                        </a>
+                        <a href="{% url 'user_order'  %}" class="list-group-item list-group-item-action border-0">
+                            Orders
+                        </a>
+                        <a href="{% url 'changepassword'  %}" class="list-group-item list-group-item-action border-0">
+                            Change Password
+                        </a>
+                        <a href="{% url 'view_coupon' %}" class="list-group-item list-group-item-action border-0">
+                            Coupons
+                        </a>
+                        <a href="{% url 'my_refarel' %}" class="list-group-item list-group-item-action border-0">
+                            My Refrals
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action border-0">
+                            Logout
+                        </a>
                     </div>
                 </div>
             </div>
+        </div>
+            <!-- End Sidebar -->
+
+            <!-- Main Content -->
             <div class="col-lg-9">
                 <div class="card border-0 shadow rounded-lg">
                     <div class="card-body">
                         <div class="profile-info">
                             <h5 class="text-uppercase mb-4">Profile Information</h5>
-                            <p><strong>Name:</strong> {{data.username}}</p>
-                            <p><strong>Email Address:</strong> {{data.email}}</p>
-                            <p><strong>Contact:</strong> {{data.phone}}</p>
+                            <p><strong>Name:</strong> {{ data.username }}</p>
+                            <p><strong>Email Address:</strong> {{ data.email }}</p>
+                            <p><strong>Contact:</strong> {{ data.phone }}</p>
                             <p><strong>Role:</strong> User</p>
+                           
                         </div>
                     </div>
                 </div>
@@ -69,10 +146,14 @@
                     </div>
                 </div>
             </div>
+            <!-- End Main Content -->
         </div>
     </div>
 </section>
 
-<script src="{% static 'user/home/js/jquery-3.3.1.min.js' %}"></script>
-<script src="{% static 'user/home/js/bootstrap.bundle.min.js' %}"></script>
+<!-- WhatsApp Share Modal -->
+
+
+
+
 {% endblock %}

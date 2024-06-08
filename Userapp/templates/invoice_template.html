@@ -1,0 +1,124 @@
+<!-- invoice_template.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Invoice</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header, .footer {
+            text-align: center;
+            padding: 10px 0;
+        }
+        .header {
+            border-bottom: 2px solid #333;
+        }
+        .footer {
+            border-top: 2px solid #333;
+            margin-top: 20px;
+        }
+        .content {
+            margin-top: 20px;
+        }
+        .order-details, .total-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .order-details th, .order-details td, .total-table th, .total-table td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+        .order-details th {
+            background-color: #f2f2f2;
+        }
+        .total-table {
+            margin-top: 20px;
+        }
+        .total-table td {
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>HipHopz.</h1>
+            <p>Pipeline Road G12</p>
+            <p>Kaloor,Ernakulam</p>
+        </div>
+
+        <div class="content">
+            <h2>Invoice</h2>
+            <p><strong>Invoice Date:</strong> {{ order.created_at }}</p>
+            <p><strong>Order Date:</strong> {{ order.created_at }}</p>
+
+            <h3>Shipping Address</h3>
+            <p>{{ order.name }}</p>
+            <p>{{ order.address }}, {{ order.House_no }}, {{ order.city }}, {{ order.state }}, {{ order.country }}, {{ order.pincode }}</p>
+
+            <h3>Order Details</h3>
+            <table class="order-details">
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Total Amount</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order_item in order.order.all %}
+                        <tr>
+                            <td>{{ order_item.product.product.name }}</td>
+                            <td>{{ order_item.quantity }}</td>
+                            <td>{{ order_item.price }}</td>
+                            <td>{{ order_item.totel_price }}</td>
+                            <td>{{ order_item.status }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <table class="total-table">
+                <tr>
+                    <td><strong>Total Amount:</strong></td>
+                    <td>{{ totel_amount}}</td>
+                </tr>
+                {% if order.coupon_id %}
+                <tr>
+                    <td><strong>Coupon Applied:</strong></td>
+                    <td>{{ order.coupon_amount }}</td>
+                </tr>
+                {% endif %}
+                <tr>
+                    <td><strong>Shipping Charge:</strong></td>
+                    <td>{% if order.shipping_charge %}50.00{% else %}0{% endif %}</td>
+                </tr>
+                <tr>
+                    <td><strong>Grand Total:</td>
+                        <td>{{ order.total_amount }}</td>
+                    </tr>
+                </table>
+            </div>
+    
+            <div class="footer">
+                <p>Thank you for your purchase!</p>
+                <p>HipHopz.| 9995458196 | Website</p>
+            </div>
+        </div>
+    </body>
+    </html>
+    

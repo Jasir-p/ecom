@@ -1,5 +1,15 @@
 {% extends 'nav.html' %}
 {% block body %}
+<style>
+    .total-row {
+        text-align: right;
+        font-weight: bold;
+    }
+    .total-row td {
+        border: none;
+        padding-top: 10px;
+    }
+</style>
 <div class="container-fluid pt-4 px-4">
     <div class="card bg-light rounded p-4">
         <!-- User Address Card -->
@@ -88,6 +98,27 @@
                     {% endfor %}
                 </tbody>
             </table>
+            <table>
+                    <tr class="total-row">
+                        <td colspan="4" class="total-amount">Total Amount:</td>
+                        <td colspan="3">{{ totel_amount }}</td>
+                    </tr>
+                    {% if  Address.coupon_id %}
+                    <tr class="total-row">
+                        <td colspan="4" class="total-amount">Coupon Applied:</td>
+                        <td colspan="3">{% if Address.coupon_id %}{{ Address.coupon_amount }}{% endif %}</td>
+                    </tr>
+                    {% endif %}
+                    <tr class="total-row">
+                        <td colspan="4" class="total-amount">Shipping Charge:</td>
+                        <td colspan="3">{% if Address.shipping_charge %}50.00{% else %}0{% endif %}</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td colspan="4" class="total-amount">Total :</td>
+                        <td colspan="3">{{ Address.total_amount }}</td>
+                    </tr>
+                </table>
+            
         </div>
     </div>
 </div>

@@ -39,9 +39,10 @@ class Cart(models.Model):
     total_amount = models.DecimalField(
         max_digits=10, decimal_places=2, default=0, null=True
     )
+    shipping_charge=models.BooleanField(default=False)
 
     def update_total_amount(self):
-        total_amount = sum(item.total_price for item in self.cartitem.all())  # Accessing CartItem objects through the related name
+        total_amount = sum(item.total_price  for item in self.cartitem.all() ) 
         if self.coupon:
             self.total_amount = total_amount - self.coupon.discount_amount
         else:
@@ -51,7 +52,7 @@ class Cart(models.Model):
     def remove_coupon(self):
         if self.coupon:
             self.coupon = None
-            self.update_total_amount()  # Update total amount after removing the coupon
+            self.update_total_amount()  
 
     def coupon_applied_in(self):
         total_amount = sum(item.total_price for item in self.cartitem.all())
@@ -66,11 +67,12 @@ class Cart(models.Model):
     def Totel(self):
 
         Total = 0
-        if self.check_cart_items_exist():
+        if self.check_cart_items_exist() :
             if self.total_amount > 3000:
                 Total = self.total_amount
             else:
                 Total = self.total_amount + 50
+                self.shipping_charge=True
         return Total
 
 
@@ -86,11 +88,17 @@ class CartItem(models.Model):
     )
 
     def save(self, *args, **kwargs):
-        if self.product_size_color.quantity >= self.quantity:
-            self.total_price = self.product.product.offer_price * self.quantity
-            super().save(*args, **kwargs)
-            # Update the total_amount of the cart after saving the CartItem
-            self.cart.update_total_amount()
+        if self.product_size_color and self.product_size_color.quantity is not None and self.quantity is not None:
+            if self.product_size_color.quantity >= self.quantity:
+                if self.product.product.offer_price is not None:
+                    self.total_price = self.product.product.offer_price * self.quantity
+                elif self.product.product.price is not None:
+                    self.total_price = self.product.product.price * self.quantity
+                
+                super().save(*args, **kwargs)
+                # Update the total_amount of the cart after saving the CartItem
+                self.cart.update_total_amount()
+             
 
 
 class Address(models.Model):

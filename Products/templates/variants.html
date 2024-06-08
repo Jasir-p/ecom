@@ -4,6 +4,20 @@
 <head>
     <!-- Other head elements -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .btn-group .btn {
+            margin-right: 5px;
+        }
+        .btn-group .btn:hover {
+            opacity: 0.8;
+        }
+        .table-responsive table th, .table-responsive table td {
+            vertical-align: middle;
+        }
+        .badge {
+            font-size: 0.9em;
+        }
+    </style>
 </head>
 
 <div class="container-fluid pt-4 px-4">
@@ -28,8 +42,7 @@
                         <th scope="col">Image 3</th>
                         <th scope="col">Size</th>
                         <th scope="col">Quantity</th>
-                        <th scope="col">Edit</th>
-                        <th scope="col">Unlist</th>
+                        <th scope="col">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -50,24 +63,33 @@
                         <td><img src="{{ product.img3.url }}" alt="Image 3" width="80px"></td>
                         {% if product.size.exists %}
                             <td>
-                                <select name="size" class="form-select" onchange="updateQuantityAndEditLink(this)">
-                                    {% for size in product.size.all %}
-                                        <option value="{{ size.id }}" data-quantity="{{ size.quantity }}">{{ size.size }}</option>
-                                    {% endfor %}
-                                </select>
+                                {% if product.size.count == 1 %}
+                                    {{ product.size.first.size }}
+                                {% else %}
+                                    <select name="size" class="form-select" onchange="updateQuantityAndEditLink(this)">
+                                        {% for size in product.size.all %}
+                                            <option value="{{ size.id }}" data-quantity="{{ size.quantity }}">{{ size.size }}</option>
+                                        {% endfor %}
+                                    </select>
+                                {% endif %}
                             </td>
-                            <td class="quantityDisplay"></td>
+                            <td class="quantityDisplay">
+                                {% if product.size.count == 1 %}
+                                    {{ product.size.first.quantity }}
+                                {% else %}
+                                    {{ product.size.first.quantity }}
+                                {% endif %}
+                            </td>
                         {% else %}
                             <td>No sizes available</td>
                             <td></td>
                         {% endif %}
                         <td>
-                            <a class="btn btn-primary edit-link" href="#">Edit</a>
-                        </td>
-                        <td>
-                            <a class="btn btn-danger remove" href="{% url 'unlist_variant' product.id %}">
-                                <i class="fas fa-trash-alt"></i>
-                            </a>
+                            <div class="btn-group">
+                                <a class="btn btn-primary edit-link" href="#"><i class="fas fa-edit"></i> Edit</a>
+                                <a class="btn btn-danger remove" href="{% url 'unlist_variant' product.id %}"><i class="fas fa-trash-alt"></i> Unlist</a>
+                                <a class="btn btn-info" href="{% url 'addsize' product.id %}"><i class="fas fa-plus"></i> Add Size</a>
+                            </div>
                         </td>
                     </tr>
                     {% endfor %}
@@ -76,9 +98,10 @@
         </div>
     </div>
 </div>
+
 <script>
     function updateQuantityAndEditLink(select) {
-        const row = select.parentNode.parentNode;
+        const row = select.closest('tr');
         const quantityDisplay = row.querySelector('.quantityDisplay');
         const selectedOption = select.options[select.selectedIndex];
         const quantity = selectedOption.getAttribute('data-quantity');
@@ -89,5 +112,12 @@
         const editLink = row.querySelector('.edit-link');
         editLink.href = "{% url 'edit_variant' 0 %}".replace("0", selectedSizeId);
     }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const selects = document.querySelectorAll('select[name="size"]');
+        selects.forEach(function(select) {
+            updateQuantityAndEditLink(select);
+        });
+    });
 </script>
 {% endblock %}

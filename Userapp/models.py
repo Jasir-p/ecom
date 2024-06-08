@@ -1,3 +1,6 @@
+
+
+from django.utils import timezone
 from django.db import models
 from django.dispatch import receiver
 from django.db.models.signals import pre_save,post_save,post_delete
@@ -11,12 +14,23 @@ from django.contrib.auth.models import AbstractUser
 
 class CustomUser(AbstractUser):
     phone = models.CharField(max_length=25, unique=True)
+    referal_code=models.CharField(max_length=25,unique=True,null=True,default=None)
+
+
+class Myrefaral(models.Model):
+    user = models.ForeignKey("CustomUser", on_delete=models.CASCADE)
+    user_name=models.CharField(max_length=25,unique=True,null=True,default=None)
+    date_referred = models.DateTimeField(default=timezone.now)
+
+
+
+
 
 
 class Wallet(models.Model):
     user = models.OneToOneField("CustomUser", on_delete=models.CASCADE)
     balance = models.PositiveIntegerField(blank=True, default=0)
-    referral_deposit = models.PositiveIntegerField(blank=True, default=0)
+    
 
     def __str__(self):
         name = f"{self.user.username}  "
@@ -42,6 +56,7 @@ class Wallet_transaction(models.Model):
     )
     money_deposit = models.PositiveBigIntegerField(blank=True, default=0)
     money_withdrawn = models.PositiveBigIntegerField(blank=True, default=0)
+    referral_deposit = models.PositiveIntegerField(blank=True, default=0)
     transaction_time = models.DateTimeField(auto_now_add=True)
 
     # def __str__(self):

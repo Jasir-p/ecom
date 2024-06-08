@@ -1,59 +1,76 @@
 {% extends 'nav.html' %}
 {% block body %}
-<div class="col text-end">
-    <h5 > <a href="{% url 'unlist_products' %}" >Unlist products</a></h5>
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .btn-group .btn {
+            margin-right: 5px;
+        }
+        .btn-group .btn:hover, .top-btn-group .btn:hover {
+            opacity: 0.8;
+        }
+        .table-responsive table th, .table-responsive table td {
+            vertical-align: middle;
+        }
+        .badge {
+            font-size: 0.9em;
+        }
+        .top-btn-group .btn {
+            margin-right: 10px;
+        }
+        .action-btn-group {
+            display: flex;
+            gap: 5px;
+        }
+    </style>
+</head>
+
+<div class="col text-end mb-3">
+    <h5>
+        <a href="{% url 'unlist_products' %}" class="btn btn-warning">
+            <i class="fas fa-eye-slash"></i> Unlist Products
+        </a>
+    </h5>
 </div>
 
-<table border="1" class="table">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Thumbnail</th>
-            <th>Category</th>
-            <th>Brand</th>
-            <th>Price</th>
-            
-            
-            <th>Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for product in products %}
-        
+<div class="table-responsive">
+    <table border="1" class="table">
+        <thead>
             <tr>
-                
-                    <td >{{ product.name }}</td>
-                    
+                <th>Name</th>
+                <th>Thumbnail</th>
+                <th>Category</th>
+                <th>Brand</th>
+                <th>Price</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+                <tr>
+                    <td>{{ product.name }}</td>
                     <td><img src="{{ product.thumbnail.url }}" alt="Thumbnail" width="80px"></td>
-                   
-                    <td>{{ product.catagory }}</td>
+                    <td>{{ product.category }}</td>
                     <td>{{ product.brand }}</td>
                     <td>{{ product.price }}</td>
-                    
-                <td rowspan="">
-                    <a href="{% url 'product_variant' product.id %}"><button class="btn btn-success">Variants</button></a>
-                    
-                </td>
-                        <td rowspan="">
-                            <a href="{% url 'editproduct' product.id %}"><button class="btn btn-primary edit-product">Edit</button></a>
-                            
-                        </td>
-                      
-                        <td rowspan="">
-                            <a href="{% url 'unlist_product' product.id %}"><button class="btn btn-danger">Unlist</button></a>
-                        </td>
-                        
-                
-            </tr>
-        {% endfor %}
-        
-            
-    
-</tbody>
-</table> 
-
-<!-- Edit Product Modal -->
-
+                    <td>
+                        <div class="action-btn-group">
+                            <a href="{% url 'product_variant' product.id %}" class="btn btn-success">
+                                <i class="fas fa-box-open"></i> Variants
+                            </a>
+                            <a href="{% url 'editproduct' product.id %}" class="btn btn-primary">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                            <a href="{% url 'unlist_product' product.id %}" class="btn btn-danger">
+                                <i class="fas fa-trash-alt"></i> Unlist
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 
 {% endblock %}
 
@@ -62,18 +79,20 @@
         const sizeSelect = document.getElementById('sizeSelect');
         const quantityDisplay = document.getElementById('quantityDisplay');
 
-        sizeSelect.addEventListener('change', function() {
-            const selectedSize = this.value;
-            const sizeOptions = this.options;
-            const selectedIndex = this.selectedIndex;
+        if (sizeSelect) {
+            sizeSelect.addEventListener('change', function() {
+                const selectedSize = this.value;
+                const sizeOptions = this.options;
+                const selectedIndex = this.selectedIndex;
 
-            if (selectedIndex === 0) {
-                quantityDisplay.textContent = ''; // Clear quantity display if no size is selected
-            } else {
-                const selectedOption = sizeOptions[selectedIndex];
-                const quantity = selectedOption.getAttribute('data-quantity');
-                quantityDisplay.textContent = `Quantity: ${quantity}`;
-            }
-        });
+                if (selectedIndex === 0) {
+                    quantityDisplay.textContent = ''; // Clear quantity display if no size is selected
+                } else {
+                    const selectedOption = sizeOptions[selectedIndex];
+                    const quantity = selectedOption.getAttribute('data-quantity');
+                    quantityDisplay.textContent = `Quantity: ${quantity}`;
+                }
+            });
+        }
     });
 </script>
