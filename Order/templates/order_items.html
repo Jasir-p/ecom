@@ -41,7 +41,7 @@
                         <th scope="col">Quantity</th>
                         <th scope="col">Total</th>
                         <th scope="col">Status</th>
-                        <th scope="col">Status</th>
+                        
                         
                         <th scope="col">Update Status</th>
                     </tr>
@@ -69,7 +69,7 @@
                         <td>
                             
                                 <span class="badge 
-                                    {% if item.status == 'Order confirmed' or item.status == 'Shipped' %} bg-primary
+                                    {% if item.status == 'Order confirmed' or item.status == 'Shipped' or item.status == 'Pending' %} bg-primary
                                     {% elif item.status == 'Processing' %} bg-warning
                                     {% elif item.status == 'Delivered' %} bg-success
                                     {% elif item.status == 'Cancelled' or item.status == 'Returned' %} bg-danger
@@ -78,7 +78,7 @@
                                 </span>
                             
                         </td>
-                        <td></td>
+                        
                         <td>
                             <form method="post" action="{% url 'update_status' item.pk %}">
                                 {% csrf_token %}
